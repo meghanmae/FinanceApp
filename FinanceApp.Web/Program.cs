@@ -27,7 +27,10 @@ builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddEnvironmentVariables();
 
+
 #region Configure Services
+
+builder.Services.AddSwaggerGen();
 
 var services = builder.Services;
 
@@ -90,6 +93,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseSwagger(OptionsBuilderConfigurationExtensions => OptionsBuilderConfigurationExtensions.SerializeAsV2 = true);
+app.UseSwaggerUI();
 
 var containsFileHashRegex = new Regex(@"\.[0-9a-fA-F]{8}\.[^\.]*$", RegexOptions.Compiled);
 app.UseStaticFiles(new StaticFileOptions
