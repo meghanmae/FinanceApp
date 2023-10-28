@@ -1,0 +1,16 @@
+{
+  "webProject": {
+    "projectFile": "./FinanceApp.Web/FinanceApp.Web.csproj"
+  },
+  "dataProject": {
+    "projectFile": "./FinanceApp.Data/FinanceApp.Data.csproj"
+  },
+
+  "rootGenerator": "Vue",
+
+  "generatorConfig": {
+    "Scripts": {
+      "targetDirectory": "../src"
+    }
+  }
+}
