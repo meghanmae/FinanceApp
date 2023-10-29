@@ -2,7 +2,16 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <DotnetCliToolTargetFramework>net7.0</DotnetCliToolTargetFramework>
+    <UserSecretsId>8ac60892-0b02-4b7f-870c-6fff5f11eb4f</UserSecretsId>
   </PropertyGroup>
+  <ItemGroup>
+    <_WebToolingArtifacts Remove="properties\serviceDependencies.json" />
+    <_WebToolingArtifacts Remove="properties\serviceDependencies.local.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="properties\serviceDependencies.json" />
+    <Content Include="properties\serviceDependencies.local.json" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FinanceApp.Data\FinanceApp.Data.csproj" />
@@ -10,6 +19,11 @@
 
   <ItemGroup>
     <PackageReference Include="IntelliTect.Coalesce.Vue" Version="$(CoalesceVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.13" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="2.15.3" />
+    <PackageReference Include="Microsoft.Identity.Web.MicrosoftGraph" Version="2.15.3" />
+    <PackageReference Include="Microsoft.Identity.Web.UI" Version="2.15.3" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.2.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -18,5 +32,9 @@
 
   <ItemGroup>
     <DotNetCliToolReference Include="IntelliTect.Coalesce.Tools" Version="$(CoalesceVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="properties\serviceDependencies.local.json.user" />
   </ItemGroup>
 </Project>

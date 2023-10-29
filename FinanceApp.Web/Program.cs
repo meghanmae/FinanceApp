@@ -1,6 +1,5 @@
 using IntelliTect.Coalesce;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.Net.Http.Headers;
@@ -10,6 +9,8 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using FinanceApp.Data;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Identity.Web;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
@@ -25,7 +26,24 @@ builder.Logging
 
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddUserSecrets<Program>(true)
     .AddEnvironmentVariables();
+
+var initialScopes = builder.Configuration["DownstreamApi:Scopes"]?.Split(' ') ??
+    builder.Configuration["MicrosoftGraph:Scopes"]?.Split(' ');
+
+// Add services to the container
+builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+    .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"))
+    .EnableTokenAcquisitionToCallDownstreamApi(initialScopes)
+    .AddMicrosoftGraph(builder.Configuration.GetSection("MicrosoftGraph"))
+    .AddInMemoryTokenCaches();
+
+builder.Services.AddAuthorization(options =>
+{
+    // By default, all incoming requests will be authorized according the the default policy
+    options.FallbackPolicy = options.DefaultPolicy;
+});
 
 
 #region Configure Services
@@ -54,9 +72,6 @@ services
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
 
-services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-        .AddCookie();
-
 #endregion
 
 
@@ -75,20 +90,6 @@ if (app.Environment.IsDevelopment())
     });
 
     app.MapCoalesceSecurityOverview("coalesce-security");
-
-    // TODO: Dummy authentication for initial development.
-    // Replace this with ASP.NET Core Identity, Windows Authentication, or some other scheme.
-    // This exists only because Coalesce restricts all generated pages and API to only logged in users by default.
-    app.Use(async (context, next) =>
-    {
-        Claim[] claims = new[] { new Claim(ClaimTypes.Name, "developmentuser") };
-
-        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        await context.SignInAsync(context.User = new ClaimsPrincipal(identity));
-
-        await next.Invoke();
-    });
-    // End Dummy Authentication.
 }
 
 app.UseAuthentication();
