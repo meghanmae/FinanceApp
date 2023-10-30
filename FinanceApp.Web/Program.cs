@@ -11,6 +11,11 @@ using FinanceApp.Data;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Identity.Web;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using IntelliTect.Coalesce.Models;
+using FinanceApp.Data.Models;
+using FinanceApp.Data.Helpers;
+using FinanceApp.Data.Services;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
@@ -34,7 +39,59 @@ var initialScopes = builder.Configuration["DownstreamApi:Scopes"]?.Split(' ') ??
 
 // Add services to the container
 builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"))
+    .AddMicrosoftIdentityWebApp(options => {
+        builder.Configuration.GetSection("AzureAd").Bind(options);
+
+        options.Events.OnRedirectToIdentityProvider = (context) =>
+        {
+            if ("XmlHttpRequest".Equals(context.Request.Headers.XRequestedWith, StringComparison.OrdinalIgnoreCase))
+            {
+                // Don't redirect AJAX/API requests. Just return a plan Unauthorized response.
+                context.Response.StatusCode = 401;
+                context.Response.WriteAsJsonAsync<ItemResult>("You are not signed in.");
+                context.HandleResponse();
+            }
+            return Task.CompletedTask;
+        };
+
+        options.Events.OnTicketReceived = (TicketReceivedContext trc) =>
+        {
+            // Create a new app user for the logging in user
+            AppDbContext db = trc.HttpContext.RequestServices.GetRequiredService<AppDbContext>();
+
+            string? email = trc.Principal?.Identity?.Name;
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                trc.Fail("Invalid login, an email is required");
+                return Task.CompletedTask;
+            }
+
+            var appUser = db.ApplicationUsers.FirstOrDefault(appUser => appUser.Email == email);
+            if(appUser is null)
+            {
+                // Create a new user
+
+                var name = trc.Principal?.Identities.First().Claims.First(claim => claim.Type == "name").Value
+                    ?? throw new InvalidOperationException("Principal first name is unexpectedly null");
+
+                appUser = new ApplicationUser()
+                {
+                    Name = name,
+                    Email = email,
+                };
+
+                db.ApplicationUsers.Add(appUser);
+                db.SaveChanges();
+            }
+
+            trc.Success();
+            trc.Principal = trc.Principal.GetNewClaimsPrincipal(appUser);
+            Console.WriteLine($"Successfully Logged in user: {trc.Principal!.Identity!.Name}");
+
+            return Task.CompletedTask;
+        };
+
+    })
     .EnableTokenAcquisitionToCallDownstreamApi(initialScopes)
     .AddMicrosoftGraph(builder.Configuration.GetSection("MicrosoftGraph"))
     .AddInMemoryTokenCaches();
@@ -62,6 +119,8 @@ services.AddDbContext<AppDbContext>(options => options
 );
 
 services.AddCoalesce<AppDbContext>();
+
+services.AddScoped<UserService>();
 
 services
     .AddMvc()

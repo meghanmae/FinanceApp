@@ -6,6 +6,7 @@
         <router-link to="/" style="color: inherit">
           Coalesce Vue Template
         </router-link>
+        Name: {{ $userName }}
       </v-toolbar-title>
     </v-app-bar>
     <v-navigation-drawer v-model="drawer">
@@ -20,8 +21,8 @@
         <v-list-item link to="/coalesce-example">
           <template #prepend>
             <v-icon>fas fa-palette</v-icon>
+            <v-list-item-title>Custom Page Example</v-list-item-title>
           </template>
-          <v-list-item-title>Custom Page Example</v-list-item-title>
         </v-list-item>
 
         <v-list-item link to="/admin">
@@ -29,6 +30,13 @@
             <v-icon>fas fa-cogs</v-icon>
           </template>
           <v-list-item-title>Admin Pages</v-list-item-title>
+        </v-list-item>
+
+        <v-list-item href="/MicrosoftIdentity/Account/SignOut">
+          <template #prepend>
+            <v-icon>fas fa-sign-out</v-icon>
+          </template>
+          <v-list-item-title>Sign Out</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>

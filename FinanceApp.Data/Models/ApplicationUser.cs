@@ -1,15 +1,18 @@
-namespace FinanceApp.Data.Models;
+using IntelliTect.Coalesce.Utilities;
+using System.Security.Claims;
 
-#nullable disable
+namespace FinanceApp.Data.Models;
 
 public class ApplicationUser
 {
-    public int ApplicationUserId { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public string ApplicationUserId { get; set; } = null!;
 
     [Required]
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
-#nullable restore
+    [Required]
+    public required string Email { get; set; }
 
     public class ApplicationUserBehaviors : StandardBehaviors<ApplicationUser, AppDbContext>
     {

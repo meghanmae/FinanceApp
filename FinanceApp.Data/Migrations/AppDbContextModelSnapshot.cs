@@ -23,11 +23,13 @@ namespace FinanceApp.Data.Migrations
 
             modelBuilder.Entity("FinanceApp.Data.Models.ApplicationUser", b =>
                 {
-                    b.Property<int>("ApplicationUserId")
+                    b.Property<string>("ApplicationUserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(450)");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ApplicationUserId"));
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()

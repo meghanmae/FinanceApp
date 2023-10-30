@@ -12,10 +12,11 @@ namespace FinanceApp.Web.Models
     {
         public ApplicationUserDtoGen() { }
 
-        private int? _ApplicationUserId;
+        private string _ApplicationUserId;
         private string _Name;
+        private string _Email;
 
-        public int? ApplicationUserId
+        public string ApplicationUserId
         {
             get => _ApplicationUserId;
             set { _ApplicationUserId = value; Changed(nameof(ApplicationUserId)); }
@@ -24,6 +25,11 @@ namespace FinanceApp.Web.Models
         {
             get => _Name;
             set { _Name = value; Changed(nameof(Name)); }
+        }
+        public string Email
+        {
+            get => _Email;
+            set { _Email = value; Changed(nameof(Email)); }
         }
 
         /// <summary>
@@ -36,6 +42,7 @@ namespace FinanceApp.Web.Models
 
             this.ApplicationUserId = obj.ApplicationUserId;
             this.Name = obj.Name;
+            this.Email = obj.Email;
         }
 
         /// <summary>
@@ -47,8 +54,9 @@ namespace FinanceApp.Web.Models
 
             if (OnUpdate(entity, context)) return;
 
-            if (ShouldMapTo(nameof(ApplicationUserId))) entity.ApplicationUserId = (ApplicationUserId ?? entity.ApplicationUserId);
+            if (ShouldMapTo(nameof(ApplicationUserId))) entity.ApplicationUserId = ApplicationUserId;
             if (ShouldMapTo(nameof(Name))) entity.Name = Name;
+            if (ShouldMapTo(nameof(Email))) entity.Email = Email;
         }
 
         /// <summary>
@@ -56,8 +64,17 @@ namespace FinanceApp.Web.Models
         /// </summary>
         public override FinanceApp.Data.Models.ApplicationUser MapToNew(IMappingContext context)
         {
-            var entity = new FinanceApp.Data.Models.ApplicationUser();
-            MapTo(entity, context);
+            var includes = context.Includes;
+
+            var entity = new FinanceApp.Data.Models.ApplicationUser()
+            {
+                Name = Name,
+                Email = Email,
+            };
+
+            if (OnUpdate(entity, context)) return entity;
+            if (ShouldMapTo(nameof(ApplicationUserId))) entity.ApplicationUserId = ApplicationUserId;
+
             return entity;
         }
     }

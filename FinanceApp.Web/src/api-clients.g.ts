@@ -8,3 +8,15 @@ export class ApplicationUserApiClient extends ModelApiClient<$models.Application
 }
 
 
+export class UserServiceApiClient extends ServiceApiClient<typeof $metadata.UserService> {
+  constructor() { super($metadata.UserService) }
+  public getLoggedInUser($config?: AxiosRequestConfig): AxiosPromise<ItemResult<$models.ApplicationUser>> {
+    const $method = this.$metadata.methods.getLoggedInUser
+    const $params =  {
+    }
+    return this.$invoke($method, $params, $config)
+  }
+  
+}
+
+
