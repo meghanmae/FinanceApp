@@ -30,7 +30,7 @@ public static class ClaimsPrincipalExtensions
         {
             new Claim(nameof(ApplicationUser.Name), applicationUser.Name),
             new Claim(nameof(ApplicationUser.Email), applicationUser.Email),
-            new Claim(nameof(ApplicationUser.ApplicationUserId), applicationUser.ApplicationUserId),
+            new Claim(ClaimTypes.NameIdentifier, applicationUser.ApplicationUserId),
         };
 
         user?.AddIdentity(new(claims.ToList().AsEnumerable(), "FinanceApp"));

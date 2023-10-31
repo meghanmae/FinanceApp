@@ -16,6 +16,7 @@ using IntelliTect.Coalesce.Models;
 using FinanceApp.Data.Models;
 using FinanceApp.Data.Helpers;
 using FinanceApp.Data.Services;
+using Microsoft.Identity.Web.UI;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
@@ -95,6 +96,8 @@ builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     .EnableTokenAcquisitionToCallDownstreamApi(initialScopes)
     .AddMicrosoftGraph(builder.Configuration.GetSection("MicrosoftGraph"))
     .AddInMemoryTokenCaches();
+
+builder.Services.AddRazorPages().AddMicrosoftIdentityUI();
 
 builder.Services.AddAuthorization(options =>
 {
