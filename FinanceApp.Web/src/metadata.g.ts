@@ -23,6 +23,15 @@ export const ApplicationUser = domain.types.ApplicationUser = {
       role: "primaryKey",
       hidden: 3 as HiddenAreas,
     },
+    azureObjectId: {
+      name: "azureObjectId",
+      displayName: "Azure Object Id",
+      type: "string",
+      role: "value",
+      rules: {
+        required: val => (val != null && val !== '') || "Azure Object Id is required.",
+      }
+    },
     name: {
       name: "name",
       displayName: "Name",

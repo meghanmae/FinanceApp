@@ -13,6 +13,7 @@ namespace FinanceApp.Web.Models
         public ApplicationUserDtoGen() { }
 
         private string _ApplicationUserId;
+        private string _AzureObjectId;
         private string _Name;
         private string _Email;
 
@@ -20,6 +21,11 @@ namespace FinanceApp.Web.Models
         {
             get => _ApplicationUserId;
             set { _ApplicationUserId = value; Changed(nameof(ApplicationUserId)); }
+        }
+        public string AzureObjectId
+        {
+            get => _AzureObjectId;
+            set { _AzureObjectId = value; Changed(nameof(AzureObjectId)); }
         }
         public string Name
         {
@@ -41,6 +47,7 @@ namespace FinanceApp.Web.Models
             var includes = context.Includes;
 
             this.ApplicationUserId = obj.ApplicationUserId;
+            this.AzureObjectId = obj.AzureObjectId;
             this.Name = obj.Name;
             this.Email = obj.Email;
         }
@@ -55,6 +62,7 @@ namespace FinanceApp.Web.Models
             if (OnUpdate(entity, context)) return;
 
             if (ShouldMapTo(nameof(ApplicationUserId))) entity.ApplicationUserId = ApplicationUserId;
+            if (ShouldMapTo(nameof(AzureObjectId))) entity.AzureObjectId = AzureObjectId;
             if (ShouldMapTo(nameof(Name))) entity.Name = Name;
             if (ShouldMapTo(nameof(Email))) entity.Email = Email;
         }
@@ -68,6 +76,7 @@ namespace FinanceApp.Web.Models
 
             var entity = new FinanceApp.Data.Models.ApplicationUser()
             {
+                AzureObjectId = AzureObjectId,
                 Name = Name,
                 Email = Email,
             };

@@ -1,12 +1,12 @@
-using IntelliTect.Coalesce.Utilities;
-using System.Security.Claims;
-
 namespace FinanceApp.Data.Models;
 
 public class ApplicationUser
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public string ApplicationUserId { get; set; } = null!;
+
+    [Required]
+    public required string AzureObjectId { get; set; }
 
     [Required]
     public required string Name { get; set; }

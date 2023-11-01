@@ -3,6 +3,7 @@ import { Model, DataSource, convertToModel, mapToModel } from 'coalesce-vue/lib/
 
 export interface ApplicationUser extends Model<typeof metadata.ApplicationUser> {
   applicationUserId: string | null
+  azureObjectId: string | null
   name: string | null
   email: string | null
 }

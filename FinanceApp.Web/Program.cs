@@ -60,25 +60,28 @@ builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
             // Create a new app user for the logging in user
             AppDbContext db = trc.HttpContext.RequestServices.GetRequiredService<AppDbContext>();
 
-            string? email = trc.Principal?.Identity?.Name;
-            if (string.IsNullOrWhiteSpace(email))
+            var azureObjectId = trc.Principal?.Identities.FirstOrDefault()?.Claims.FirstOrDefault(claim => claim.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value;
+            if (string.IsNullOrWhiteSpace(azureObjectId))
             {
-                trc.Fail("Invalid login, an email is required");
+                trc.Fail("Invalid login, an azure object id is required");
                 return Task.CompletedTask;
             }
 
-            var appUser = db.ApplicationUsers.FirstOrDefault(appUser => appUser.Email == email);
+            var appUser = db.ApplicationUsers.FirstOrDefault(appUser => appUser.AzureObjectId == azureObjectId);
             if(appUser is null)
             {
                 // Create a new user
-
                 var name = trc.Principal?.Identities.First().Claims.First(claim => claim.Type == "name").Value
                     ?? throw new InvalidOperationException("Principal first name is unexpectedly null");
+
+                var email = trc.Principal?.Identity?.Name
+                    ?? throw new InvalidOperationException("Principal email is unexpectedly null");
 
                 appUser = new ApplicationUser()
                 {
                     Name = name,
                     Email = email,
+                    AzureObjectId = azureObjectId
                 };
 
                 db.ApplicationUsers.Add(appUser);
@@ -87,7 +90,7 @@ builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
 
             trc.Success();
             trc.Principal = trc.Principal.GetNewClaimsPrincipal(appUser);
-            Console.WriteLine($"Successfully Logged in user: {trc.Principal!.Identity!.Name}");
+            Console.WriteLine($"Successfully Logged in user: {appUser.Name}");
 
             return Task.CompletedTask;
         };

@@ -5,6 +5,7 @@ import { ViewModel, ListViewModel, ServiceViewModel, DeepPartial, defineProps } 
 
 export interface ApplicationUserViewModel extends $models.ApplicationUser {
   applicationUserId: string | null;
+  azureObjectId: string | null;
   name: string | null;
   email: string | null;
 }

@@ -1,6 +1,6 @@
 import { UserServiceViewModel } from "@/viewmodels.g";
 
-var userService = new UserServiceViewModel();
+const userService = new UserServiceViewModel();
 
 userService.getLoggedInUser();
 
