@@ -34,7 +34,7 @@ namespace FinanceApp.Web.Api
         [HttpGet("get/{id}")]
         [Authorize]
         public virtual Task<ItemResult<ApplicationUserDtoGen>> Get(
-            int id,
+            string id,
             DataSourceParameters parameters,
             IDataSource<FinanceApp.Data.Models.ApplicationUser> dataSource)
             => GetImplementation(id, parameters, dataSource);
@@ -65,7 +65,7 @@ namespace FinanceApp.Web.Api
         [HttpPost("delete/{id}")]
         [Authorize]
         public virtual Task<ItemResult<ApplicationUserDtoGen>> Delete(
-            int id,
+            string id,
             IBehaviors<FinanceApp.Data.Models.ApplicationUser> behaviors,
             IDataSource<FinanceApp.Data.Models.ApplicationUser> dataSource)
             => DeleteImplementation(id, new DataSourceParameters(), dataSource, behaviors);

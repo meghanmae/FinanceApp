@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinanceApp.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231028193854_init")]
+    [Migration("20231030021447_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -26,11 +26,13 @@ namespace FinanceApp.Data.Migrations
 
             modelBuilder.Entity("FinanceApp.Data.Models.ApplicationUser", b =>
                 {
-                    b.Property<int>("ApplicationUserId")
+                    b.Property<string>("ApplicationUserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(450)");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ApplicationUserId"));
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()

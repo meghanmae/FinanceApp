@@ -1,6 +1,5 @@
 using IntelliTect.Coalesce;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.Net.Http.Headers;
@@ -10,6 +9,14 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using FinanceApp.Data;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Identity.Web;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using IntelliTect.Coalesce.Models;
+using FinanceApp.Data.Models;
+using FinanceApp.Data.Helpers;
+using FinanceApp.Data.Services;
+using Microsoft.Identity.Web.UI;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
@@ -25,7 +32,81 @@ builder.Logging
 
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddUserSecrets<Program>(true)
     .AddEnvironmentVariables();
+
+var initialScopes = builder.Configuration["DownstreamApi:Scopes"]?.Split(' ') ??
+    builder.Configuration["MicrosoftGraph:Scopes"]?.Split(' ');
+
+// Add services to the container
+builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+    .AddMicrosoftIdentityWebApp(options => {
+        builder.Configuration.GetSection("AzureAd").Bind(options);
+
+        options.Events.OnRedirectToIdentityProvider = (context) =>
+        {
+            if ("XmlHttpRequest".Equals(context.Request.Headers.XRequestedWith, StringComparison.OrdinalIgnoreCase))
+            {
+                // Don't redirect AJAX/API requests. Just return a plan Unauthorized response.
+                context.Response.StatusCode = 401;
+                context.Response.WriteAsJsonAsync<ItemResult>("You are not signed in.");
+                context.HandleResponse();
+            }
+            return Task.CompletedTask;
+        };
+
+        options.Events.OnTicketReceived = (TicketReceivedContext trc) =>
+        {
+            // Create a new app user for the logging in user
+            AppDbContext db = trc.HttpContext.RequestServices.GetRequiredService<AppDbContext>();
+
+            var azureObjectId = trc.Principal?.Identities.FirstOrDefault()?.Claims.FirstOrDefault(claim => claim.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value;
+            if (string.IsNullOrWhiteSpace(azureObjectId))
+            {
+                trc.Fail("Invalid login, an azure object id is required");
+                return Task.CompletedTask;
+            }
+
+            var appUser = db.ApplicationUsers.FirstOrDefault(appUser => appUser.AzureObjectId == azureObjectId);
+            if(appUser is null)
+            {
+                // Create a new user
+                var name = trc.Principal?.Identities.First().Claims.First(claim => claim.Type == "name").Value
+                    ?? throw new InvalidOperationException("Principal first name is unexpectedly null");
+
+                var email = trc.Principal?.Identity?.Name
+                    ?? throw new InvalidOperationException("Principal email is unexpectedly null");
+
+                appUser = new ApplicationUser()
+                {
+                    Name = name,
+                    Email = email,
+                    AzureObjectId = azureObjectId
+                };
+
+                db.ApplicationUsers.Add(appUser);
+                db.SaveChanges();
+            }
+
+            trc.Success();
+            trc.Principal = trc.Principal.GetNewClaimsPrincipal(appUser);
+            Console.WriteLine($"Successfully Logged in user: {appUser.Name}");
+
+            return Task.CompletedTask;
+        };
+
+    })
+    .EnableTokenAcquisitionToCallDownstreamApi(initialScopes)
+    .AddMicrosoftGraph(builder.Configuration.GetSection("MicrosoftGraph"))
+    .AddInMemoryTokenCaches();
+
+builder.Services.AddRazorPages().AddMicrosoftIdentityUI();
+
+builder.Services.AddAuthorization(options =>
+{
+    // By default, all incoming requests will be authorized according the the default policy
+    options.FallbackPolicy = options.DefaultPolicy;
+});
 
 
 #region Configure Services
@@ -45,6 +126,8 @@ services.AddDbContext<AppDbContext>(options => options
 
 services.AddCoalesce<AppDbContext>();
 
+services.AddScoped<UserService>();
+
 services
     .AddMvc()
     .AddJsonOptions(options =>
@@ -53,9 +136,6 @@ services
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
-
-services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-        .AddCookie();
 
 #endregion
 
@@ -75,20 +155,6 @@ if (app.Environment.IsDevelopment())
     });
 
     app.MapCoalesceSecurityOverview("coalesce-security");
-
-    // TODO: Dummy authentication for initial development.
-    // Replace this with ASP.NET Core Identity, Windows Authentication, or some other scheme.
-    // This exists only because Coalesce restricts all generated pages and API to only logged in users by default.
-    app.Use(async (context, next) =>
-    {
-        Claim[] claims = new[] { new Claim(ClaimTypes.Name, "developmentuser") };
-
-        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        await context.SignInAsync(context.User = new ClaimsPrincipal(identity));
-
-        await next.Invoke();
-    });
-    // End Dummy Authentication.
 }
 
 app.UseAuthentication();

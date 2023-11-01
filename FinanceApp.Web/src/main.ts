@@ -4,6 +4,10 @@ import { createCoalesceVuetify } from "coalesce-vue-vuetify3";
 import { aliases, fa } from "vuetify/iconsets/fa";
 import { AxiosClient as CoalesceAxiosClient } from "coalesce-vue";
 
+import userService, {
+  globalProperties as userServiceProps,
+} from "@/services/UserService";
+
 import App from "./App.vue";
 import router from "./router";
 
@@ -58,7 +62,19 @@ const coalesceVuetify = createCoalesceVuetify({
 });
 
 const app = createApp(App);
+Object.defineProperties(
+  app.config.globalProperties,
+  Object.getOwnPropertyDescriptors(userServiceProps)
+)
+
 app.use(router);
+router.beforeEach(async (to: any, from: any, next: any) => {
+  if (from.path !== to.path) {
+    await userService.getLoggedInUser();
+  }
+  next();
+})
+
 app.use(vuetify);
 app.use(coalesceVuetify);
 app.mount("#app");
