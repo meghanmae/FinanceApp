@@ -1,9 +1,7 @@
-using IntelliTect.Coalesce;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.Net.Http.Headers;
-using System.Security.Claims;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -11,12 +9,12 @@ using FinanceApp.Data;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Identity.Web;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using IntelliTect.Coalesce.Models;
 using FinanceApp.Data.Models;
 using FinanceApp.Data.Helpers;
 using FinanceApp.Data.Services;
 using Microsoft.Identity.Web.UI;
+using IntelliTect.Coalesce.Models;
+using IntelliTect.Coalesce;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
