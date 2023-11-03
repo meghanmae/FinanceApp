@@ -8,6 +8,41 @@ export class ApplicationUserApiClient extends ModelApiClient<$models.Application
 }
 
 
+export class BudgetApiClient extends ModelApiClient<$models.Budget> {
+  constructor() { super($metadata.Budget) }
+}
+
+
+export class BudgetUserApiClient extends ModelApiClient<$models.BudgetUser> {
+  constructor() { super($metadata.BudgetUser) }
+}
+
+
+export class CategoryApiClient extends ModelApiClient<$models.Category> {
+  constructor() { super($metadata.Category) }
+}
+
+
+export class CustomCalculationApiClient extends ModelApiClient<$models.CustomCalculation> {
+  constructor() { super($metadata.CustomCalculation) }
+}
+
+
+export class SubCategoryApiClient extends ModelApiClient<$models.SubCategory> {
+  constructor() { super($metadata.SubCategory) }
+}
+
+
+export class SubCategoryCustomCalculationApiClient extends ModelApiClient<$models.SubCategoryCustomCalculation> {
+  constructor() { super($metadata.SubCategoryCustomCalculation) }
+}
+
+
+export class TransactionApiClient extends ModelApiClient<$models.Transaction> {
+  constructor() { super($metadata.Transaction) }
+}
+
+
 export class UserServiceApiClient extends ServiceApiClient<typeof $metadata.UserService> {
   constructor() { super($metadata.UserService) }
   public getLoggedInUser($config?: AxiosRequestConfig): AxiosPromise<ItemResult<$models.ApplicationUser>> {
