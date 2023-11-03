@@ -16,7 +16,7 @@ public static class ClaimsPrincipalExtensions
         ClaimsPrincipal newClaims = new();
         newClaims.GetAndApplyUserClaims(appUser);
 
-        if(microsoftIdentity is not null)
+        if (microsoftIdentity is not null)
         {
             newClaims.AddIdentity(microsoftIdentity);
         }
