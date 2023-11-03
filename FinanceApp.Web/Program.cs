@@ -1,20 +1,20 @@
+using FinanceApp.Data;
+using FinanceApp.Data.Helpers;
+using FinanceApp.Data.Models;
+using FinanceApp.Data.Services;
+using IntelliTect.Coalesce;
+using IntelliTect.Coalesce.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging.Console;
+using Microsoft.Identity.Web;
+using Microsoft.Identity.Web.UI;
 using Microsoft.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using FinanceApp.Data;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Identity.Web;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using FinanceApp.Data.Models;
-using FinanceApp.Data.Helpers;
-using FinanceApp.Data.Services;
-using Microsoft.Identity.Web.UI;
-using IntelliTect.Coalesce.Models;
-using IntelliTect.Coalesce;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
@@ -38,7 +38,8 @@ var initialScopes = builder.Configuration["DownstreamApi:Scopes"]?.Split(' ') ??
 
 // Add services to the container
 builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApp(options => {
+    .AddMicrosoftIdentityWebApp(options =>
+    {
         builder.Configuration.GetSection("AzureAd").Bind(options);
 
         options.Events.OnRedirectToIdentityProvider = (context) =>
@@ -66,7 +67,7 @@ builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
             }
 
             var appUser = db.ApplicationUsers.FirstOrDefault(appUser => appUser.AzureObjectId == azureObjectId);
-            if(appUser is null)
+            if (appUser is null)
             {
                 // Create a new user
                 var name = trc.Principal?.Identities.First().Claims.First(claim => claim.Type == "name").Value

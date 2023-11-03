@@ -1,7 +1,7 @@
 ﻿namespace FinanceApp.Data.Models;
 public class CustomCalculation
 {
-    public int CustomCalculationId {  get; set; }
+    public int CustomCalculationId { get; set; }
 
     [Required]
     public required string Name { get; set; }

@@ -8,6 +8,6 @@ public class SubCategoryCustomCalculation
     public SubCategory? SubCategory { get; set; }
 
     [Required]
-    public int CustomCalculationId { get; set; }  
+    public int CustomCalculationId { get; set; }
     public CustomCalculation? CustomCalculation { get; set; }
 }
