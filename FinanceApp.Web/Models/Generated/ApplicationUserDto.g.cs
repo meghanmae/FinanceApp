@@ -16,6 +16,7 @@ namespace FinanceApp.Web.Models
         private string _AzureObjectId;
         private string _Name;
         private string _Email;
+        private System.Collections.Generic.ICollection<FinanceApp.Web.Models.BudgetUserDtoGen> _Budgets;
 
         public string ApplicationUserId
         {
@@ -37,6 +38,11 @@ namespace FinanceApp.Web.Models
             get => _Email;
             set { _Email = value; Changed(nameof(Email)); }
         }
+        public System.Collections.Generic.ICollection<FinanceApp.Web.Models.BudgetUserDtoGen> Budgets
+        {
+            get => _Budgets;
+            set { _Budgets = value; Changed(nameof(Budgets)); }
+        }
 
         /// <summary>
         /// Map from the domain object to the properties of the current DTO instance.
@@ -50,6 +56,18 @@ namespace FinanceApp.Web.Models
             this.AzureObjectId = obj.AzureObjectId;
             this.Name = obj.Name;
             this.Email = obj.Email;
+            var propValBudgets = obj.Budgets;
+            if (propValBudgets != null && (tree == null || tree[nameof(this.Budgets)] != null))
+            {
+                this.Budgets = propValBudgets
+                    .OrderBy(f => f.BudgetUserId)
+                    .Select(f => f.MapToDto<FinanceApp.Data.Models.BudgetUser, BudgetUserDtoGen>(context, tree?[nameof(this.Budgets)])).ToList();
+            }
+            else if (propValBudgets == null && tree?[nameof(this.Budgets)] != null)
+            {
+                this.Budgets = new BudgetUserDtoGen[0];
+            }
+
         }
 
         /// <summary>
