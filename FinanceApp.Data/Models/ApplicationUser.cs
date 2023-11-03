@@ -14,6 +14,8 @@ public class ApplicationUser
     [Required]
     public required string Email { get; set; }
 
+    public ICollection<BudgetUser> Budgets { get; set; } = new List<BudgetUser>();
+
     public class ApplicationUserBehaviors : StandardBehaviors<ApplicationUser, AppDbContext>
     {
         public ApplicationUserBehaviors(CrudContext<AppDbContext> context) : base(context) { }

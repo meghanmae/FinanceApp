@@ -7,6 +7,13 @@ namespace FinanceApp.Data;
 public class AppDbContext : DbContext
 {
     public DbSet<ApplicationUser> ApplicationUsers => Set<ApplicationUser>();
+    public DbSet<Budget> Budgets => Set<Budget>();
+    public DbSet<BudgetUser> BudgetUsers => Set<BudgetUser>();
+    public DbSet<Category> Categories => Set<Category>();
+    public DbSet<CustomCalculation> CustomCalculations => Set<CustomCalculation>();
+    public DbSet<SubCategory> SubCategories => Set<SubCategory>();
+    public DbSet<SubCategoryCustomCalculation> SubCategoryCustomCalculations => Set<SubCategoryCustomCalculation>();
+    public DbSet<Transaction> Transactions => Set<Transaction>();
 
     public AppDbContext()
     {

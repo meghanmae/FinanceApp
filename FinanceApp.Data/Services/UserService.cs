@@ -1,6 +1,5 @@
 ﻿using FinanceApp.Data.Helpers;
 using FinanceApp.Data.Models;
-using IntelliTect.Coalesce.Utilities;
 using System.Security.Claims;
 namespace FinanceApp.Data.Services;
 
