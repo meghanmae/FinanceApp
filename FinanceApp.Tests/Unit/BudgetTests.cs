@@ -7,7 +7,7 @@ namespace FinanceApp.Tests.Unit;
 public class BudgetTests : UnitTestBase
 {
     [Fact]
-    public async Task Budgets_DefaultDataSource_ReturnsOnlyBudgetsUserIsAPartOf()
+    public async Task Budgets_BudgetsForUserDataSource_ReturnsOnlyBudgetsUserIsAPartOf()
     {
         // Arrange
         BudgetUser expectedBudgetUser = TestData.CreateTestBudgetUser();
@@ -27,13 +27,13 @@ public class BudgetTests : UnitTestBase
         SetUserToContext(callingUser);
         Budget.BudgetsForUser budgetsForUserDataSource = new(Context);
 
-        var expectedBudgetIds = new List<Budget> { expectedBudgetUser.Budget!, expectedSharedBudget };
+        var expectedBudgets = new List<Budget> { expectedBudgetUser.Budget!, expectedSharedBudget };
 
         // Act
         var list = await budgetsForUserDataSource.GetListAsync(new ListParameters());
         IList<Budget> result = list.List.List!;
 
         // Assert
-        result.Should().BeEquivalentTo(expectedBudgetIds);
+        result.Should().BeEquivalentTo(expectedBudgets);
     }
 }

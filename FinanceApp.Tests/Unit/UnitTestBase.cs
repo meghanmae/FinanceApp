@@ -40,7 +40,7 @@ public class UnitTestBase : IDisposable
     protected virtual void Dispose(bool disposing)
     {
         DbFixture.Dispose();
-        if(disposing) { }
+        if (disposing) { }
     }
 
     protected void SetUserToContext(ApplicationUser applicationUser, int[]? managedProjectIds = null)

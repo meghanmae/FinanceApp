@@ -14,6 +14,7 @@ public class Budget
 
     public ICollection<Category> Categories { get; set; } = new List<Category>();
 
+    [DefaultDataSource]
     public class BudgetsForUser : StandardDataSource<Budget, AppDbContext>
     {
         public BudgetsForUser(CrudContext<AppDbContext> context) : base(context) { }
@@ -26,7 +27,7 @@ public class Budget
                 .Where(x => x.ApplicationUserId == Context.User.UserId())
                 // We use `!` here because we've specified that we are including the budget nav property above,
                 // so this should never be null since it's FK relationship is required on the BudgetUser model.
-                .Select(x => x.Budget!); 
+                .Select(x => x.Budget!);
         }
     }
 
@@ -50,7 +51,7 @@ public class Budget
         {
             // Make sure the calling user is allowed to delete this budget
             // Only users assigned to the budget may do so
-            if(!Db.BudgetUsers.Where(x => x.BudgetId == item.BudgetId && x.ApplicationUserId == Context.User.UserId()).Any())
+            if (!Db.BudgetUsers.Where(x => x.BudgetId == item.BudgetId && x.ApplicationUserId == Context.User.UserId()).Any())
             {
                 return "You are not allowed to delete this budget";
             }

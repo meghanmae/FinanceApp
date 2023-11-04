@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace FinanceApp.Tests;
 public class SqlTestDb : IDisposable
 {
-    public AppDbContext DbContext { get;set; }
+    public AppDbContext DbContext { get; set; }
     public DbContextOptions<AppDbContext> DbContextOptions { get; }
     public SqliteConnection SqliteConnection { get; set; }
 
@@ -31,6 +31,6 @@ public class SqlTestDb : IDisposable
         DbContext.Dispose();
         SqliteConnection.Close();
         SqliteConnection.Dispose();
-        if(disposing) { }
+        if (disposing) { }
     }
 }
