@@ -42,10 +42,16 @@ const vuetify = createVuetify({
     VSwitch: { color: "primary" }, // https://github.com/vuetifyjs/vuetify/issues/16486
   },
   theme: {
+    defaultTheme: "dark",
     themes: {
       light: {
         colors: {
-          primary: "#127815",
+          primary: "#3F51B5",
+        },
+      },
+      dark: {
+        colors: {
+          primary: "#3F51B5",
         },
       },
     },

@@ -1,9 +1,12 @@
 <template>
-  <div class="home">
-    <!-- Component is auto-imported by `unplugin-vue-components`
-    (either kebab-case or PascalCase works.) -->
-    <HelloWorld msg="Welcome to your new Vue.js Coalesce application!" />
-  </div>
+  <v-container>
+    <v-card>
+      <v-card-title>
+        My Budgets
+      </v-card-title>
+      <v-divider />
+    </v-card>
+  </v-container>
 </template>
 
 <script setup lang="ts">
