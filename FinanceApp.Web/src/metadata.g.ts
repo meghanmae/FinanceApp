@@ -139,6 +139,13 @@ export const Budget = domain.types.Budget = {
   methods: {
   },
   dataSources: {
+    budgetsForUser: {
+      type: "dataSource",
+      name: "BudgetsForUser",
+      displayName: "Budgets For User",
+      props: {
+      },
+    },
   },
 }
 export const BudgetUser = domain.types.BudgetUser = {
@@ -336,6 +343,29 @@ export const CustomCalculation = domain.types.CustomCalculation = {
       displayName: "Description",
       type: "string",
       role: "value",
+    },
+    budgetId: {
+      name: "budgetId",
+      displayName: "Budget Id",
+      type: "number",
+      role: "foreignKey",
+      get principalKey() { return (domain.types.Budget as ModelType).props.budgetId as PrimaryKeyProperty },
+      get principalType() { return (domain.types.Budget as ModelType) },
+      get navigationProp() { return (domain.types.CustomCalculation as ModelType).props.budget as ModelReferenceNavigationProperty },
+      hidden: 3 as HiddenAreas,
+      rules: {
+        required: val => val != null || "Budget is required.",
+      }
+    },
+    budget: {
+      name: "budget",
+      displayName: "Budget",
+      type: "model",
+      get typeDef() { return (domain.types.Budget as ModelType) },
+      role: "referenceNavigation",
+      get foreignKey() { return (domain.types.CustomCalculation as ModelType).props.budgetId as ForeignKeyProperty },
+      get principalKey() { return (domain.types.Budget as ModelType).props.budgetId as PrimaryKeyProperty },
+      dontSerialize: true,
     },
     subCategoryCustomCalculations: {
       name: "subCategoryCustomCalculations",

@@ -1,6 +1,11 @@
-﻿namespace FinanceApp.Data.Models;
-public class SubCategory
+﻿using FinanceApp.Data.Coalesce;
+using System.Linq.Expressions;
+
+namespace FinanceApp.Data.Models;
+public class SubCategory : ISecureByBudget<SubCategory>
 {
+    Expression<Func<SubCategory, int>> ISecureByBudget<SubCategory>.GetBudget() => x => x.Category!.BudgetId;
+
     public int SubCategoryId { get; set; }
 
     [Required]

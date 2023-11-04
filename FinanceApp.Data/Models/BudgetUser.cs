@@ -1,6 +1,11 @@
-﻿namespace FinanceApp.Data.Models;
-public class BudgetUser
+﻿using FinanceApp.Data.Coalesce;
+using System.Linq.Expressions;
+
+namespace FinanceApp.Data.Models;
+public class BudgetUser : ISecureByBudget<BudgetUser>
 {
+    Expression<Func<BudgetUser, int>> ISecureByBudget<BudgetUser>.GetBudget() => x => x.BudgetId;
+
     public int BudgetUserId { get; set; }
 
     [Required]

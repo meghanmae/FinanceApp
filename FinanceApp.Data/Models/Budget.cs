@@ -1,8 +1,12 @@
-﻿using FinanceApp.Data.Helpers;
+﻿using FinanceApp.Data.Coalesce;
+using FinanceApp.Data.Helpers;
+using System.Linq.Expressions;
 
 namespace FinanceApp.Data.Models;
-public class Budget
+public class Budget : ISecureByBudget<Budget>
 {
+    Expression<Func<Budget, int>> ISecureByBudget<Budget>.GetBudget() => x => x.BudgetId;
+
     public int BudgetId { get; set; }
 
     [Required]
@@ -14,7 +18,8 @@ public class Budget
 
     public ICollection<Category> Categories { get; set; } = new List<Category>();
 
-    public class BudgetsForUser : StandardDataSource<Budget, AppDbContext>
+    [DefaultDataSource]
+    public class BudgetsForUser : FinanceAppDataSource<Budget, AppDbContext>
     {
         public BudgetsForUser(CrudContext<AppDbContext> context) : base(context) { }
 

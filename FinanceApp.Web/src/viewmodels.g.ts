@@ -122,6 +122,8 @@ export interface CustomCalculationViewModel extends $models.CustomCalculation {
   customCalculationId: number | null;
   name: string | null;
   description: string | null;
+  budgetId: number | null;
+  budget: BudgetViewModel | null;
   subCategoryCustomCalculations: SubCategoryCustomCalculationViewModel[] | null;
 }
 export class CustomCalculationViewModel extends ViewModel<$models.CustomCalculation, $apiClients.CustomCalculationApiClient, number> implements $models.CustomCalculation  {

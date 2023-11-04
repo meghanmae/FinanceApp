@@ -51,6 +51,14 @@ export class Budget {
     Object.assign(this, Budget.map(data || {}));
   }
 }
+export namespace Budget {
+  export namespace DataSources {
+    
+    export class BudgetsForUser implements DataSource<typeof metadata.Budget.dataSources.budgetsForUser> {
+      readonly $metadata = metadata.Budget.dataSources.budgetsForUser
+    }
+  }
+}
 
 
 export interface BudgetUser extends Model<typeof metadata.BudgetUser> {
@@ -112,6 +120,8 @@ export interface CustomCalculation extends Model<typeof metadata.CustomCalculati
   customCalculationId: number | null
   name: string | null
   description: string | null
+  budgetId: number | null
+  budget: Budget | null
   subCategoryCustomCalculations: SubCategoryCustomCalculation[] | null
 }
 export class CustomCalculation {

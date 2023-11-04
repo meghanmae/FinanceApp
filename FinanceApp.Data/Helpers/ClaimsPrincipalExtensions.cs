@@ -34,6 +34,9 @@ public static class ClaimsPrincipalExtensions
             new Claim(nameof(ApplicationUser.AzureObjectId), applicationUser.AzureObjectId),
         };
 
+        // Add user's budgets to claims
+
+
         user?.AddIdentity(new(claims.ToList().AsEnumerable(), "FinanceApp"));
 
         return claims;

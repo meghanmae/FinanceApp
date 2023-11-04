@@ -15,6 +15,8 @@ namespace FinanceApp.Web.Models
         private int? _CustomCalculationId;
         private string _Name;
         private string _Description;
+        private int? _BudgetId;
+        private FinanceApp.Web.Models.BudgetDtoGen _Budget;
         private System.Collections.Generic.ICollection<FinanceApp.Web.Models.SubCategoryCustomCalculationDtoGen> _SubCategoryCustomCalculations;
 
         public int? CustomCalculationId
@@ -31,6 +33,16 @@ namespace FinanceApp.Web.Models
         {
             get => _Description;
             set { _Description = value; Changed(nameof(Description)); }
+        }
+        public int? BudgetId
+        {
+            get => _BudgetId;
+            set { _BudgetId = value; Changed(nameof(BudgetId)); }
+        }
+        public FinanceApp.Web.Models.BudgetDtoGen Budget
+        {
+            get => _Budget;
+            set { _Budget = value; Changed(nameof(Budget)); }
         }
         public System.Collections.Generic.ICollection<FinanceApp.Web.Models.SubCategoryCustomCalculationDtoGen> SubCategoryCustomCalculations
         {
@@ -49,6 +61,10 @@ namespace FinanceApp.Web.Models
             this.CustomCalculationId = obj.CustomCalculationId;
             this.Name = obj.Name;
             this.Description = obj.Description;
+            this.BudgetId = obj.BudgetId;
+            if (tree == null || tree[nameof(this.Budget)] != null)
+                this.Budget = obj.Budget.MapToDto<FinanceApp.Data.Models.Budget, BudgetDtoGen>(context, tree?[nameof(this.Budget)]);
+
             var propValSubCategoryCustomCalculations = obj.SubCategoryCustomCalculations;
             if (propValSubCategoryCustomCalculations != null && (tree == null || tree[nameof(this.SubCategoryCustomCalculations)] != null))
             {
@@ -75,6 +91,7 @@ namespace FinanceApp.Web.Models
             if (ShouldMapTo(nameof(CustomCalculationId))) entity.CustomCalculationId = (CustomCalculationId ?? entity.CustomCalculationId);
             if (ShouldMapTo(nameof(Name))) entity.Name = Name;
             if (ShouldMapTo(nameof(Description))) entity.Description = Description;
+            if (ShouldMapTo(nameof(BudgetId))) entity.BudgetId = (BudgetId ?? entity.BudgetId);
         }
 
         /// <summary>
@@ -92,6 +109,7 @@ namespace FinanceApp.Web.Models
             if (OnUpdate(entity, context)) return entity;
             if (ShouldMapTo(nameof(CustomCalculationId))) entity.CustomCalculationId = (CustomCalculationId ?? entity.CustomCalculationId);
             if (ShouldMapTo(nameof(Description))) entity.Description = Description;
+            if (ShouldMapTo(nameof(BudgetId))) entity.BudgetId = (BudgetId ?? entity.BudgetId);
 
             return entity;
         }

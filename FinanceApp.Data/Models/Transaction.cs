@@ -1,6 +1,11 @@
-﻿namespace FinanceApp.Data.Models;
-public class Transaction
+﻿using FinanceApp.Data.Coalesce;
+using System.Linq.Expressions;
+
+namespace FinanceApp.Data.Models;
+public class Transaction : ISecureByBudget<Transaction>
 {
+    Expression<Func<Transaction, int>> ISecureByBudget<Transaction>.GetBudget() => x => x.SubCategory!.Category!.BudgetId;
+
     public long TransactionId { get; set; }
 
     [Required]
