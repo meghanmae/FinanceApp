@@ -213,3 +213,5 @@ using (var scope = app.Services.CreateScope())
 app.Run();
 
 #endregion
+
+public partial class Program { }
