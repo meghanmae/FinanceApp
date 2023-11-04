@@ -28,7 +28,11 @@ export default defineConfig(async () => {
     },
 
     plugins: [
-      createVuePlugin(),
+      createVuePlugin({
+        script: {
+          defineModel: true
+        }
+      }),
 
       // Integrations with UseViteDevelopmentServer from IntelliTect.Coalesce.Vue:
       createAspNetCoreHmrPlugin(),

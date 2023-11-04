@@ -47,11 +47,13 @@ const vuetify = createVuetify({
       light: {
         colors: {
           primary: "#3F51B5",
+          error: "#F44336"
         },
       },
       dark: {
         colors: {
           primary: "#3F51B5",
+          error: "#F44336"
         },
       },
     },
