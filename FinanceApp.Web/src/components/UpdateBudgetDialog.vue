@@ -6,6 +6,7 @@
                     {{ newBudget ? 'Create a New Budget' : 'Edit Budget' }}
                 </v-card-title>
             </v-card-item>
+            <c-loader-status :loaders="{ '': [budget.$save] }" />
             <v-card-text>
                 <c-input :model="budget" for="name" />
                 <c-input :model="budget" for="description" />

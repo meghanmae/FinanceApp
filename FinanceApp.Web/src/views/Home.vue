@@ -6,12 +6,14 @@
       </v-card-title>
       <v-divider />
 
-      <v-list v-if="budgets.$items.length > 0">
-        <BudgetRow v-for="budget in budgets.$items" :key="budget.budgetId!" :budget="budget" />
-      </v-list>
-      <v-card-subtitle v-else class="mt-2">
-        You have no budgets, try adding one!
-      </v-card-subtitle>
+      <c-loader-status :loaders="{ 'no-initial-content': [budgets.$load] }">
+        <v-list v-if="budgets.$items.length > 0">
+          <BudgetRow v-for="budget in budgets.$items" :key="budget.budgetId!" :budget="budget" />
+        </v-list>
+        <v-card-subtitle v-else class="mt-2">
+          You have no budgets, try adding one!
+        </v-card-subtitle>
+      </c-loader-status>
 
       <v-card-text>
         <v-btn color="primary" @click="newBudgetDialog = true">
@@ -31,7 +33,6 @@
 import { BudgetListViewModel, BudgetViewModel } from '@/viewmodels.g';
 
 const budgets = new BudgetListViewModel();
-budgets.$startAutoLoad;
 loadBudgets();
 
 const newBudgetDialog = ref(false);
