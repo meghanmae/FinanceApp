@@ -1,5 +1,5 @@
 ﻿namespace FinanceApp.Data.Models;
-public class SubCategory
+public class SubCategory : BudgetBase
 {
     public int SubCategoryId { get; set; }
 

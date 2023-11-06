@@ -1,5 +1,5 @@
 ﻿namespace FinanceApp.Data.Models;
-public class Transaction
+public class Transaction : BudgetBase
 {
     public long TransactionId { get; set; }
 

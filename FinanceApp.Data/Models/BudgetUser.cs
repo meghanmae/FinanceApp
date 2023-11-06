@@ -1,13 +1,15 @@
 ﻿namespace FinanceApp.Data.Models;
-public class BudgetUser
+
+[Index(nameof(ApplicationUserId), nameof(BudgetId), IsUnique = true)]
+[Create(SecurityPermissionLevels.DenyAll)]
+[Edit(SecurityPermissionLevels.DenyAll)]
+[Read(SecurityPermissionLevels.DenyAll)]
+[Delete(SecurityPermissionLevels.DenyAll)]
+public class BudgetUser : BudgetInfrastructureBase
 {
     public int BudgetUserId { get; set; }
 
     [Required]
     public string ApplicationUserId { get; set; } = null!;
     public ApplicationUser? ApplicationUser { get; set; }
-
-    [Required]
-    public int BudgetId { get; set; }
-    public Budget? Budget { get; set; }
 }

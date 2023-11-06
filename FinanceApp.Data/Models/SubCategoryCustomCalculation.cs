@@ -1,5 +1,5 @@
 ﻿namespace FinanceApp.Data.Models;
-public class SubCategoryCustomCalculation
+public class SubCategoryCustomCalculation : BudgetBase
 {
     public int SubCategoryCustomCalculationId { get; set; }
 

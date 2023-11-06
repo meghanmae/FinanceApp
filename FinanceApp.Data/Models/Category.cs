@@ -1,5 +1,5 @@
 ﻿namespace FinanceApp.Data.Models;
-public class Category
+public class Category : BudgetBase
 {
     public int CategoryId { get; set; }
 

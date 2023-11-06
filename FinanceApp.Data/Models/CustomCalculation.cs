@@ -1,5 +1,5 @@
 ﻿namespace FinanceApp.Data.Models;
-public class CustomCalculation
+public class CustomCalculation : BudgetBase
 {
     public int CustomCalculationId { get; set; }
 
