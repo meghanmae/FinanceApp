@@ -14,9 +14,5 @@ public class Category : BudgetBase
     [Required]
     public required string Icon { get; set; }
 
-    [Required]
-    public int BudgetId { get; set; }
-    public Budget? Budget { get; set; }
-
     public ICollection<SubCategory> SubCategories { get; set; } = new List<SubCategory>();
 }

@@ -50,9 +50,9 @@ export const ApplicationUser = domain.types.ApplicationUser = {
         required: val => (val != null && val !== '') || "Email is required.",
       }
     },
-    budgets: {
-      name: "budgets",
-      displayName: "Budgets",
+    budgetUsers: {
+      name: "budgetUsers",
+      displayName: "Budget Users",
       type: "collection",
       itemType: {
         name: "$collectionItem",
@@ -65,6 +65,92 @@ export const ApplicationUser = domain.types.ApplicationUser = {
       get foreignKey() { return (domain.types.BudgetUser as ModelType).props.applicationUserId as ForeignKeyProperty },
       get inverseNavigation() { return (domain.types.BudgetUser as ModelType).props.applicationUser as ModelReferenceNavigationProperty },
       dontSerialize: true,
+    },
+    id: {
+      name: "id",
+      displayName: "Id",
+      type: "string",
+      role: "primaryKey",
+      hidden: 3 as HiddenAreas,
+    },
+    userName: {
+      name: "userName",
+      displayName: "User Name",
+      type: "string",
+      role: "value",
+    },
+    normalizedUserName: {
+      name: "normalizedUserName",
+      displayName: "Normalized User Name",
+      type: "string",
+      role: "value",
+    },
+    normalizedEmail: {
+      name: "normalizedEmail",
+      displayName: "Normalized Email",
+      type: "string",
+      role: "value",
+    },
+    emailConfirmed: {
+      name: "emailConfirmed",
+      displayName: "Email Confirmed",
+      type: "boolean",
+      role: "value",
+    },
+    passwordHash: {
+      name: "passwordHash",
+      displayName: "Password Hash",
+      type: "string",
+      role: "value",
+    },
+    securityStamp: {
+      name: "securityStamp",
+      displayName: "Security Stamp",
+      type: "string",
+      role: "value",
+    },
+    concurrencyStamp: {
+      name: "concurrencyStamp",
+      displayName: "Concurrency Stamp",
+      type: "string",
+      role: "value",
+    },
+    phoneNumber: {
+      name: "phoneNumber",
+      displayName: "Phone Number",
+      type: "string",
+      role: "value",
+    },
+    phoneNumberConfirmed: {
+      name: "phoneNumberConfirmed",
+      displayName: "Phone Number Confirmed",
+      type: "boolean",
+      role: "value",
+    },
+    twoFactorEnabled: {
+      name: "twoFactorEnabled",
+      displayName: "Two Factor Enabled",
+      type: "boolean",
+      role: "value",
+    },
+    lockoutEnd: {
+      name: "lockoutEnd",
+      displayName: "Lockout End",
+      type: "date",
+      dateKind: "datetime",
+      role: "value",
+    },
+    lockoutEnabled: {
+      name: "lockoutEnabled",
+      displayName: "Lockout Enabled",
+      type: "boolean",
+      role: "value",
+    },
+    accessFailedCount: {
+      name: "accessFailedCount",
+      displayName: "Access Failed Count",
+      type: "number",
+      role: "value",
     },
   },
   methods: {
@@ -130,15 +216,21 @@ export const Budget = domain.types.Budget = {
         type: "model",
         get typeDef() { return (domain.types.Category as ModelType) },
       },
-      role: "collectionNavigation",
-      get foreignKey() { return (domain.types.Category as ModelType).props.budgetId as ForeignKeyProperty },
-      get inverseNavigation() { return (domain.types.Category as ModelType).props.budget as ModelReferenceNavigationProperty },
+      role: "value",
       dontSerialize: true,
     },
   },
   methods: {
   },
   dataSources: {
+    budgetsForUser: {
+      type: "dataSource",
+      name: "BudgetsForUser",
+      displayName: "Budgets For User",
+      isDefault: true,
+      props: {
+      },
+    },
   },
 }
 export const BudgetUser = domain.types.BudgetUser = {
@@ -148,7 +240,7 @@ export const BudgetUser = domain.types.BudgetUser = {
   type: "model",
   controllerRoute: "BudgetUser",
   get keyProp() { return this.props.budgetUserId }, 
-  behaviorFlags: 7 as BehaviorFlags,
+  behaviorFlags: 0 as BehaviorFlags,
   props: {
     budgetUserId: {
       name: "budgetUserId",
@@ -178,7 +270,7 @@ export const BudgetUser = domain.types.BudgetUser = {
       role: "referenceNavigation",
       get foreignKey() { return (domain.types.BudgetUser as ModelType).props.applicationUserId as ForeignKeyProperty },
       get principalKey() { return (domain.types.ApplicationUser as ModelType).props.applicationUserId as PrimaryKeyProperty },
-      get inverseNavigation() { return (domain.types.ApplicationUser as ModelType).props.budgets as ModelCollectionNavigationProperty },
+      get inverseNavigation() { return (domain.types.ApplicationUser as ModelType).props.budgetUsers as ModelCollectionNavigationProperty },
       dontSerialize: true,
     },
     budgetId: {
@@ -259,30 +351,6 @@ export const Category = domain.types.Category = {
       rules: {
         required: val => (val != null && val !== '') || "Icon is required.",
       }
-    },
-    budgetId: {
-      name: "budgetId",
-      displayName: "Budget Id",
-      type: "number",
-      role: "foreignKey",
-      get principalKey() { return (domain.types.Budget as ModelType).props.budgetId as PrimaryKeyProperty },
-      get principalType() { return (domain.types.Budget as ModelType) },
-      get navigationProp() { return (domain.types.Category as ModelType).props.budget as ModelReferenceNavigationProperty },
-      hidden: 3 as HiddenAreas,
-      rules: {
-        required: val => val != null || "Budget is required.",
-      }
-    },
-    budget: {
-      name: "budget",
-      displayName: "Budget",
-      type: "model",
-      get typeDef() { return (domain.types.Budget as ModelType) },
-      role: "referenceNavigation",
-      get foreignKey() { return (domain.types.Category as ModelType).props.budgetId as ForeignKeyProperty },
-      get principalKey() { return (domain.types.Budget as ModelType).props.budgetId as PrimaryKeyProperty },
-      get inverseNavigation() { return (domain.types.Budget as ModelType).props.categories as ModelCollectionNavigationProperty },
-      dontSerialize: true,
     },
     subCategories: {
       name: "subCategories",
@@ -390,13 +458,13 @@ export const SubCategory = domain.types.SubCategory = {
       type: "string",
       role: "value",
     },
-    budget: {
-      name: "budget",
-      displayName: "Budget",
+    allocation: {
+      name: "allocation",
+      displayName: "Allocation",
       type: "number",
       role: "value",
       rules: {
-        required: val => val != null || "Budget is required.",
+        required: val => val != null || "Allocation is required.",
       }
     },
     categoryId: {

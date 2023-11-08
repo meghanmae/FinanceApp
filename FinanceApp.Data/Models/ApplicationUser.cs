@@ -1,7 +1,10 @@
+using Microsoft.AspNetCore.Identity;
+
 namespace FinanceApp.Data.Models;
 
-public class ApplicationUser
+public class ApplicationUser : IdentityUser
 {
+    [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public string ApplicationUserId { get; set; } = null!;
 
@@ -14,5 +17,5 @@ public class ApplicationUser
     [Required]
     public required string Email { get; set; }
 
-    public ICollection<BudgetUser> Budgets { get; set; } = new List<BudgetUser>();
+    public ICollection<BudgetUser> BudgetUsers { get; set; } = new List<BudgetUser>();
 }

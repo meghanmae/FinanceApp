@@ -6,7 +6,21 @@ export interface ApplicationUser extends Model<typeof metadata.ApplicationUser> 
   azureObjectId: string | null
   name: string | null
   email: string | null
-  budgets: BudgetUser[] | null
+  budgetUsers: BudgetUser[] | null
+  id: string | null
+  userName: string | null
+  normalizedUserName: string | null
+  normalizedEmail: string | null
+  emailConfirmed: boolean | null
+  passwordHash: string | null
+  securityStamp: string | null
+  concurrencyStamp: string | null
+  phoneNumber: string | null
+  phoneNumberConfirmed: boolean | null
+  twoFactorEnabled: boolean | null
+  lockoutEnd: Date | null
+  lockoutEnabled: boolean | null
+  accessFailedCount: number | null
 }
 export class ApplicationUser {
   
@@ -51,6 +65,14 @@ export class Budget {
     Object.assign(this, Budget.map(data || {}));
   }
 }
+export namespace Budget {
+  export namespace DataSources {
+    
+    export class BudgetsForUser implements DataSource<typeof metadata.Budget.dataSources.budgetsForUser> {
+      readonly $metadata = metadata.Budget.dataSources.budgetsForUser
+    }
+  }
+}
 
 
 export interface BudgetUser extends Model<typeof metadata.BudgetUser> {
@@ -85,8 +107,6 @@ export interface Category extends Model<typeof metadata.Category> {
   description: string | null
   color: string | null
   icon: string | null
-  budgetId: number | null
-  budget: Budget | null
   subCategories: SubCategory[] | null
 }
 export class Category {
@@ -137,7 +157,7 @@ export interface SubCategory extends Model<typeof metadata.SubCategory> {
   subCategoryId: number | null
   name: string | null
   description: string | null
-  budget: number | null
+  allocation: number | null
   categoryId: number | null
   category: Category | null
   subCategoryCustomCalculations: SubCategoryCustomCalculation[] | null

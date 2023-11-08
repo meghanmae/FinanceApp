@@ -1,9 +1,4 @@
 ﻿using FinanceApp.Data.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FinanceApp.Data.Security;
 
@@ -13,7 +8,7 @@ namespace FinanceApp.Data.Security;
 /// </summary>
 public interface IHaveBudgetFk
 {
-    public int BudgetId { get; set; }  
+    public int BudgetId { get; set; }
     public Budget? Budget { get; set; }
 }
 
@@ -22,7 +17,7 @@ public interface IHaveBudgetFk
 /// </summary>
 public interface IBudgeted : IHaveBudgetFk
 {
-    static virtual IQueryable<T> WhereTenantMatches<T>(IQueryable<T> query, int budgetId)
+    static virtual IQueryable<T> WhereBudgetMatches<T>(IQueryable<T> query, int budgetId)
         where T : IBudgeted
         => query.Where(x => x.BudgetId == budgetId);
 }

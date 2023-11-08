@@ -10,7 +10,7 @@ public class SubCategory : BudgetBase
 
     [Required]
     [Column(TypeName = "decimal(18, 2)")]
-    public required decimal Budget { get; set; }
+    public required decimal Allocation { get; set; }
 
     [Required]
     public int CategoryId { get; set; }

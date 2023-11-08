@@ -17,8 +17,6 @@ namespace FinanceApp.Web.Models
         private string _Description;
         private string _Color;
         private string _Icon;
-        private int? _BudgetId;
-        private FinanceApp.Web.Models.BudgetDtoGen _Budget;
         private System.Collections.Generic.ICollection<FinanceApp.Web.Models.SubCategoryDtoGen> _SubCategories;
 
         public int? CategoryId
@@ -46,16 +44,6 @@ namespace FinanceApp.Web.Models
             get => _Icon;
             set { _Icon = value; Changed(nameof(Icon)); }
         }
-        public int? BudgetId
-        {
-            get => _BudgetId;
-            set { _BudgetId = value; Changed(nameof(BudgetId)); }
-        }
-        public FinanceApp.Web.Models.BudgetDtoGen Budget
-        {
-            get => _Budget;
-            set { _Budget = value; Changed(nameof(Budget)); }
-        }
         public System.Collections.Generic.ICollection<FinanceApp.Web.Models.SubCategoryDtoGen> SubCategories
         {
             get => _SubCategories;
@@ -75,10 +63,6 @@ namespace FinanceApp.Web.Models
             this.Description = obj.Description;
             this.Color = obj.Color;
             this.Icon = obj.Icon;
-            this.BudgetId = obj.BudgetId;
-            if (tree == null || tree[nameof(this.Budget)] != null)
-                this.Budget = obj.Budget.MapToDto<FinanceApp.Data.Models.Budget, BudgetDtoGen>(context, tree?[nameof(this.Budget)]);
-
             var propValSubCategories = obj.SubCategories;
             if (propValSubCategories != null && (tree == null || tree[nameof(this.SubCategories)] != null))
             {
@@ -107,7 +91,6 @@ namespace FinanceApp.Web.Models
             if (ShouldMapTo(nameof(Description))) entity.Description = Description;
             if (ShouldMapTo(nameof(Color))) entity.Color = Color;
             if (ShouldMapTo(nameof(Icon))) entity.Icon = Icon;
-            if (ShouldMapTo(nameof(BudgetId))) entity.BudgetId = (BudgetId ?? entity.BudgetId);
         }
 
         /// <summary>
@@ -127,7 +110,6 @@ namespace FinanceApp.Web.Models
             if (OnUpdate(entity, context)) return entity;
             if (ShouldMapTo(nameof(CategoryId))) entity.CategoryId = (CategoryId ?? entity.CategoryId);
             if (ShouldMapTo(nameof(Description))) entity.Description = Description;
-            if (ShouldMapTo(nameof(BudgetId))) entity.BudgetId = (BudgetId ?? entity.BudgetId);
 
             return entity;
         }

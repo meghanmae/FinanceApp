@@ -4,14 +4,19 @@ using System.Security.Claims;
 namespace FinanceApp.Data.Helpers;
 public static class ClaimsPrincipalExtensions
 {
-    public static string UserId(this ClaimsPrincipal? user)
+    public static string UserId(this ClaimsPrincipal user)
     {
-        return user!.Claims.First(c => c.Type == nameof(ApplicationUser.ApplicationUserId)).Value;
+        return user.Claims.First(c => c.Type == nameof(ApplicationUser.ApplicationUserId)).Value;
     }
 
-    public static ClaimsPrincipal GetNewClaimsPrincipal(this ClaimsPrincipal? user, ApplicationUser appUser)
+    public static int BudgetId(this ClaimsPrincipal user)
     {
-        ClaimsIdentity? microsoftIdentity = user!.Identities.ToList().Find(i => i.AuthenticationType == "AuthenticationTypes.Federation");
+        return int.Parse(user.Claims.FirstOrDefault(c => c.Type == nameof(Budget.BudgetId))?.Value ?? "-1");
+    }
+
+    public static ClaimsPrincipal GetNewClaimsPrincipal(this ClaimsPrincipal user, ApplicationUser appUser)
+    {
+        ClaimsIdentity? microsoftIdentity = user.Identities.ToList().Find(i => i.AuthenticationType == "AuthenticationTypes.Federation");
 
         ClaimsPrincipal newClaims = new();
         newClaims.GetAndApplyUserClaims(appUser);
@@ -24,7 +29,7 @@ public static class ClaimsPrincipalExtensions
         return newClaims;
     }
 
-    public static List<Claim> GetAndApplyUserClaims(this ClaimsPrincipal? user, ApplicationUser applicationUser)
+    public static List<Claim> GetAndApplyUserClaims(this ClaimsPrincipal user, ApplicationUser applicationUser)
     {
         List<Claim> claims = new()
         {
@@ -34,7 +39,7 @@ public static class ClaimsPrincipalExtensions
             new Claim(nameof(ApplicationUser.AzureObjectId), applicationUser.AzureObjectId),
         };
 
-        user?.AddIdentity(new(claims.ToList().AsEnumerable(), "FinanceApp"));
+        user.AddIdentity(new(claims.ToList().AsEnumerable(), "FinanceApp"));
 
         return claims;
     }
