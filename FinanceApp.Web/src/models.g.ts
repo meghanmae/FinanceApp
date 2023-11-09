@@ -7,20 +7,6 @@ export interface ApplicationUser extends Model<typeof metadata.ApplicationUser> 
   name: string | null
   email: string | null
   budgetUsers: BudgetUser[] | null
-  id: string | null
-  userName: string | null
-  normalizedUserName: string | null
-  normalizedEmail: string | null
-  emailConfirmed: boolean | null
-  passwordHash: string | null
-  securityStamp: string | null
-  concurrencyStamp: string | null
-  phoneNumber: string | null
-  phoneNumberConfirmed: boolean | null
-  twoFactorEnabled: boolean | null
-  lockoutEnd: Date | null
-  lockoutEnabled: boolean | null
-  accessFailedCount: number | null
 }
 export class ApplicationUser {
   
@@ -124,6 +110,14 @@ export class Category {
   /** Instantiate a new Category, optionally basing it on the given data. */
   constructor(data?: Partial<Category> | {[k: string]: any}) {
     Object.assign(this, Category.map(data || {}));
+  }
+}
+export namespace Category {
+  export namespace DataSources {
+    
+    export class CategoriesByBudget implements DataSource<typeof metadata.Category.dataSources.categoriesByBudget> {
+      readonly $metadata = metadata.Category.dataSources.categoriesByBudget
+    }
   }
 }
 

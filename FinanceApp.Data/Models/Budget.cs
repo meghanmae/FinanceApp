@@ -1,6 +1,11 @@
 ﻿using FinanceApp.Data.Security;
 
 namespace FinanceApp.Data.Models;
+
+[Create(SecurityPermissionLevels.AllowAuthorized)]
+[Edit(SecurityPermissionLevels.AllowAuthorized)]
+[Read(SecurityPermissionLevels.AllowAuthorized)]
+[Delete(SecurityPermissionLevels.AllowAuthorized)]
 public class Budget
 {
     public int BudgetId { get; set; }

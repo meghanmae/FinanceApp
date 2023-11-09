@@ -25,7 +25,7 @@ public static class QueryableExtensions
     internal static IQueryable<T> WhereBudgetMatches_Internal<T>(IQueryable<T> query, int budgetId)
         where T : class
     {
-        if (typeof(T).GetInterface("IHaveBudget`1") != null)
+        if (typeof(T).GetInterface("IHaveBudgetFk") != null)
         {
             return WhereBudgetMatches(query as dynamic, budgetId);
         }

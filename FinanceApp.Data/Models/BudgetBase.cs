@@ -4,6 +4,7 @@ namespace FinanceApp.Data.Models;
 public abstract class BudgetBase : IBudgeted
 {
     [InternalUse]
+    [Required]
     public int BudgetId { get; set; }
 
     [InternalUse]
@@ -12,6 +13,7 @@ public abstract class BudgetBase : IBudgeted
 
 public abstract class BudgetInfrastructureBase : IHaveBudgetFk
 {
+    [Required]
     public int BudgetId { get; set; }
 
     public Budget? Budget { get; set; }

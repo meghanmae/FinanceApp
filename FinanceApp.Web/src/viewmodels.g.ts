@@ -9,20 +9,6 @@ export interface ApplicationUserViewModel extends $models.ApplicationUser {
   name: string | null;
   email: string | null;
   budgetUsers: BudgetUserViewModel[] | null;
-  id: string | null;
-  userName: string | null;
-  normalizedUserName: string | null;
-  normalizedEmail: string | null;
-  emailConfirmed: boolean | null;
-  passwordHash: string | null;
-  securityStamp: string | null;
-  concurrencyStamp: string | null;
-  phoneNumber: string | null;
-  phoneNumberConfirmed: boolean | null;
-  twoFactorEnabled: boolean | null;
-  lockoutEnd: Date | null;
-  lockoutEnabled: boolean | null;
-  accessFailedCount: number | null;
 }
 export class ApplicationUserViewModel extends ViewModel<$models.ApplicationUser, $apiClients.ApplicationUserApiClient, string> implements $models.ApplicationUser  {
   

@@ -14,7 +14,7 @@ export const ApplicationUser = domain.types.ApplicationUser = {
   type: "model",
   controllerRoute: "ApplicationUser",
   get keyProp() { return this.props.applicationUserId }, 
-  behaviorFlags: 7 as BehaviorFlags,
+  behaviorFlags: 0 as BehaviorFlags,
   props: {
     applicationUserId: {
       name: "applicationUserId",
@@ -65,92 +65,6 @@ export const ApplicationUser = domain.types.ApplicationUser = {
       get foreignKey() { return (domain.types.BudgetUser as ModelType).props.applicationUserId as ForeignKeyProperty },
       get inverseNavigation() { return (domain.types.BudgetUser as ModelType).props.applicationUser as ModelReferenceNavigationProperty },
       dontSerialize: true,
-    },
-    id: {
-      name: "id",
-      displayName: "Id",
-      type: "string",
-      role: "primaryKey",
-      hidden: 3 as HiddenAreas,
-    },
-    userName: {
-      name: "userName",
-      displayName: "User Name",
-      type: "string",
-      role: "value",
-    },
-    normalizedUserName: {
-      name: "normalizedUserName",
-      displayName: "Normalized User Name",
-      type: "string",
-      role: "value",
-    },
-    normalizedEmail: {
-      name: "normalizedEmail",
-      displayName: "Normalized Email",
-      type: "string",
-      role: "value",
-    },
-    emailConfirmed: {
-      name: "emailConfirmed",
-      displayName: "Email Confirmed",
-      type: "boolean",
-      role: "value",
-    },
-    passwordHash: {
-      name: "passwordHash",
-      displayName: "Password Hash",
-      type: "string",
-      role: "value",
-    },
-    securityStamp: {
-      name: "securityStamp",
-      displayName: "Security Stamp",
-      type: "string",
-      role: "value",
-    },
-    concurrencyStamp: {
-      name: "concurrencyStamp",
-      displayName: "Concurrency Stamp",
-      type: "string",
-      role: "value",
-    },
-    phoneNumber: {
-      name: "phoneNumber",
-      displayName: "Phone Number",
-      type: "string",
-      role: "value",
-    },
-    phoneNumberConfirmed: {
-      name: "phoneNumberConfirmed",
-      displayName: "Phone Number Confirmed",
-      type: "boolean",
-      role: "value",
-    },
-    twoFactorEnabled: {
-      name: "twoFactorEnabled",
-      displayName: "Two Factor Enabled",
-      type: "boolean",
-      role: "value",
-    },
-    lockoutEnd: {
-      name: "lockoutEnd",
-      displayName: "Lockout End",
-      type: "date",
-      dateKind: "datetime",
-      role: "value",
-    },
-    lockoutEnabled: {
-      name: "lockoutEnabled",
-      displayName: "Lockout Enabled",
-      type: "boolean",
-      role: "value",
-    },
-    accessFailedCount: {
-      name: "accessFailedCount",
-      displayName: "Access Failed Count",
-      type: "number",
-      role: "value",
     },
   },
   methods: {
@@ -372,6 +286,14 @@ export const Category = domain.types.Category = {
   methods: {
   },
   dataSources: {
+    categoriesByBudget: {
+      type: "dataSource",
+      name: "CategoriesByBudget",
+      displayName: "Categories By Budget",
+      isDefault: true,
+      props: {
+      },
+    },
   },
 }
 export const CustomCalculation = domain.types.CustomCalculation = {

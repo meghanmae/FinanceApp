@@ -1,8 +1,15 @@
 ﻿using FinanceApp.Data;
 using FinanceApp.Data.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Moq.AutoMock;
+using System.Security.Claims;
+using System.Text.Encodings.Web;
 
 namespace FinanceApp.Tests.Integration.Helpers;
 public class IntegrationTestsBase : IDisposable
@@ -13,10 +20,13 @@ public class IntegrationTestsBase : IDisposable
 
     protected AppDbContext Db { get; }
 
+    protected AutoMocker Mocker { get; } = new AutoMocker();
+
     protected IntegrationTestsBase()
     {
         WebFactory = new WebFactory();
         Db = WebFactory.GetDb();
+        Mocker.Use(Db);
     }
 
     public void ResetContext()
@@ -42,7 +52,7 @@ public class IntegrationTestsBase : IDisposable
     /// <summary>
     /// Client with a signed-in user 
     /// </summary>
-    protected HttpClient GetAuthClient(ApplicationUser? appUser = null)
+    protected HttpClient GetAuthClient(ApplicationUser? appUser = null, int? budgetId = null)
     {
         return WebFactory
             .WithWebHostBuilder(builder =>
@@ -52,7 +62,11 @@ public class IntegrationTestsBase : IDisposable
                     services.AddAuthentication("FakeAuth")
                         .AddScheme<TestAuthHandlerOptions, TestAuthHandler>(
                             "FakeAuth",
-                            options => options.AppUser = appUser
+                            options =>
+                            {
+                                options.AppUser = appUser;
+                                options.BudgetId = budgetId;
+                            }
                         );
                     ConfigureServices(services);
                 });

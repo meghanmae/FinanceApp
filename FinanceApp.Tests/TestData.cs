@@ -32,4 +32,22 @@ public static class TestData
             ApplicationUser = appUser
         };
     }
+
+    public static Category CreateTestCategory(Budget? budget = null, ApplicationUser? appUser = null)
+    {
+        var budgetUser = CreateTestBudgetUser(budget, appUser);
+
+        return CreateTestCategory(budgetUser.Budget!);
+    }
+
+    public static Category CreateTestCategory(Budget budget)
+    {
+        return new Category()
+        {
+            Budget = budget,
+            Name = "Test Category",
+            Color = "Blue",
+            Icon = "Test Icon",
+        };
+    }
 }

@@ -1,4 +1,5 @@
 using FinanceApp.Data.Models;
+using FinanceApp.Tests.Unit.Helpers;
 using FluentAssertions;
 using IntelliTect.Coalesce.Api;
 

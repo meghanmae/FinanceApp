@@ -52,7 +52,7 @@ public class BudgetTests : IntegrationTestsBase
     }
 
     [Fact]
-    public async Task Budgets_DefaultDataSource_UserCanOnlyRetreiveBudgetsTheyAreAPartOf()
+    public async Task Budgets_DefaultDataSource_UserCanOnlyRetrieveBudgetsTheyAreAPartOf()
     {
         BudgetUser expectedBudgetUser = TestData.CreateTestBudgetUser();
         ApplicationUser callingUser = expectedBudgetUser.ApplicationUser!;

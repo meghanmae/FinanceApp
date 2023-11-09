@@ -1,8 +1,10 @@
-using Microsoft.AspNetCore.Identity;
-
 namespace FinanceApp.Data.Models;
 
-public class ApplicationUser : IdentityUser
+[Create(SecurityPermissionLevels.DenyAll)]
+[Edit(SecurityPermissionLevels.DenyAll)]
+[Read(SecurityPermissionLevels.DenyAll)]
+[Delete(SecurityPermissionLevels.DenyAll)]
+public class ApplicationUser
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
