@@ -1,7 +1,10 @@
 ﻿using FinanceApp.Data.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 
-namespace FinanceApp.Data.Helpers;
+namespace FinanceApp.Data.Security;
 public static class ClaimsPrincipalExtensions
 {
     public static string UserId(this ClaimsPrincipal user)
@@ -14,12 +17,12 @@ public static class ClaimsPrincipalExtensions
         return int.Parse(user.Claims.FirstOrDefault(c => c.Type == nameof(Budget.BudgetId))?.Value ?? "-1");
     }
 
-    public static ClaimsPrincipal GetNewClaimsPrincipal(this ClaimsPrincipal user, ApplicationUser appUser)
+    public static ClaimsPrincipal GetNewClaimsPrincipal(this ClaimsPrincipal user, ApplicationUser appUser, IHttpContextAccessor httpContextAccessor)
     {
         ClaimsIdentity? microsoftIdentity = user.Identities.ToList().Find(i => i.AuthenticationType == "AuthenticationTypes.Federation");
 
         ClaimsPrincipal newClaims = new();
-        newClaims.GetAndApplyUserClaims(appUser);
+        newClaims.GetAndApplyUserClaims(appUser, httpContextAccessor);
 
         if (microsoftIdentity is not null)
         {
@@ -29,7 +32,7 @@ public static class ClaimsPrincipalExtensions
         return newClaims;
     }
 
-    public static List<Claim> GetAndApplyUserClaims(this ClaimsPrincipal user, ApplicationUser applicationUser)
+    public static List<Claim> GetAndApplyUserClaims(this ClaimsPrincipal user, ApplicationUser applicationUser, IHttpContextAccessor httpContextAccessor)
     {
         List<Claim> claims = new()
         {
@@ -38,6 +41,17 @@ public static class ClaimsPrincipalExtensions
             new Claim(nameof(ApplicationUser.ApplicationUserId), applicationUser.ApplicationUserId),
             new Claim(nameof(ApplicationUser.AzureObjectId), applicationUser.AzureObjectId),
         };
+
+        // Add budget claims
+        var displayUrl = httpContextAccessor.HttpContext?.Request.GetDisplayUrl();
+        Regex budgetUrlRegex = new Regex(@"\/budgets\/(\d+)");
+        Match match = budgetUrlRegex.Match(displayUrl ?? "");
+        if (match.Success)
+        {
+            int.TryParse(match.Groups[1].Value, out var budgetId);
+            claims.Add(new Claim(nameof(Budget.BudgetId), budgetId.ToString()));
+            // TODO: Set budget permissions here - eventually
+        }
 
         user.AddIdentity(new(claims.ToList().AsEnumerable(), "FinanceApp"));
 

@@ -1,5 +1,5 @@
-﻿using FinanceApp.Data.Helpers;
-using FinanceApp.Data.Models;
+﻿using FinanceApp.Data.Models;
+using FinanceApp.Data.Security;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

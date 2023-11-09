@@ -1,6 +1,6 @@
 ﻿using FinanceApp.Data;
-using FinanceApp.Data.Helpers;
 using FinanceApp.Data.Models;
+using FinanceApp.Data.Security;
 using IntelliTect.Coalesce;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;

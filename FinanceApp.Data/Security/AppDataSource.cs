@@ -1,5 +1,4 @@
-﻿using FinanceApp.Data.Helpers;
-using FinanceApp.Data.Models;
+﻿using FinanceApp.Data.Models;
 using System.Security.Claims;
 
 namespace FinanceApp.Data.Security;

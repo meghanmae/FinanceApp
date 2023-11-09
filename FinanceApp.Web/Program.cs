@@ -1,5 +1,4 @@
 using FinanceApp.Data;
-using FinanceApp.Data.Helpers;
 using FinanceApp.Data.Models;
 using FinanceApp.Data.Security;
 using FinanceApp.Data.Services;
@@ -47,22 +46,11 @@ services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     {
         builder.Configuration.GetSection("AzureAd").Bind(options);
 
-        //options.Events.OnRedirectToIdentityProvider = (context) =>
-        //{
-        //    if ("XmlHttpRequest".Equals(context.Request.Headers.XRequestedWith, StringComparison.OrdinalIgnoreCase))
-        //    {
-        //        // Don't redirect AJAX/API requests. Just return a plan Unauthorized response.
-        //        context.Response.StatusCode = 401;
-        //        context.Response.WriteAsJsonAsync<ItemResult>("You are not signed in.");
-        //        context.HandleResponse();
-        //    }
-        //    return Task.CompletedTask;
-        //};
-
         options.Events.OnTicketReceived = (TicketReceivedContext trc) =>
         {
             // Create a new app user for the logging in user
             AppDbContext db = trc.HttpContext.RequestServices.GetRequiredService<AppDbContext>();
+            IHttpContextAccessor httpContextAccessor = trc.HttpContext.RequestServices.GetRequiredService<IHttpContextAccessor>();
 
             var azureObjectId = trc.Principal?.Identities.FirstOrDefault()?.Claims.FirstOrDefault(claim => claim.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value;
             if (string.IsNullOrWhiteSpace(azureObjectId))
@@ -92,8 +80,9 @@ services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
                 db.SaveChanges();
             }
 
+            trc.Principal = trc.Principal?.GetNewClaimsPrincipal(appUser, httpContextAccessor);
+
             trc.Success();
-            trc.Principal = trc.Principal?.GetNewClaimsPrincipal(appUser);
             Console.WriteLine($"Successfully Logged in user: {appUser.Name}");
 
             return Task.CompletedTask;
@@ -103,11 +92,6 @@ services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     .EnableTokenAcquisitionToCallDownstreamApi(initialScopes)
     .AddMicrosoftGraph(builder.Configuration.GetSection("MicrosoftGraph"))
     .AddInMemoryTokenCaches();
-
-services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders()
-    .AddClaimsPrincipalFactory<FinanceAppClaimsPrincipalFactory>();
 
 services.AddRazorPages().AddMicrosoftIdentityUI();
 
@@ -165,6 +149,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseRefreshClaimsMiddleware();
 
 app.UseSwagger(OptionsBuilderConfigurationExtensions => OptionsBuilderConfigurationExtensions.SerializeAsV2 = true);
 app.UseSwaggerUI();

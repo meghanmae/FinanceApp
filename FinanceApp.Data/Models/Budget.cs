@@ -1,4 +1,4 @@
-﻿using FinanceApp.Data.Helpers;
+﻿using FinanceApp.Data.Security;
 
 namespace FinanceApp.Data.Models;
 public class Budget
