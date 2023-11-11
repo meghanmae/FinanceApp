@@ -1,4 +1,6 @@
-﻿namespace FinanceApp.Data.Models;
+﻿using FinanceApp.Data.Security;
+
+namespace FinanceApp.Data.Models;
 
 [Index(nameof(ApplicationUserId), nameof(BudgetId), IsUnique = true)]
 [Create(SecurityPermissionLevels.DenyAll)]

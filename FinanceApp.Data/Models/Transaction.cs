@@ -1,4 +1,6 @@
-﻿namespace FinanceApp.Data.Models;
+﻿using FinanceApp.Data.Security;
+
+namespace FinanceApp.Data.Models;
 public class Transaction : BudgetBase
 {
     public long TransactionId { get; set; }
@@ -13,4 +15,15 @@ public class Transaction : BudgetBase
     [Required]
     public int SubCategoryId { get; set; }
     public SubCategory? SubCategory { get; set; }
+
+    [DefaultDataSource]
+    public class TransactionsByBudget : FinanceAppDataSource<Transaction>
+    {
+        public TransactionsByBudget(CrudContext<AppDbContext> context) : base(context) { }
+
+        public override IQueryable<Transaction> GetQuery(IDataSourceParameters parameters)
+        {
+            return base.GetQuery(parameters);
+        }
+    }
 }

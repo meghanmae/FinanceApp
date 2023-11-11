@@ -11,56 +11,9 @@ public class CategoryTests : IntegrationTestsBase
 {
     private const string prefix = "/api/Category";
 
-    #region DefaultDatasource Budget Security
+    #region DefaultDatasource Securied By BudgetId
     [Fact]
-    public async Task Categories_DefaultDataSource_UserWithBudgetCanNotReadOtherBudgetsCategories()
-    {
-        // Arrange
-        BudgetUser callingUsersBudget = TestData.CreateTestBudgetUser();
-        ApplicationUser callingUser = callingUsersBudget.ApplicationUser!;
-        Db.BudgetUsers.Add(callingUsersBudget);
-
-        Budget otherUsersBudget = TestData.CreateTestBudget();
-        Db.BudgetUsers.Add(TestData.CreateTestBudgetUser(otherUsersBudget));
-        Category otherBudgetsCategory = TestData.CreateTestCategory(otherUsersBudget);
-        Db.Categories.Add(otherBudgetsCategory);
-
-        await Db.SaveChangesAsync();
-
-        // Act
-        HttpResponseMessage response = await GetAuthClient(callingUser, callingUsersBudget.BudgetId).GetAsync($"{prefix}/get/{otherBudgetsCategory.CategoryId}");
-
-        // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-    }
-
-    [Fact]
-    public async Task Categories_DefaultDataSource_UserWithBiBudgetReturnNoCategories()
-    {
-        // Arrange
-        BudgetUser callingUsersBudget = TestData.CreateTestBudgetUser();
-        ApplicationUser callingUser = callingUsersBudget.ApplicationUser!;
-        Db.BudgetUsers.Add(callingUsersBudget);
-
-        Budget otherUsersBudget = TestData.CreateTestBudget();
-        Db.BudgetUsers.Add(TestData.CreateTestBudgetUser(otherUsersBudget));
-        Category otherBudgetsCategory = TestData.CreateTestCategory(otherUsersBudget);
-        Db.Categories.Add(otherBudgetsCategory);
-
-        await Db.SaveChangesAsync();
-
-        // Act
-        HttpResponseMessage response = await GetAuthClient(callingUser, callingUsersBudget.BudgetId).GetAsync($"{prefix}/list");
-        var result = await response.Content.ReadFromJsonAsync<ListResult<Category>>();
-        IList<Category> categories = result!.List!;
-
-        // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        categories.Should().BeEmpty();
-    }
-
-    [Fact]
-    public async Task Categories_DefaultDataSource_UserCanOnlyRetrieveCategoriesFromBudgetsTheyAreAPartOf()
+    public async Task CategoriesSecuredByBudget_DefaultDataSource_UserCanOnlyRetrieveDataFromBudgetsTheyAreAPartOf()
     {
         // Arrange
         BudgetUser callingUsersBudget = TestData.CreateTestBudgetUser();

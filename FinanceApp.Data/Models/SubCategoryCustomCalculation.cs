@@ -1,4 +1,11 @@
-﻿namespace FinanceApp.Data.Models;
+﻿using FinanceApp.Data.Security;
+
+namespace FinanceApp.Data.Models;
+
+[Create(SecurityPermissionLevels.DenyAll)]
+[Edit(SecurityPermissionLevels.DenyAll)]
+[Read(SecurityPermissionLevels.DenyAll)]
+[Delete(SecurityPermissionLevels.DenyAll)]
 public class SubCategoryCustomCalculation : BudgetBase
 {
     public int SubCategoryCustomCalculationId { get; set; }

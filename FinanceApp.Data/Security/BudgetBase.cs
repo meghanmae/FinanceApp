@@ -1,6 +1,6 @@
-﻿using FinanceApp.Data.Security;
+﻿using FinanceApp.Data.Models;
 
-namespace FinanceApp.Data.Models;
+namespace FinanceApp.Data.Security;
 public abstract class BudgetBase : IBudgeted
 {
     [InternalUse]
