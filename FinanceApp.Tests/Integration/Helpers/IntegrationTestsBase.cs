@@ -1,15 +1,9 @@
 ﻿using FinanceApp.Data;
 using FinanceApp.Data.Models;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moq.AutoMock;
-using System.Security.Claims;
-using System.Text.Encodings.Web;
 
 namespace FinanceApp.Tests.Integration.Helpers;
 public class IntegrationTestsBase : IDisposable

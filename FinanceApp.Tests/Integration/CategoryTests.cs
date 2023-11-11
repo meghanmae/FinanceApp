@@ -3,13 +3,8 @@ using FinanceApp.Tests.Integration.Helpers;
 using FluentAssertions;
 using IntelliTect.Coalesce.Models;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FinanceApp.Tests.Integration;
 public class CategoryTests : IntegrationTestsBase
