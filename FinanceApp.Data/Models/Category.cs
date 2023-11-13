@@ -1,6 +1,8 @@
 ﻿using FinanceApp.Data.Security;
 
 namespace FinanceApp.Data.Models;
+
+[Delete(SecurityPermissionLevels.DenyAll)]
 public class Category : BudgetBase
 {
     public int CategoryId { get; set; }
@@ -26,6 +28,16 @@ public class Category : BudgetBase
         public override IQueryable<Category> GetQuery(IDataSourceParameters parameters)
         {
             return base.GetQuery(parameters);
+        }
+    }
+
+    public class Behaviors : FinanceAppBehaviors<Category>
+    {
+        public Behaviors(CrudContext<AppDbContext> context) : base(context) { }
+
+        public override async Task<ItemResult> BeforeSaveAsync(int budgetId, SaveKind kind, Category? oldItem, Category item)
+        {
+            return await base.BeforeSaveAsync(budgetId, kind, oldItem, item);
         }
     }
 }

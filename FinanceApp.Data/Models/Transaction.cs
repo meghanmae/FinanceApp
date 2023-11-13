@@ -1,6 +1,8 @@
 ﻿using FinanceApp.Data.Security;
 
 namespace FinanceApp.Data.Models;
+
+[Delete(SecurityPermissionLevels.DenyAll)]
 public class Transaction : BudgetBase
 {
     public long TransactionId { get; set; }
