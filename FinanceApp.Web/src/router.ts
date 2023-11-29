@@ -28,6 +28,14 @@ export default createRouter({
       component: titledAdminPage(CAdminEditorPage),
       props: true,
     },
+    {
+      path: "/budget/:budgetId",
+      name: "budget",
+      component: () => import("@/views/Budget.vue"),
+      props: (r) => ({
+        budgetId: +r.params.budgetId,
+      }),
+    },
   ],
 });
 

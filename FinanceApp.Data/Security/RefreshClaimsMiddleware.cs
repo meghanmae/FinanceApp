@@ -10,7 +10,11 @@ public class RefreshClaimsMiddleware(RequestDelegate next)
     public async Task Invoke(HttpContext context, AppDbContext db, IHttpContextAccessor httpContextAccessor)
     {
         var principal = context.User;
-        await RefreshClaimsAsync(principal, db, httpContextAccessor);
+
+        if (IsPageRequest(context.Request))
+        {
+            await RefreshClaimsAsync(principal, db, httpContextAccessor);
+        }
 
         await _next(context);
     }
@@ -22,6 +26,11 @@ public class RefreshClaimsMiddleware(RequestDelegate next)
         {
             principal.GetAndApplyUserClaims(appUser, httpContextAccessor);
         }
+    }
+
+    private bool IsPageRequest(HttpRequest request)
+    {
+        return !request.Path.StartsWithSegments("/api");
     }
 }
 

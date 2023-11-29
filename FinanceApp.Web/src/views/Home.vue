@@ -39,7 +39,6 @@ let newBudget = new BudgetViewModel();
 loadBudgets();
 
 function loadBudgets() {
-  console.log('load')
   newBudget = new BudgetViewModel();
   budgets.$load();
 }

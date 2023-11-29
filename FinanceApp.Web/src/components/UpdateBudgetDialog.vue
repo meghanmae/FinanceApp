@@ -8,8 +8,8 @@
             </v-card-item>
             <c-loader-status :loaders="{ '': [budget.$save] }" />
             <v-card-text>
-                <c-input :model="budget" for="name" />
-                <c-input :model="budget" for="description" />
+                <c-input :model="budget" for="name" autofocus @keyup.enter="save" />
+                <c-input :model="budget" for="description" @keyup.enter="save" />
             </v-card-text>
             <v-card-actions>
                 <v-spacer />
@@ -40,8 +40,10 @@ const emit = defineEmits<{
 }>();
 
 function save() {
-    props.budget.$save();
-    modelValue.value = false;
-    emit("saved");
+    if (props.budget.name) {
+        props.budget.$save();
+        modelValue.value = false;
+        emit("saved");
+    }
 }
 </script>

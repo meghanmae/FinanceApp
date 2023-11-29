@@ -44,7 +44,7 @@ public static class ClaimsPrincipalExtensions
 
         // Add budget claims
         var displayUrl = httpContextAccessor.HttpContext?.Request.GetDisplayUrl();
-        Regex budgetUrlRegex = new(@"\/budgets\/(\d+)");
+        Regex budgetUrlRegex = new(@"\/budget\/(\d+)");
         Match match = budgetUrlRegex.Match(displayUrl ?? "");
         if (match.Success)
         {
