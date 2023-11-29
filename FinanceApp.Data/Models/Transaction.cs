@@ -19,10 +19,8 @@ public class Transaction : BudgetBase
     public SubCategory? SubCategory { get; set; }
 
     [DefaultDataSource]
-    public class TransactionsByBudget : FinanceAppDataSource<Transaction>
+    public class TransactionsByBudget(CrudContext<AppDbContext> context) : FinanceAppDataSource<Transaction>(context)
     {
-        public TransactionsByBudget(CrudContext<AppDbContext> context) : base(context) { }
-
         public override IQueryable<Transaction> GetQuery(IDataSourceParameters parameters)
         {
             return base.GetQuery(parameters);

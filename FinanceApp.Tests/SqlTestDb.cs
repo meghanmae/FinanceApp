@@ -28,9 +28,11 @@ public class SqlTestDb : IDisposable
 
     protected virtual void Dispose(bool disposing)
     {
-        DbContext.Dispose();
-        SqliteConnection.Close();
-        SqliteConnection.Dispose();
-        if (disposing) { }
+        if (disposing)
+        {
+            DbContext.Dispose();
+            SqliteConnection.Close();
+            SqliteConnection.Dispose();
+        }
     }
 }

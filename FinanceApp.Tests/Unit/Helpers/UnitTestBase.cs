@@ -46,7 +46,9 @@ public class UnitTestBase : IDisposable
     protected virtual void Dispose(bool disposing)
     {
         DbFixture.Dispose();
-        if (disposing) { }
+        if (disposing) {
+            DbFixture.Dispose();
+        }
     }
 
     protected void SetUserToContext(ApplicationUser applicationUser, int? budgetId = null)
@@ -82,7 +84,7 @@ public class UnitTestBase : IDisposable
         return mockHttpContextAccessor.Object;
     }
 
-    static void setRequestUrl(HttpRequest httpRequest, string url)
+    private static void setRequestUrl(HttpRequest httpRequest, string url)
     {
         UriHelper
           .FromAbsolute(url, out var scheme, out var host, out var path, out var query,

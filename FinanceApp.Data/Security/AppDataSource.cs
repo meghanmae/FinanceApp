@@ -2,23 +2,17 @@
 using System.Security.Claims;
 
 namespace FinanceApp.Data.Security;
-public class AppDataSource<T, TDbContext> : StandardDataSource<T, TDbContext>
+public class AppDataSource<T, TDbContext>(CrudContext<TDbContext> context) : StandardDataSource<T, TDbContext>(context)
     where T : class
     where TDbContext : AppDbContext
 {
-    public AppDataSource(CrudContext<TDbContext> context) : base(context) { }
-
     public override IQueryable<T> GetQuery(IDataSourceParameters parameters)
     {
         return QueryableExtensions.WhereBudgetMatches_Internal(base.GetQuery(parameters), User!.BudgetId());
     }
 }
 
-public class FinanceAppDataSource<T> : AppDataSource<T, AppDbContext>
-    where T : class
-{
-    public FinanceAppDataSource(CrudContext<AppDbContext> context) : base(context) { }
-}
+public class FinanceAppDataSource<T>(CrudContext<AppDbContext> context) : AppDataSource<T, AppDbContext>(context) where T : class { }
 
 public static class QueryableExtensions
 {

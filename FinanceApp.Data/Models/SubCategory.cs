@@ -23,10 +23,8 @@ public class SubCategory : BudgetBase
     public ICollection<SubCategoryCustomCalculation> SubCategoryCustomCalculations { get; set; } = new List<SubCategoryCustomCalculation>();
 
     [DefaultDataSource]
-    public class SubCategoriesByBudget : FinanceAppDataSource<SubCategory>
+    public class SubCategoriesByBudget(CrudContext<AppDbContext> context) : FinanceAppDataSource<SubCategory>(context)
     {
-        public SubCategoriesByBudget(CrudContext<AppDbContext> context) : base(context) { }
-
         public override IQueryable<SubCategory> GetQuery(IDataSourceParameters parameters)
         {
             return base.GetQuery(parameters);

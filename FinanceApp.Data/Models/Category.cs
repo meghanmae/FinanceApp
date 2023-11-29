@@ -21,20 +21,16 @@ public class Category : BudgetBase
     public ICollection<SubCategory> SubCategories { get; set; } = new List<SubCategory>();
 
     [DefaultDataSource]
-    public class CategoriesByBudget : FinanceAppDataSource<Category>
+    public class CategoriesByBudget(CrudContext<AppDbContext> context) : FinanceAppDataSource<Category>(context)
     {
-        public CategoriesByBudget(CrudContext<AppDbContext> context) : base(context) { }
-
         public override IQueryable<Category> GetQuery(IDataSourceParameters parameters)
         {
             return base.GetQuery(parameters);
         }
     }
 
-    public class Behaviors : FinanceAppBehaviors<Category>
+    public class Behaviors(CrudContext<AppDbContext> context) : FinanceAppBehaviors<Category>(context)
     {
-        public Behaviors(CrudContext<AppDbContext> context) : base(context) { }
-
         public override async Task<ItemResult> BeforeSaveAsync(int budgetId, SaveKind kind, Category? oldItem, Category item)
         {
             return await base.BeforeSaveAsync(budgetId, kind, oldItem, item);

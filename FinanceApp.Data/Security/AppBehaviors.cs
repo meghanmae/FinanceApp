@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FinanceApp.Data.Security;
-public class AppBehaviors<T, TDbContext> : StandardBehaviors<T, TDbContext>
+﻿namespace FinanceApp.Data.Security;
+public class AppBehaviors<T, TDbContext>(CrudContext<TDbContext> context) : StandardBehaviors<T, TDbContext>(context)
     where T : class
     where TDbContext : AppDbContext
 {
-    public AppBehaviors(CrudContext<TDbContext> context) : base(context) { }
-
     public sealed override ItemResult BeforeSave(SaveKind kind, T? oldItem, T item)
     {
         throw new InvalidOperationException(
@@ -42,7 +34,4 @@ public class AppBehaviors<T, TDbContext> : StandardBehaviors<T, TDbContext>
     }
 }
 
-public class FinanceAppBehaviors<T> : AppBehaviors<T, AppDbContext> where T : class
-{
-    public FinanceAppBehaviors(CrudContext<AppDbContext> context) : base(context) { }
-}
+public class FinanceAppBehaviors<T>(CrudContext<AppDbContext> context) : AppBehaviors<T, AppDbContext>(context) where T : class { }

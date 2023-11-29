@@ -3,14 +3,9 @@ using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
 namespace FinanceApp.Data.Security;
-public class RefreshClaimsMiddleware
+public class RefreshClaimsMiddleware(RequestDelegate next)
 {
-    private readonly RequestDelegate _next;
-
-    public RefreshClaimsMiddleware(RequestDelegate next)
-    {
-        _next = next ?? throw new ArgumentNullException(nameof(next));
-    }
+    private readonly RequestDelegate _next = next;
 
     public async Task Invoke(HttpContext context, AppDbContext db, IHttpContextAccessor httpContextAccessor)
     {

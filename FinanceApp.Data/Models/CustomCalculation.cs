@@ -15,10 +15,8 @@ public class CustomCalculation : BudgetBase
     public ICollection<SubCategoryCustomCalculation> SubCategoryCustomCalculations { get; set; } = new List<SubCategoryCustomCalculation>();
 
     [DefaultDataSource]
-    public class CustomCalculationsByBudget : FinanceAppDataSource<CustomCalculation>
+    public class CustomCalculationsByBudget(CrudContext<AppDbContext> context) : FinanceAppDataSource<CustomCalculation>(context)
     {
-        public CustomCalculationsByBudget(CrudContext<AppDbContext> context) : base(context) { }
-
         public override IQueryable<CustomCalculation> GetQuery(IDataSourceParameters parameters)
         {
             return base.GetQuery(parameters);

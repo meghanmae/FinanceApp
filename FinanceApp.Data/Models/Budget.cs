@@ -20,10 +20,8 @@ public class Budget
     public ICollection<Category> Categories { get; set; } = new List<Category>();
 
     [DefaultDataSource]
-    public class BudgetsForUser : StandardDataSource<Budget, AppDbContext>
+    public class BudgetsForUser(CrudContext<AppDbContext> context) : StandardDataSource<Budget, AppDbContext>(context)
     {
-        public BudgetsForUser(CrudContext<AppDbContext> context) : base(context) { }
-
         public override IQueryable<Budget> GetQuery(IDataSourceParameters parameters)
         {
             // Only return budgets that this user is a member of
@@ -36,10 +34,8 @@ public class Budget
         }
     }
 
-    public class BudgetBehaviors : StandardBehaviors<Budget, AppDbContext>
+    public class BudgetBehaviors(CrudContext<AppDbContext> context) : StandardBehaviors<Budget, AppDbContext>(context)
     {
-        public BudgetBehaviors(CrudContext<AppDbContext> context) : base(context) { }
-
         public override ItemResult BeforeSave(SaveKind kind, Budget? oldItem, Budget item)
         {
             // Make sure the calling user is allowed to update this budget

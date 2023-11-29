@@ -6,21 +6,18 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
+using System.Text.Json;
 
 namespace FinanceApp.Tests;
-public sealed class TestAuthHandler : AuthenticationHandler<TestAuthHandlerOptions>
-{
-    public TestAuthHandler(
+public sealed class TestAuthHandler(
         IOptionsMonitor<TestAuthHandlerOptions> options,
         ILoggerFactory logger,
         IHttpContextAccessor httpContextAccessor,
         UrlEncoder encoder
-        ) : base(options, logger, encoder)
-    {
-        _httpContextAccessor = httpContextAccessor;
-    }
+        ) : AuthenticationHandler<TestAuthHandlerOptions>(options, logger, encoder)
+{
 
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {

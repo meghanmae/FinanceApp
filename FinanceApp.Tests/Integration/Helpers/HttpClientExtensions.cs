@@ -1,12 +1,7 @@
 ﻿using IntelliTect.Coalesce.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FinanceApp.Tests.Integration.Helpers;
 public static class HttpClientExtensions
@@ -74,7 +69,10 @@ public static class HttpClientExtensions
         }
 
         // Skip empty arrays, as they will have HasValues == false but are not a scalar type.
-        if (token is JArray array && array.Count == 0) return result;
+        if (token is JArray array && array.Count == 0)
+        {
+            return result;
+        }
 
         JValue jValue = (JValue)token;
 
