@@ -1,4 +1,5 @@
 <template>
+    <c-loader-status :loaders="{ '': [budget.$delete] }" />
     <v-card class="ma-2" color="blue-grey" variant="tonal">
         <v-list-item>
             <template v-slot:title>

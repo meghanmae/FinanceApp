@@ -32,13 +32,15 @@
 <script setup lang="ts">
 import { BudgetListViewModel, BudgetViewModel } from '@/viewmodels.g';
 
+const newBudgetDialog = ref(false);
 const budgets = new BudgetListViewModel();
+let newBudget = new BudgetViewModel();
+
 loadBudgets();
 
-const newBudgetDialog = ref(false);
-const newBudget = new BudgetViewModel();
-
 function loadBudgets() {
+  console.log('load')
+  newBudget = new BudgetViewModel();
   budgets.$load();
 }
 </script>
