@@ -7,7 +7,7 @@ namespace FinanceApp.Data.Models;
 [Edit(SecurityPermissionLevels.DenyAll)]
 [Read(SecurityPermissionLevels.DenyAll)]
 [Delete(SecurityPermissionLevels.DenyAll)]
-public class BudgetUser : BudgetInfrastructureBase
+public class BudgetUser : SecuredByBudgetBase
 {
     public int BudgetUserId { get; set; }
 

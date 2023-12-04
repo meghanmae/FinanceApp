@@ -51,37 +51,16 @@ public class UnitTestBase : IDisposable
         }
     }
 
-    protected void SetUserToContext(ApplicationUser applicationUser, int? budgetId = null)
+    protected void SetUserToContext(ApplicationUser applicationUser)
     {
-        var mockHttpContextAccessor = MockHttpContextAccessor(budgetId);
-
         ClaimsPrincipal claimsPrincipal = new();
-        claimsPrincipal.GetAndApplyUserClaims(applicationUser, mockHttpContextAccessor);
+        claimsPrincipal.GetAndApplyUserClaims(applicationUser);
 
         Context = new CrudContext<AppDbContext>
         (
             Db,
             () => claimsPrincipal
         );
-    }
-
-    private IHttpContextAccessor MockHttpContextAccessor(int? budgetId)
-    {
-        string baseUrl = "https://test.com";
-        string path = budgetId.HasValue ? $"/budgets/{budgetId}" : "";
-
-        string url = baseUrl + path;
-
-        var mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
-
-        var httpContext = new DefaultHttpContext();
-        setRequestUrl(httpContext.Request, url);
-
-        mockHttpContextAccessor
-          .SetupGet(accessor => accessor.HttpContext)
-          .Returns(httpContext);
-
-        return mockHttpContextAccessor.Object;
     }
 
     private static void setRequestUrl(HttpRequest httpRequest, string url)

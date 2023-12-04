@@ -3,7 +3,7 @@
 namespace FinanceApp.Data.Models;
 
 [Delete(SecurityPermissionLevels.DenyAll)]
-public class SubCategory : BudgetBase
+public class SubCategory : SecuredByBudgetBase
 {
     public int SubCategoryId { get; set; }
 
@@ -23,7 +23,7 @@ public class SubCategory : BudgetBase
     public ICollection<SubCategoryCustomCalculation> SubCategoryCustomCalculations { get; set; } = new List<SubCategoryCustomCalculation>();
 
     [DefaultDataSource]
-    public class SubCategoriesByBudget(CrudContext<AppDbContext> context) : FinanceAppDataSource<SubCategory>(context)
+    public class SubCategoriesByBudget(CrudContext<AppDbContext> context) : SecureByBudgetDataSource<SubCategory, AppDbContext>(context)
     {
         public override IQueryable<SubCategory> GetQuery(IDataSourceParameters parameters)
         {

@@ -6,7 +6,7 @@ namespace FinanceApp.Data.Models;
 [Edit(SecurityPermissionLevels.DenyAll)]
 [Read(SecurityPermissionLevels.DenyAll)]
 [Delete(SecurityPermissionLevels.DenyAll)]
-public class SubCategoryCustomCalculation : BudgetBase
+public class SubCategoryCustomCalculation : SecuredByBudgetBase
 {
     public int SubCategoryCustomCalculationId { get; set; }
 
@@ -19,7 +19,7 @@ public class SubCategoryCustomCalculation : BudgetBase
     public CustomCalculation? CustomCalculation { get; set; }
 
     [DefaultDataSource]
-    public class SubCategoriesByBudget(CrudContext<AppDbContext> context) : FinanceAppDataSource<SubCategoryCustomCalculation>(context)
+    public class SubCategoriesByBudget(CrudContext<AppDbContext> context) : SecureByBudgetDataSource<SubCategoryCustomCalculation, AppDbContext>(context)
     {
         public override IQueryable<SubCategoryCustomCalculation> GetQuery(IDataSourceParameters parameters)
         {

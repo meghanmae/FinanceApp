@@ -3,7 +3,7 @@
 namespace FinanceApp.Data.Models;
 
 [Delete(SecurityPermissionLevels.DenyAll)]
-public class CustomCalculation : BudgetBase
+public class CustomCalculation : SecuredByBudgetBase
 {
     public int CustomCalculationId { get; set; }
 
@@ -15,7 +15,7 @@ public class CustomCalculation : BudgetBase
     public ICollection<SubCategoryCustomCalculation> SubCategoryCustomCalculations { get; set; } = new List<SubCategoryCustomCalculation>();
 
     [DefaultDataSource]
-    public class CustomCalculationsByBudget(CrudContext<AppDbContext> context) : FinanceAppDataSource<CustomCalculation>(context)
+    public class CustomCalculationsByBudget(CrudContext<AppDbContext> context) : SecureByBudgetDataSource<CustomCalculation, AppDbContext>(context)
     {
         public override IQueryable<CustomCalculation> GetQuery(IDataSourceParameters parameters)
         {

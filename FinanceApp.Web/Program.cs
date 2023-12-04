@@ -47,7 +47,6 @@ services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
         {
             // Create a new app user for the logging in user
             AppDbContext db = trc.HttpContext.RequestServices.GetRequiredService<AppDbContext>();
-            IHttpContextAccessor httpContextAccessor = trc.HttpContext.RequestServices.GetRequiredService<IHttpContextAccessor>();
 
             var azureObjectId = trc.Principal?.Identities.FirstOrDefault()?.Claims.FirstOrDefault(claim => claim.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value;
             if (string.IsNullOrWhiteSpace(azureObjectId))
@@ -77,7 +76,7 @@ services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
                 db.SaveChanges();
             }
 
-            trc.Principal = trc.Principal?.GetNewClaimsPrincipal(appUser, httpContextAccessor);
+            trc.Principal = trc.Principal?.GetNewClaimsPrincipal(appUser);
 
             trc.Success();
             Console.WriteLine($"Successfully Logged in user: {appUser.Name}");
@@ -146,8 +145,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseRefreshClaimsMiddleware();
 
 app.UseSwagger(OptionsBuilderConfigurationExtensions => OptionsBuilderConfigurationExtensions.SerializeAsV2 = true);
 app.UseSwaggerUI();

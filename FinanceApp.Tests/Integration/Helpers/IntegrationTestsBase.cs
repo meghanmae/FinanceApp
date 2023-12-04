@@ -46,7 +46,7 @@ public class IntegrationTestsBase : IDisposable
     /// <summary>
     /// Client with a signed-in user 
     /// </summary>
-    protected HttpClient GetAuthClient(ApplicationUser? appUser = null, int? budgetId = null)
+    protected HttpClient GetAuthClient(ApplicationUser? appUser = null)
     {
         return WebFactory
             .WithWebHostBuilder(builder =>
@@ -59,7 +59,6 @@ public class IntegrationTestsBase : IDisposable
                             options =>
                             {
                                 options.AppUser = appUser;
-                                options.BudgetId = budgetId;
                             }
                         );
                     ConfigureServices(services);

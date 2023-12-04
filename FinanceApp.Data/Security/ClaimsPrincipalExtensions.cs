@@ -12,17 +12,12 @@ public static class ClaimsPrincipalExtensions
         return user.Claims.First(c => c.Type == nameof(ApplicationUser.ApplicationUserId)).Value;
     }
 
-    public static int BudgetId(this ClaimsPrincipal user)
-    {
-        return int.Parse(user.Claims.FirstOrDefault(c => c.Type == nameof(Budget.BudgetId))?.Value ?? "-1");
-    }
-
-    public static ClaimsPrincipal GetNewClaimsPrincipal(this ClaimsPrincipal user, ApplicationUser appUser, IHttpContextAccessor httpContextAccessor)
+    public static ClaimsPrincipal GetNewClaimsPrincipal(this ClaimsPrincipal user, ApplicationUser appUser)
     {
         ClaimsIdentity? microsoftIdentity = user.Identities.ToList().Find(i => i.AuthenticationType == "AuthenticationTypes.Federation");
 
         ClaimsPrincipal newClaims = new();
-        newClaims.GetAndApplyUserClaims(appUser, httpContextAccessor);
+        newClaims.GetAndApplyUserClaims(appUser);
 
         if (microsoftIdentity is not null)
         {
@@ -32,7 +27,7 @@ public static class ClaimsPrincipalExtensions
         return newClaims;
     }
 
-    public static List<Claim> GetAndApplyUserClaims(this ClaimsPrincipal user, ApplicationUser applicationUser, IHttpContextAccessor httpContextAccessor)
+    public static List<Claim> GetAndApplyUserClaims(this ClaimsPrincipal user, ApplicationUser applicationUser)
     {
         List<Claim> claims = new()
         {
@@ -41,17 +36,6 @@ public static class ClaimsPrincipalExtensions
             new Claim(nameof(ApplicationUser.ApplicationUserId), applicationUser.ApplicationUserId),
             new Claim(nameof(ApplicationUser.AzureObjectId), applicationUser.AzureObjectId),
         };
-
-        // Add budget claims
-        var displayUrl = httpContextAccessor.HttpContext?.Request.GetDisplayUrl();
-        Regex budgetUrlRegex = new(@"\/budget\/(\d+)");
-        Match match = budgetUrlRegex.Match(displayUrl ?? "");
-        if (match.Success)
-        {
-            int.TryParse(match.Groups[1].Value, out var budgetId);
-            claims.Add(new Claim(nameof(Budget.BudgetId), budgetId.ToString()));
-            // TODO: Set budget permissions here - eventually
-        }
 
         user.AddIdentity(new(claims.ToList().AsEnumerable(), "FinanceApp"));
 

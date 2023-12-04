@@ -3,7 +3,7 @@
 namespace FinanceApp.Data.Models;
 
 [Delete(SecurityPermissionLevels.DenyAll)]
-public class Category : BudgetBase
+public class Category : SecuredByBudgetBase
 {
     public int CategoryId { get; set; }
 
@@ -21,7 +21,7 @@ public class Category : BudgetBase
     public ICollection<SubCategory> SubCategories { get; set; } = new List<SubCategory>();
 
     [DefaultDataSource]
-    public class CategoriesByBudget(CrudContext<AppDbContext> context) : FinanceAppDataSource<Category>(context)
+    public class CategoriesByBudget(CrudContext<AppDbContext> context) : SecureByBudgetDataSource<Category, AppDbContext>(context)
     {
         public override IQueryable<Category> GetQuery(IDataSourceParameters parameters)
         {
@@ -29,11 +29,11 @@ public class Category : BudgetBase
         }
     }
 
-    public class Behaviors(CrudContext<AppDbContext> context) : FinanceAppBehaviors<Category>(context)
-    {
-        public override async Task<ItemResult> BeforeSaveAsync(int budgetId, SaveKind kind, Category? oldItem, Category item)
-        {
-            return await base.BeforeSaveAsync(budgetId, kind, oldItem, item);
-        }
-    }
+    //public class Behaviors(CrudContext<AppDbContext> context) : SecureByBudgetDataSource<Category>(context)
+    //{
+    //    public override async Task<ItemResult> BeforeSaveAsync(int budgetId, SaveKind kind, Category? oldItem, Category item)
+    //    {
+    //        return await base.BeforeSaveAsync(budgetId, kind, oldItem, item);
+    //    }
+    //}
 }

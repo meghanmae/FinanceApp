@@ -3,7 +3,7 @@
 namespace FinanceApp.Data.Models;
 
 [Delete(SecurityPermissionLevels.DenyAll)]
-public class Transaction : BudgetBase
+public class Transaction : SecuredByBudgetBase
 {
     public long TransactionId { get; set; }
 
@@ -19,7 +19,7 @@ public class Transaction : BudgetBase
     public SubCategory? SubCategory { get; set; }
 
     [DefaultDataSource]
-    public class TransactionsByBudget(CrudContext<AppDbContext> context) : FinanceAppDataSource<Transaction>(context)
+    public class TransactionsByBudget(CrudContext<AppDbContext> context) : SecureByBudgetDataSource<Transaction, AppDbContext>(context)
     {
         public override IQueryable<Transaction> GetQuery(IDataSourceParameters parameters)
         {

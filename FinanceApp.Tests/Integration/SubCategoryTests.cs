@@ -10,36 +10,73 @@ public class SubCategoryTests : IntegrationTestsBase
 {
     private const string prefix = "/api/SubCategory";
 
-    #region DefaultDatasource Securied By BudgetId
-    [Fact]
-    public async Task SubCategoriesSecuredByBudget_DefaultDataSource_UserCanOnlyRetrieveDataFromBudgetsTheyAreAPartOf()
+    #region DefaultDataSource Secured By BudgetId
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task SubCategoriesSecuredByBudget_DefaultDataSource_UserCanOnlyRetrieveDataFromBudgetsTheyAreAPartOf(bool specifyBudgetId)
     {
         // Arrange
         BudgetUser callingUsersBudget = TestData.CreateTestBudgetUser();
         ApplicationUser callingUser = callingUsersBudget.ApplicationUser!;
         Db.BudgetUsers.Add(callingUsersBudget);
-        SubCategory callingUsersSubCategory1 = TestData.CreateTestSubCategory(callingUsersBudget.Budget);
-        SubCategory callingUsersSubCategory2 = TestData.CreateTestSubCategory(callingUsersBudget.Budget);
-        Db.SubCategories.Add(callingUsersSubCategory1);
-        Db.SubCategories.Add(callingUsersSubCategory2);
+        SubCategory subCategory1 = TestData.CreateTestSubCategory(callingUsersBudget.Budget!);
+        SubCategory subCategory2 = TestData.CreateTestSubCategory(callingUsersBudget.Budget!);
+        Db.SubCategories.Add(subCategory1);
+        Db.SubCategories.Add(subCategory2);
 
-        Budget otherUsersBudget = TestData.CreateTestBudget();
-        Db.BudgetUsers.Add(TestData.CreateTestBudgetUser(otherUsersBudget));
-        SubCategory otherBudgetsSubCategory = TestData.CreateTestSubCategory(otherUsersBudget);
-        Db.SubCategories.Add(otherBudgetsSubCategory);
+        BudgetUser otherBudgetUser = TestData.CreateTestBudgetUser();
+        Db.BudgetUsers.Add(otherBudgetUser);
+        SubCategory otherBudgetsSubCateogry = TestData.CreateTestSubCategory(otherBudgetUser.Budget!);
+        Db.SubCategories.Add(otherBudgetsSubCateogry);
+
+        Budget sharedBudget = TestData.CreateTestBudget();
+        Db.Budgets.Add(sharedBudget);
+        SubCategory sharedSubCategory = TestData.CreateTestSubCategory(sharedBudget);
+        Db.SubCategories.Add(sharedSubCategory);
+        BudgetUser sharedBudgetUser1 = TestData.CreateTestBudgetUser(sharedBudget, callingUser);
+        BudgetUser sharedBudgetUser2 = TestData.CreateTestBudgetUser(sharedBudget, otherBudgetUser.ApplicationUser);
+        Db.BudgetUsers.Add(sharedBudgetUser1);
+        Db.BudgetUsers.Add(sharedBudgetUser2);
 
         await Db.SaveChangesAsync();
 
-        var expectedSubCategories = new List<SubCategory> { callingUsersSubCategory1, callingUsersSubCategory2 };
+        var expectedSubCategories = new List<SubCategory> { subCategory1, subCategory2 };
+        if (!specifyBudgetId) expectedSubCategories.Add(sharedSubCategory);
 
         // Act
-        HttpResponseMessage response = await GetAuthClient(callingUser, callingUsersBudget.BudgetId).GetAsync($"{prefix}/list");
+        var suffix = specifyBudgetId ? $"?budgetId={callingUsersBudget.BudgetId}" : "";
+        HttpResponseMessage response = await GetAuthClient(callingUser).GetAsync($"{prefix}/list{suffix}");
         var result = await response.Content.ReadFromJsonAsync<ListResult<SubCategory>>();
-        IList<SubCategory> subCategories = result!.List!;
+        IList<SubCategory> categories = result!.List!;
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        subCategories.Select(x => x.SubCategoryId).Should().BeEquivalentTo(expectedSubCategories.Select(x => x.SubCategoryId));
+        categories.Select(x => x.SubCategoryId).Should().BeEquivalentTo(expectedSubCategories.Select(x => x.SubCategoryId));
+    }
+
+    [Fact]
+    public async Task SubCategoriesSecuredByBudget_DefaultDataSource_UserCanNotRetrieveDataForBudgetsTheyAreNotAPartOf()
+    {
+        // Arrange
+        ApplicationUser callingUser = TestData.CreateTestApplicationUser();
+        Db.ApplicationUsers.Add(callingUser);
+
+        BudgetUser otherBudgetUser = TestData.CreateTestBudgetUser();
+        Db.BudgetUsers.Add(otherBudgetUser);
+        SubCategory otherSubCategory = TestData.CreateTestSubCategory(otherBudgetUser.Budget!);
+        Db.SubCategories.Add(otherSubCategory);
+
+        await Db.SaveChangesAsync();
+
+        // Act
+        HttpResponseMessage response = await GetAuthClient(callingUser).GetAsync($"{prefix}/list?budgetId={otherBudgetUser.BudgetId}");
+        var result = await response.Content.ReadFromJsonAsync<ListResult<SubCategory>>();
+        IList<SubCategory> categories = result!.List!;
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        categories.Count().Should().Be(0);
     }
     #endregion
 }

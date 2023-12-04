@@ -12,19 +12,16 @@ namespace FinanceApp.Tests;
 public sealed class TestAuthHandler(
         IOptionsMonitor<TestAuthHandlerOptions> options,
         ILoggerFactory logger,
-        IHttpContextAccessor httpContextAccessor,
         UrlEncoder encoder
         ) : AuthenticationHandler<TestAuthHandlerOptions>(options, logger, encoder)
 {
-
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         ClaimsPrincipal principal = new();
         if (Options.AppUser is not null)
         {
-            principal = principal.GetNewClaimsPrincipal(Options.AppUser, _httpContextAccessor);
+            principal = principal.GetNewClaimsPrincipal(Options.AppUser);
         }
         // Manually tack on the budgetId we are testing with
         if (Options.BudgetId is not null)

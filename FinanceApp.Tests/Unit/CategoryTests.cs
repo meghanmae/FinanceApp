@@ -6,8 +6,10 @@ using IntelliTect.Coalesce.Api;
 namespace FinanceApp.Tests.Unit;
 public class CategoryTests : UnitTestBase
 {
-    [Fact]
-    public async Task Budgets_BudgetsForUserDataSource_ReturnsOnlyBudgetsUserIsAPartOf()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task Budgets_BudgetsForUserDataSource_ReturnsOnlyBudgetsUserIsAPartOf(bool specifyBudgetId)
     {
         // Arrange
         BudgetUser expectedBudgetUser = TestData.CreateTestBudgetUser();
@@ -32,14 +34,23 @@ public class CategoryTests : UnitTestBase
 
         await Db.SaveChangesAsync();
 
-        SetUserToContext(callingUser, expectedBudgetUser.BudgetId);
+        SetUserToContext(callingUser);
         Category.CategoriesByBudget context = new(Context);
 
         // Act
+        context.BudgetId = specifyBudgetId ? expectedBudgetUser.BudgetId : null;
         var list = await context.GetListAsync(new ListParameters());
         IList<Category> result = list.List.List!;
 
         // Assert
-        result.Count.Should().Be(1);
+        if (specifyBudgetId)
+        {
+            result.Count.Should().Be(1);
+            result.First().CategoryId.Should().Be(expectedCategory.CategoryId);
+        }
+        else
+        {
+            result.Count.Should().Be(2);
+        }
     }
 }
