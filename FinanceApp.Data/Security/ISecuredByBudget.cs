@@ -11,7 +11,6 @@ public interface ISecuredByBudget
     where T : ISecuredByBudget
     => query.Where(x => budgetIds.Contains(x.BudgetId));
 
-
     static virtual IQueryable<T> WhereBudgetMatches<T>(IQueryable<T> query, int budgetId)
     where T : ISecuredByBudget
     => query.Where(x => x.BudgetId == budgetId);

@@ -8,6 +8,7 @@ public class SecureByBudgetDataSource<T, TDbContext>(CrudContext<TDbContext> con
 
     public override IQueryable<T> GetQuery(IDataSourceParameters parameters)
     {
+        // TODO: Could be another way to do this
         if (typeof(T).GetInterface(nameof(ISecuredByBudget)) is not null)
         {
             // If there is no provided BudgetId, return all resources for all of the user's budgets
@@ -33,6 +34,7 @@ public class SecureByBudgetDataSource<T, TDbContext>(CrudContext<TDbContext> con
     }
 }
 
+// TODO: Do I really need this? Am I using it anywhere else
 public static class QueryableExtensions
 {
     public static IQueryable<T> WhereBudgetMatches<T>(this IQueryable<T> query, IQueryable<int> budgetIds)
