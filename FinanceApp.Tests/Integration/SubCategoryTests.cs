@@ -43,7 +43,10 @@ public class SubCategoryTests : IntegrationTestsBase
         await Db.SaveChangesAsync();
 
         var expectedSubCategories = new List<SubCategory> { subCategory1, subCategory2 };
-        if (!specifyBudgetId) expectedSubCategories.Add(sharedSubCategory);
+        if (!specifyBudgetId)
+        {
+            expectedSubCategories.Add(sharedSubCategory);
+        }
 
         // Act
         var suffix = specifyBudgetId ? $"?budgetId={callingUsersBudget.BudgetId}" : "";
@@ -119,7 +122,7 @@ public class SubCategoryTests : IntegrationTestsBase
         BudgetUser callingUsersBudget = TestData.CreateTestBudgetUser();
         ApplicationUser callingUser = callingUsersBudget.ApplicationUser!;
         Db.BudgetUsers.Add(callingUsersBudget);
-        
+
         SubCategory subCategory = TestData.CreateTestSubCategory(callingUsersBudget.Budget);
         Db.SubCategories.Add(subCategory);
 

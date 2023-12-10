@@ -43,7 +43,10 @@ public class TransactionTests : IntegrationTestsBase
         await Db.SaveChangesAsync();
 
         var expectedSubCategories = new List<Transaction> { transaction1, transaction2 };
-        if (!specifyBudgetId) expectedSubCategories.Add(sharedTransaction);
+        if (!specifyBudgetId)
+        {
+            expectedSubCategories.Add(sharedTransaction);
+        }
 
         // Act
         var suffix = specifyBudgetId ? $"?budgetId={callingUsersBudget.BudgetId}" : "";

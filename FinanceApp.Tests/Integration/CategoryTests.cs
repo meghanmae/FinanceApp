@@ -1,6 +1,4 @@
-﻿using FinanceApp.Data;
-using FinanceApp.Data.Models;
-using FinanceApp.Data.Security;
+﻿using FinanceApp.Data.Models;
 using FinanceApp.Tests.Integration.Helpers;
 using FinanceApp.Web.Models;
 using FluentAssertions;
@@ -46,7 +44,10 @@ public class CategoryTests : IntegrationTestsBase
         await Db.SaveChangesAsync();
 
         var expectedCategories = new List<Category> { callingUsersCategory1, callingUsersCategory2 };
-        if (!specifyBudgetId) expectedCategories.Add(sharedCategory);
+        if (!specifyBudgetId)
+        {
+            expectedCategories.Add(sharedCategory);
+        }
 
         // Act
         var suffix = specifyBudgetId ? $"?budgetId={callingUsersBudget.BudgetId}" : "";

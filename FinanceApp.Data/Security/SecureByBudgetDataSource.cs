@@ -1,7 +1,5 @@
-﻿using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-
-namespace FinanceApp.Data.Security;
-public class SecureByBudgetDataSource<T, TDbContext>(CrudContext<TDbContext> context) : StandardDataSource<T, TDbContext>(context) 
+﻿namespace FinanceApp.Data.Security;
+public class SecureByBudgetDataSource<T, TDbContext>(CrudContext<TDbContext> context) : StandardDataSource<T, TDbContext>(context)
     where T : class
     where TDbContext : AppDbContext
 {
@@ -30,7 +28,7 @@ public class SecureByBudgetDataSource<T, TDbContext>(CrudContext<TDbContext> con
             // If all else fails, return an empty queryable
             return Enumerable.Empty<T>().AsQueryable();
         }
-        
+
         return base.GetQuery(parameters);
     }
 }

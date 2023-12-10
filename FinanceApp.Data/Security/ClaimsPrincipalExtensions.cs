@@ -1,8 +1,5 @@
 ﻿using FinanceApp.Data.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
 using System.Security.Claims;
-using System.Text.RegularExpressions;
 
 namespace FinanceApp.Data.Security;
 public static class ClaimsPrincipalExtensions

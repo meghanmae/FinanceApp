@@ -46,7 +46,7 @@ public class Budget
             }
 
             // Set up the BudgetUser for a newly created budget
-            if(kind == SaveKind.Create)
+            if (kind == SaveKind.Create)
             {
                 BudgetUser budgetUser = new()
                 {

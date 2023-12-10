@@ -43,7 +43,10 @@ public class CustomCalculationTests : IntegrationTestsBase
         await Db.SaveChangesAsync();
 
         var expectedCustomCalculations = new List<CustomCalculation> { customCalculation1, customCalculation2 };
-        if (!specifyBudgetId) expectedCustomCalculations.Add(sharedCustomCalculation);
+        if (!specifyBudgetId)
+        {
+            expectedCustomCalculations.Add(sharedCustomCalculation);
+        }
 
         // Act
         var suffix = specifyBudgetId ? $"?budgetId={callingUsersBudget.BudgetId}" : "";

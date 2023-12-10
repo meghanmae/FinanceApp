@@ -5,7 +5,6 @@ using IntelliTect.Coalesce;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 using Moq.AutoMock;
 using System.Security.Claims;
 
@@ -46,7 +45,8 @@ public class UnitTestBase : IDisposable
     protected virtual void Dispose(bool disposing)
     {
         DbFixture.Dispose();
-        if (disposing) {
+        if (disposing)
+        {
             DbFixture.Dispose();
         }
     }
