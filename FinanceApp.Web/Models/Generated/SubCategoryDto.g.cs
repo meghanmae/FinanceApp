@@ -15,7 +15,7 @@ namespace FinanceApp.Web.Models
         private int? _SubCategoryId;
         private string _Name;
         private string _Description;
-        private decimal? _Budget;
+        private decimal? _Allocation;
         private int? _CategoryId;
         private FinanceApp.Web.Models.CategoryDtoGen _Category;
         private System.Collections.Generic.ICollection<FinanceApp.Web.Models.SubCategoryCustomCalculationDtoGen> _SubCategoryCustomCalculations;
@@ -35,10 +35,10 @@ namespace FinanceApp.Web.Models
             get => _Description;
             set { _Description = value; Changed(nameof(Description)); }
         }
-        public decimal? Budget
+        public decimal? Allocation
         {
-            get => _Budget;
-            set { _Budget = value; Changed(nameof(Budget)); }
+            get => _Allocation;
+            set { _Allocation = value; Changed(nameof(Allocation)); }
         }
         public int? CategoryId
         {
@@ -67,7 +67,7 @@ namespace FinanceApp.Web.Models
             this.SubCategoryId = obj.SubCategoryId;
             this.Name = obj.Name;
             this.Description = obj.Description;
-            this.Budget = obj.Budget;
+            this.Allocation = obj.Allocation;
             this.CategoryId = obj.CategoryId;
             if (tree == null || tree[nameof(this.Category)] != null)
                 this.Category = obj.Category.MapToDto<FinanceApp.Data.Models.Category, CategoryDtoGen>(context, tree?[nameof(this.Category)]);
@@ -98,7 +98,7 @@ namespace FinanceApp.Web.Models
             if (ShouldMapTo(nameof(SubCategoryId))) entity.SubCategoryId = (SubCategoryId ?? entity.SubCategoryId);
             if (ShouldMapTo(nameof(Name))) entity.Name = Name;
             if (ShouldMapTo(nameof(Description))) entity.Description = Description;
-            if (ShouldMapTo(nameof(Budget))) entity.Budget = (Budget ?? entity.Budget);
+            if (ShouldMapTo(nameof(Allocation))) entity.Allocation = (Allocation ?? entity.Allocation);
             if (ShouldMapTo(nameof(CategoryId))) entity.CategoryId = (CategoryId ?? entity.CategoryId);
         }
 
@@ -112,7 +112,7 @@ namespace FinanceApp.Web.Models
             var entity = new FinanceApp.Data.Models.SubCategory()
             {
                 Name = Name,
-                Budget = (Budget ?? default),
+                Allocation = (Allocation ?? default),
             };
 
             if (OnUpdate(entity, context)) return entity;

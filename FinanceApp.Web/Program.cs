@@ -1,9 +1,8 @@
 using FinanceApp.Data;
-using FinanceApp.Data.Helpers;
 using FinanceApp.Data.Models;
+using FinanceApp.Data.Security;
 using FinanceApp.Data.Services;
 using IntelliTect.Coalesce;
-using IntelliTect.Coalesce.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +22,8 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
     WebRootPath = "wwwroot"
 });
 
+var services = builder.Services;
+
 builder.Logging
     .AddConsole()
     // Filter out Request Starting/Request Finished noise:
@@ -37,22 +38,10 @@ var initialScopes = builder.Configuration["DownstreamApi:Scopes"]?.Split(' ') ??
     builder.Configuration["MicrosoftGraph:Scopes"]?.Split(' ');
 
 // Add services to the container
-builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApp(options =>
     {
         builder.Configuration.GetSection("AzureAd").Bind(options);
-
-        options.Events.OnRedirectToIdentityProvider = (context) =>
-        {
-            if ("XmlHttpRequest".Equals(context.Request.Headers.XRequestedWith, StringComparison.OrdinalIgnoreCase))
-            {
-                // Don't redirect AJAX/API requests. Just return a plan Unauthorized response.
-                context.Response.StatusCode = 401;
-                context.Response.WriteAsJsonAsync<ItemResult>("You are not signed in.");
-                context.HandleResponse();
-            }
-            return Task.CompletedTask;
-        };
 
         options.Events.OnTicketReceived = (TicketReceivedContext trc) =>
         {
@@ -87,8 +76,9 @@ builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
                 db.SaveChanges();
             }
 
+            trc.Principal = trc.Principal?.GetNewClaimsPrincipal(appUser);
+
             trc.Success();
-            trc.Principal = trc.Principal.GetNewClaimsPrincipal(appUser);
             Console.WriteLine($"Successfully Logged in user: {appUser.Name}");
 
             return Task.CompletedTask;
@@ -99,9 +89,9 @@ builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     .AddMicrosoftGraph(builder.Configuration.GetSection("MicrosoftGraph"))
     .AddInMemoryTokenCaches();
 
-builder.Services.AddRazorPages().AddMicrosoftIdentityUI();
+services.AddRazorPages().AddMicrosoftIdentityUI();
 
-builder.Services.AddAuthorization(options =>
+services.AddAuthorization(options =>
 {
     // By default, all incoming requests will be authorized according the the default policy
     options.FallbackPolicy = options.DefaultPolicy;
@@ -109,10 +99,7 @@ builder.Services.AddAuthorization(options =>
 
 
 #region Configure Services
-
-builder.Services.AddSwaggerGen();
-
-var services = builder.Services;
+services.AddSwaggerGen();
 
 services.AddDbContext<AppDbContext>(options => options
     .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), opt => opt

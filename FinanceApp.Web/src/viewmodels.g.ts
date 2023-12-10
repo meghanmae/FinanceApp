@@ -8,13 +8,13 @@ export interface ApplicationUserViewModel extends $models.ApplicationUser {
   azureObjectId: string | null;
   name: string | null;
   email: string | null;
-  budgets: BudgetUserViewModel[] | null;
+  budgetUsers: BudgetUserViewModel[] | null;
 }
 export class ApplicationUserViewModel extends ViewModel<$models.ApplicationUser, $apiClients.ApplicationUserApiClient, string> implements $models.ApplicationUser  {
   
   
-  public addToBudgets(initialData?: DeepPartial<$models.BudgetUser> | null) {
-    return this.$addChild('budgets', initialData) as BudgetUserViewModel
+  public addToBudgetUsers(initialData?: DeepPartial<$models.BudgetUser> | null) {
+    return this.$addChild('budgetUsers', initialData) as BudgetUserViewModel
   }
   
   constructor(initialData?: DeepPartial<$models.ApplicationUser> | null) {
@@ -43,11 +43,6 @@ export class BudgetViewModel extends ViewModel<$models.Budget, $apiClients.Budge
   
   public addToBudgetUsers(initialData?: DeepPartial<$models.BudgetUser> | null) {
     return this.$addChild('budgetUsers', initialData) as BudgetUserViewModel
-  }
-  
-  
-  public addToCategories(initialData?: DeepPartial<$models.Category> | null) {
-    return this.$addChild('categories', initialData) as CategoryViewModel
   }
   
   constructor(initialData?: DeepPartial<$models.Budget> | null) {
@@ -93,8 +88,6 @@ export interface CategoryViewModel extends $models.Category {
   description: string | null;
   color: string | null;
   icon: string | null;
-  budgetId: number | null;
-  budget: BudgetViewModel | null;
   subCategories: SubCategoryViewModel[] | null;
 }
 export class CategoryViewModel extends ViewModel<$models.Category, $apiClients.CategoryApiClient, number> implements $models.Category  {
@@ -149,7 +142,7 @@ export interface SubCategoryViewModel extends $models.SubCategory {
   subCategoryId: number | null;
   name: string | null;
   description: string | null;
-  budget: number | null;
+  allocation: number | null;
   categoryId: number | null;
   category: CategoryViewModel | null;
   subCategoryCustomCalculations: SubCategoryCustomCalculationViewModel[] | null;

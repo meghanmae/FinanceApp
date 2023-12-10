@@ -1,4 +1,5 @@
 <template>
+    <c-loader-status :loaders="{ '': [budget.$delete] }" />
     <v-card class="ma-2" color="blue-grey" variant="tonal">
         <v-list-item>
             <template v-slot:title>
@@ -9,7 +10,13 @@
             </template>
 
             <template v-slot:append>
-                <v-btn color="error" icon="fa-solid fa-trash" variant="text" @click="budget.$delete()" />
+                <v-tooltip v-bind="{ props }" text="Manage Budget">
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" color="primary" icon="fa-solid fa-arrow-right-from-bracket" class="mr-3"
+                            :to="`/budget/${budget.budgetId}`" />
+                    </template>
+                </v-tooltip>
+                <v-btn color="error" icon="fa-solid fa-trash" variant="text" @click="deleteBudget()" />
             </template>
         </v-list-item>
     </v-card>
@@ -25,4 +32,10 @@ const props = defineProps<{
 }>();
 
 props.budget.$startAutoSave(proxy!);
+
+function deleteBudget() {
+    if (confirm()) {
+        props.budget.$delete();
+    }
+}
 </script>

@@ -1,5 +1,9 @@
-﻿namespace FinanceApp.Data.Models;
-public class SubCategory
+﻿using FinanceApp.Data.Security;
+
+namespace FinanceApp.Data.Models;
+
+[Delete(SecurityPermissionLevels.DenyAll)]
+public class SubCategory : SecuredByBudgetBase
 {
     public int SubCategoryId { get; set; }
 
@@ -10,11 +14,20 @@ public class SubCategory
 
     [Required]
     [Column(TypeName = "decimal(18, 2)")]
-    public required decimal Budget { get; set; }
+    public required decimal Allocation { get; set; }
 
     [Required]
     public int CategoryId { get; set; }
     public Category? Category { get; set; }
 
     public ICollection<SubCategoryCustomCalculation> SubCategoryCustomCalculations { get; set; } = new List<SubCategoryCustomCalculation>();
+
+    [DefaultDataSource]
+    public class SubCategoriesByBudget(CrudContext<AppDbContext> context) : SecureByBudgetDataSource<SubCategory, AppDbContext>(context)
+    {
+        public override IQueryable<SubCategory> GetQuery(IDataSourceParameters parameters)
+        {
+            return base.GetQuery(parameters);
+        }
+    }
 }

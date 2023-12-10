@@ -3,6 +3,7 @@ using FinanceApp.Data.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Moq.AutoMock;
 
 namespace FinanceApp.Tests.Integration.Helpers;
 public class IntegrationTestsBase : IDisposable
@@ -13,10 +14,13 @@ public class IntegrationTestsBase : IDisposable
 
     protected AppDbContext Db { get; }
 
+    protected AutoMocker Mocker { get; } = new AutoMocker();
+
     protected IntegrationTestsBase()
     {
         WebFactory = new WebFactory();
         Db = WebFactory.GetDb();
+        Mocker.Use(Db);
     }
 
     public void ResetContext()
@@ -52,7 +56,10 @@ public class IntegrationTestsBase : IDisposable
                     services.AddAuthentication("FakeAuth")
                         .AddScheme<TestAuthHandlerOptions, TestAuthHandler>(
                             "FakeAuth",
-                            options => options.AppUser = appUser
+                            options =>
+                            {
+                                options.AppUser = appUser;
+                            }
                         );
                     ConfigureServices(services);
                 });

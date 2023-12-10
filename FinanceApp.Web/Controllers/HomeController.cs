@@ -18,7 +18,10 @@ public class HomeController : Controller
     )
     {
         var fileInfo = hostingEnvironment.WebRootFileProvider.GetFileInfo("index.html");
-        if (!fileInfo.Exists) return NotFound($"{hostingEnvironment.WebRootPath}/index.html was not found");
+        if (!fileInfo.Exists)
+        {
+            return NotFound($"{hostingEnvironment.WebRootPath}/index.html was not found");
+        }
 
         return File(fileInfo.CreateReadStream(), "text/html");
 

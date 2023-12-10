@@ -81,9 +81,10 @@ namespace FinanceApp.Data.Migrations
 
                     b.HasKey("BudgetUserId");
 
-                    b.HasIndex("ApplicationUserId");
-
                     b.HasIndex("BudgetId");
+
+                    b.HasIndex("ApplicationUserId", "BudgetId")
+                        .IsUnique();
 
                     b.ToTable("BudgetUsers");
                 });
@@ -129,6 +130,9 @@ namespace FinanceApp.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CustomCalculationId"));
 
+                    b.Property<int>("BudgetId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -137,6 +141,8 @@ namespace FinanceApp.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CustomCalculationId");
+
+                    b.HasIndex("BudgetId");
 
                     b.ToTable("CustomCalculations");
                 });
@@ -149,8 +155,11 @@ namespace FinanceApp.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SubCategoryId"));
 
-                    b.Property<decimal>("Budget")
+                    b.Property<decimal>("Allocation")
                         .HasColumnType("decimal(18, 2)");
+
+                    b.Property<int>("BudgetId")
+                        .HasColumnType("int");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -163,6 +172,8 @@ namespace FinanceApp.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("SubCategoryId");
+
+                    b.HasIndex("BudgetId");
 
                     b.HasIndex("CategoryId");
 
@@ -177,6 +188,9 @@ namespace FinanceApp.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SubCategoryCustomCalculationId"));
 
+                    b.Property<int>("BudgetId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CustomCalculationId")
                         .HasColumnType("int");
 
@@ -184,6 +198,8 @@ namespace FinanceApp.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("SubCategoryCustomCalculationId");
+
+                    b.HasIndex("BudgetId");
 
                     b.HasIndex("CustomCalculationId");
 
@@ -203,6 +219,9 @@ namespace FinanceApp.Data.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18, 2)");
 
+                    b.Property<int>("BudgetId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -212,6 +231,8 @@ namespace FinanceApp.Data.Migrations
 
                     b.HasKey("TransactionId");
 
+                    b.HasIndex("BudgetId");
+
                     b.HasIndex("SubCategoryId");
 
                     b.ToTable("Transactions");
@@ -220,7 +241,7 @@ namespace FinanceApp.Data.Migrations
             modelBuilder.Entity("FinanceApp.Data.Models.BudgetUser", b =>
                 {
                     b.HasOne("FinanceApp.Data.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany("Budgets")
+                        .WithMany("BudgetUsers")
                         .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -247,19 +268,44 @@ namespace FinanceApp.Data.Migrations
                     b.Navigation("Budget");
                 });
 
+            modelBuilder.Entity("FinanceApp.Data.Models.CustomCalculation", b =>
+                {
+                    b.HasOne("FinanceApp.Data.Models.Budget", "Budget")
+                        .WithMany()
+                        .HasForeignKey("BudgetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Budget");
+                });
+
             modelBuilder.Entity("FinanceApp.Data.Models.SubCategory", b =>
                 {
+                    b.HasOne("FinanceApp.Data.Models.Budget", "Budget")
+                        .WithMany()
+                        .HasForeignKey("BudgetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("FinanceApp.Data.Models.Category", "Category")
                         .WithMany("SubCategories")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.Navigation("Budget");
+
                     b.Navigation("Category");
                 });
 
             modelBuilder.Entity("FinanceApp.Data.Models.SubCategoryCustomCalculation", b =>
                 {
+                    b.HasOne("FinanceApp.Data.Models.Budget", "Budget")
+                        .WithMany()
+                        .HasForeignKey("BudgetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("FinanceApp.Data.Models.CustomCalculation", "CustomCalculation")
                         .WithMany("SubCategoryCustomCalculations")
                         .HasForeignKey("CustomCalculationId")
@@ -272,6 +318,8 @@ namespace FinanceApp.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.Navigation("Budget");
+
                     b.Navigation("CustomCalculation");
 
                     b.Navigation("SubCategory");
@@ -279,18 +327,26 @@ namespace FinanceApp.Data.Migrations
 
             modelBuilder.Entity("FinanceApp.Data.Models.Transaction", b =>
                 {
+                    b.HasOne("FinanceApp.Data.Models.Budget", "Budget")
+                        .WithMany()
+                        .HasForeignKey("BudgetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("FinanceApp.Data.Models.SubCategory", "SubCategory")
                         .WithMany()
                         .HasForeignKey("SubCategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.Navigation("Budget");
+
                     b.Navigation("SubCategory");
                 });
 
             modelBuilder.Entity("FinanceApp.Data.Models.ApplicationUser", b =>
                 {
-                    b.Navigation("Budgets");
+                    b.Navigation("BudgetUsers");
                 });
 
             modelBuilder.Entity("FinanceApp.Data.Models.Budget", b =>

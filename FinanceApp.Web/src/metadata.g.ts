@@ -14,7 +14,7 @@ export const ApplicationUser = domain.types.ApplicationUser = {
   type: "model",
   controllerRoute: "ApplicationUser",
   get keyProp() { return this.props.applicationUserId }, 
-  behaviorFlags: 7 as BehaviorFlags,
+  behaviorFlags: 0 as BehaviorFlags,
   props: {
     applicationUserId: {
       name: "applicationUserId",
@@ -50,9 +50,9 @@ export const ApplicationUser = domain.types.ApplicationUser = {
         required: val => (val != null && val !== '') || "Email is required.",
       }
     },
-    budgets: {
-      name: "budgets",
-      displayName: "Budgets",
+    budgetUsers: {
+      name: "budgetUsers",
+      displayName: "Budget Users",
       type: "collection",
       itemType: {
         name: "$collectionItem",
@@ -130,15 +130,21 @@ export const Budget = domain.types.Budget = {
         type: "model",
         get typeDef() { return (domain.types.Category as ModelType) },
       },
-      role: "collectionNavigation",
-      get foreignKey() { return (domain.types.Category as ModelType).props.budgetId as ForeignKeyProperty },
-      get inverseNavigation() { return (domain.types.Category as ModelType).props.budget as ModelReferenceNavigationProperty },
+      role: "value",
       dontSerialize: true,
     },
   },
   methods: {
   },
   dataSources: {
+    budgetsForUser: {
+      type: "dataSource",
+      name: "BudgetsForUser",
+      displayName: "Budgets For User",
+      isDefault: true,
+      props: {
+      },
+    },
   },
 }
 export const BudgetUser = domain.types.BudgetUser = {
@@ -148,7 +154,7 @@ export const BudgetUser = domain.types.BudgetUser = {
   type: "model",
   controllerRoute: "BudgetUser",
   get keyProp() { return this.props.budgetUserId }, 
-  behaviorFlags: 7 as BehaviorFlags,
+  behaviorFlags: 0 as BehaviorFlags,
   props: {
     budgetUserId: {
       name: "budgetUserId",
@@ -178,7 +184,7 @@ export const BudgetUser = domain.types.BudgetUser = {
       role: "referenceNavigation",
       get foreignKey() { return (domain.types.BudgetUser as ModelType).props.applicationUserId as ForeignKeyProperty },
       get principalKey() { return (domain.types.ApplicationUser as ModelType).props.applicationUserId as PrimaryKeyProperty },
-      get inverseNavigation() { return (domain.types.ApplicationUser as ModelType).props.budgets as ModelCollectionNavigationProperty },
+      get inverseNavigation() { return (domain.types.ApplicationUser as ModelType).props.budgetUsers as ModelCollectionNavigationProperty },
       dontSerialize: true,
     },
     budgetId: {
@@ -260,30 +266,6 @@ export const Category = domain.types.Category = {
         required: val => (val != null && val !== '') || "Icon is required.",
       }
     },
-    budgetId: {
-      name: "budgetId",
-      displayName: "Budget Id",
-      type: "number",
-      role: "foreignKey",
-      get principalKey() { return (domain.types.Budget as ModelType).props.budgetId as PrimaryKeyProperty },
-      get principalType() { return (domain.types.Budget as ModelType) },
-      get navigationProp() { return (domain.types.Category as ModelType).props.budget as ModelReferenceNavigationProperty },
-      hidden: 3 as HiddenAreas,
-      rules: {
-        required: val => val != null || "Budget is required.",
-      }
-    },
-    budget: {
-      name: "budget",
-      displayName: "Budget",
-      type: "model",
-      get typeDef() { return (domain.types.Budget as ModelType) },
-      role: "referenceNavigation",
-      get foreignKey() { return (domain.types.Category as ModelType).props.budgetId as ForeignKeyProperty },
-      get principalKey() { return (domain.types.Budget as ModelType).props.budgetId as PrimaryKeyProperty },
-      get inverseNavigation() { return (domain.types.Budget as ModelType).props.categories as ModelCollectionNavigationProperty },
-      dontSerialize: true,
-    },
     subCategories: {
       name: "subCategories",
       displayName: "Sub Categories",
@@ -304,6 +286,14 @@ export const Category = domain.types.Category = {
   methods: {
   },
   dataSources: {
+    categoriesByBudget: {
+      type: "dataSource",
+      name: "CategoriesByBudget",
+      displayName: "Categories By Budget",
+      isDefault: true,
+      props: {
+      },
+    },
   },
 }
 export const CustomCalculation = domain.types.CustomCalculation = {
@@ -390,13 +380,13 @@ export const SubCategory = domain.types.SubCategory = {
       type: "string",
       role: "value",
     },
-    budget: {
-      name: "budget",
-      displayName: "Budget",
+    allocation: {
+      name: "allocation",
+      displayName: "Allocation",
       type: "number",
       role: "value",
       rules: {
-        required: val => val != null || "Budget is required.",
+        required: val => val != null || "Allocation is required.",
       }
     },
     categoryId: {
