@@ -1,5 +1,6 @@
 ﻿using FinanceApp.Data.Models;
 using FinanceApp.Tests.Integration.Helpers;
+using FinanceApp.Web.Models;
 using FluentAssertions;
 using IntelliTect.Coalesce.Models;
 using System.Net;
@@ -10,6 +11,7 @@ public class BudgetTests : IntegrationTestsBase
 {
     private const string prefix = "/api/Budget";
 
+    #region DefaultDataSource
     [Fact]
     public async Task Budgets_DefaultDataSource_UserCanNotReadOtherUsersBudgets()
     {
@@ -79,4 +81,102 @@ public class BudgetTests : IntegrationTestsBase
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         budgets.Select(x => x.BudgetId).Should().BeEquivalentTo(expectedBudgets.Select(x => x.BudgetId));
     }
+    #endregion
+
+    #region BeforeSave Secured By BudgetId
+    [Fact]
+    public async Task BudgetsBeforeSave_SecuredByDefaultDatasource_UserCanNotEditBudgetTheyAreNotAPartOf()
+    {
+        // Arrange
+        BudgetUser callingUsersBudget = TestData.CreateTestBudgetUser();
+        ApplicationUser callingUser = callingUsersBudget.ApplicationUser!;
+        Db.BudgetUsers.Add(callingUsersBudget);
+
+        Budget otherUsersBudget = TestData.CreateTestBudget();
+        Db.BudgetUsers.Add(TestData.CreateTestBudgetUser(otherUsersBudget));
+
+        await Db.SaveChangesAsync();
+
+        BudgetDtoGen dto = new()
+        {
+            BudgetId = otherUsersBudget.BudgetId,
+            Name = "Test budget name",
+        };
+
+        // Act
+        HttpResponseMessage response = await GetAuthClient(callingUser).PostAsFormDataAsync($"{prefix}/save", dto);
+        var result = await response.Content.ReadFromJsonAsync<ItemResult>();
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        result!.Message.Should().Be($"Budget item with ID {otherUsersBudget.BudgetId} was not found.");
+    }
+
+    [Fact]
+    public async Task BudgetsBeforeSave_SecuredByDefaultDatasource_UserCanEditBudgetTheyAreAPartOf()
+    {
+        // Arrange
+        BudgetUser callingUsersBudget = TestData.CreateTestBudgetUser();
+        ApplicationUser callingUser = callingUsersBudget.ApplicationUser!;
+        Db.BudgetUsers.Add(callingUsersBudget);
+
+        await Db.SaveChangesAsync();
+
+        BudgetDtoGen dto = new()
+        {
+            BudgetId = callingUsersBudget.BudgetId,
+            Name = "Test budget name",
+        };
+
+        // Act
+        HttpResponseMessage response = await GetAuthClient(callingUser).PostAsFormDataAsync($"{prefix}/save", dto);
+        await response.Content.ReadFromJsonAsync<ItemResult>();
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+    #endregion
+
+
+    #region BeforeDelete 
+    [Fact]
+    public async Task BudgetsBeforeDelete_SecuredByDefaultDatasource_UserCanNotDeleteABudgetTheyAreNotAPartOf()
+    {
+        // Arrange
+        BudgetUser callingUsersBudget = TestData.CreateTestBudgetUser();
+        ApplicationUser callingUser = callingUsersBudget.ApplicationUser!;
+        Db.BudgetUsers.Add(callingUsersBudget);
+
+        Budget otherUsersBudget = TestData.CreateTestBudget();
+        Db.BudgetUsers.Add(TestData.CreateTestBudgetUser(otherUsersBudget));
+
+        await Db.SaveChangesAsync();
+
+        // Act
+        HttpResponseMessage response = await GetAuthClient(callingUser).PostAsync($"{prefix}/delete/{otherUsersBudget.BudgetId}", null);
+        var result = await response.Content.ReadFromJsonAsync<ItemResult>();
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        result!.Message.Should().Be($"Budget item with ID {otherUsersBudget.BudgetId} was not found.");
+    }
+
+    [Fact]
+    public async Task BudgetsBeforeDelete_SecuredByDefaultDatasource_UserCanNotDeleteABudgetTheyAreAPartOf()
+    {
+        // Arrange
+        BudgetUser callingUsersBudget = TestData.CreateTestBudgetUser();
+        ApplicationUser callingUser = callingUsersBudget.ApplicationUser!;
+        Db.BudgetUsers.Add(callingUsersBudget);
+
+        await Db.SaveChangesAsync();
+
+        // Act
+        HttpResponseMessage response = await GetAuthClient(callingUser).PostAsync($"{prefix}/delete/{callingUsersBudget.BudgetId}", null);
+        await response.Content.ReadFromJsonAsync<ItemResult>();
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+    #endregion
 }
