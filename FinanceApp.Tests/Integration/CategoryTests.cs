@@ -1,4 +1,6 @@
-﻿using FinanceApp.Data.Models;
+﻿using FinanceApp.Data;
+using FinanceApp.Data.Models;
+using FinanceApp.Data.Security;
 using FinanceApp.Tests.Integration.Helpers;
 using FinanceApp.Web.Models;
 using FluentAssertions;
@@ -82,87 +84,111 @@ public class CategoryTests : IntegrationTestsBase
     }
     #endregion
 
-    //[Fact]
-    //public async Task CategoriesSecuredByBudget_BeforeSave_UserCanNotEditDataForBudgetsTheyAreNotAPartOf()
-    //{
-    //    // Arrange
-    //    BudgetUser callingUsersBudget = TestData.CreateTestBudgetUser();
-    //    ApplicationUser callingUser = callingUsersBudget.ApplicationUser!;
-    //    Db.BudgetUsers.Add(callingUsersBudget);
+    #region BeforeSave Secured By BudgetId
+    [Fact]
+    public async Task CategoriesBeforeSave_SecuredByDefaultDatasource_UserCanNotEditDataForBudgetsTheyAreNotAPartOf()
+    {
+        // Arrange
+        BudgetUser callingUsersBudget = TestData.CreateTestBudgetUser();
+        ApplicationUser callingUser = callingUsersBudget.ApplicationUser!;
+        Db.BudgetUsers.Add(callingUsersBudget);
 
-    //    Budget otherUsersBudget = TestData.CreateTestBudget();
-    //    Db.BudgetUsers.Add(TestData.CreateTestBudgetUser(otherUsersBudget));
-    //    Category otherBudgetsCategory = TestData.CreateTestCategory(otherUsersBudget);
-    //    Db.Categories.Add(otherBudgetsCategory);
+        Budget otherUsersBudget = TestData.CreateTestBudget();
+        Db.BudgetUsers.Add(TestData.CreateTestBudgetUser(otherUsersBudget));
+        Category otherBudgetsCategory = TestData.CreateTestCategory(otherUsersBudget);
+        Db.Categories.Add(otherBudgetsCategory);
 
-    //    await Db.SaveChangesAsync();
+        await Db.SaveChangesAsync();
 
-    //    CategoryDtoGen dto = new()
-    //    {
-    //        CategoryId = otherBudgetsCategory.CategoryId,
-    //        Name = otherBudgetsCategory.Name,
-    //        Color = "blue",
-    //        Icon = "test"
-    //    };
+        CategoryDtoGen dto = new()
+        {
+            CategoryId = otherBudgetsCategory.CategoryId,
+            Name = otherBudgetsCategory.Name,
+            Color = "blue",
+            Icon = "test"
+        };
 
-    //    // Act
-    //    HttpResponseMessage response = await GetAuthClient(callingUser).PostAsFormDataAsync($"{prefix}/save", dto);
+        // Act
+        HttpResponseMessage response = await GetAuthClient(callingUser).PostAsFormDataAsync($"{prefix}/save", dto);
+        var result = await response.Content.ReadFromJsonAsync<ItemResult>();
 
-    //    // Assert
-    //    response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-    //}
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        result!.Message.Should().Be($"Category item with ID {otherBudgetsCategory.CategoryId} was not found.");
+    }
 
-    //[Fact]
-    //public async Task CategoriesSecuredByBudget_BeforeSave_UserCanEditDataForBudgetsTheyAreAPartOf()
-    //{
-    //    // Arrange
-    //    BudgetUser callingUsersBudget = TestData.CreateTestBudgetUser();
-    //    ApplicationUser callingUser = callingUsersBudget.ApplicationUser!;
-    //    Db.BudgetUsers.Add(callingUsersBudget);
-    //    Category callingUsersCategory = TestData.CreateTestCategory(callingUsersBudget.Budget!);
-    //    Db.Categories.Add(callingUsersCategory);
+    [Fact]
+    public async Task CategoriesBeforeSave_SecuredByDefaultDatasource_UserCanEditDataForBudgetsTheyAreAPartOf()
+    {
+        // Arrange
+        BudgetUser callingUsersBudget = TestData.CreateTestBudgetUser();
+        ApplicationUser callingUser = callingUsersBudget.ApplicationUser!;
+        Db.BudgetUsers.Add(callingUsersBudget);
+        Category category = TestData.CreateTestCategory(callingUsersBudget.Budget!);
+        Db.Categories.Add(category);
 
-    //    await Db.SaveChangesAsync();
+        await Db.SaveChangesAsync();
 
-    //    CategoryDtoGen dto = new()
-    //    {
-    //        CategoryId = callingUsersCategory.CategoryId,
-    //        Name = callingUsersCategory.Name,
-    //        Color = "blue",
-    //        Icon = "test"
-    //    };
+        CategoryDtoGen dto = new()
+        {
+            CategoryId = category.CategoryId,
+            Name = category.Name,
+            Color = "blue",
+            Icon = "test"
+        };
 
-    //    // Act
-    //    HttpResponseMessage response = await GetAuthClient(callingUser).PostAsFormDataAsync($"{prefix}/save", dto);
-    //    var result = await response.Content.ReadFromJsonAsync<Category>();
-    //    Category category = result!;
+        // Act
+        HttpResponseMessage response = await GetAuthClient(callingUser).PostAsFormDataAsync($"{prefix}/save", dto);
+        await response.Content.ReadFromJsonAsync<ItemResult>();
 
-    //    // Assert
-    //    response.StatusCode.Should().Be(HttpStatusCode.OK);
-    //    category.BudgetId.Should().Be(callingUsersBudget.BudgetId);
-    //}
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+    #endregion
 
-    //[Fact]
-    //public async Task CategoriesSecuredByBudget_BeforeSave_UserAddsDataForBudgetsAutoSetsBudgetId()
-    //{
-    //    // Arrange
-    //    BudgetUser callingUsersBudget = TestData.CreateTestBudgetUser();
-    //    ApplicationUser callingUser = callingUsersBudget.ApplicationUser!;
-    //    Db.BudgetUsers.Add(callingUsersBudget);
+    #region BeforeDelete Secured By BudgetId
+    [Fact]
+    public async Task CategoriesBeforeDelete_SecuredByDefaultDatasource_UserCanNotDeleteDataForBudgetsTheyAreNotAPartOf()
+    {
+        // Arrange
+        BudgetUser callingUsersBudget = TestData.CreateTestBudgetUser();
+        ApplicationUser callingUser = callingUsersBudget.ApplicationUser!;
+        Db.BudgetUsers.Add(callingUsersBudget);
 
-    //    await Db.SaveChangesAsync();
+        Budget otherUsersBudget = TestData.CreateTestBudget();
+        Db.BudgetUsers.Add(TestData.CreateTestBudgetUser(otherUsersBudget));
+        Category otherBudgetsCategory = TestData.CreateTestCategory(otherUsersBudget);
+        Db.Categories.Add(otherBudgetsCategory);
 
-    //    CategoryDtoGen dto = new()
-    //    {
-    //        Name = "New Category",
-    //        Color = "blue",
-    //        Icon = "test"
-    //    };
+        await Db.SaveChangesAsync();
 
-    //    // Act
-    //    HttpResponseMessage response = await GetAuthClient(callingUser).PostAsFormDataAsync($"{prefix}/save", dto);
+        // Act
+        HttpResponseMessage response = await GetAuthClient(callingUser).PostAsync($"{prefix}/delete/{otherBudgetsCategory.CategoryId}", null);
+        var result = await response.Content.ReadFromJsonAsync<ItemResult>();
 
-    //    // Assert
-    //    response.StatusCode.Should().Be(HttpStatusCode.OK);
-    //}
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        result!.Message.Should().Be($"Category item with ID {otherBudgetsCategory.CategoryId} was not found.");
+    }
+
+    [Fact]
+    public async Task CategoriesBeforeDelete_SecuredByDefaultDatasource_UserCanNotDeleteDataForBudgetsTheyAreAPartOf()
+    {
+        // Arrange
+        BudgetUser callingUsersBudget = TestData.CreateTestBudgetUser();
+        ApplicationUser callingUser = callingUsersBudget.ApplicationUser!;
+        Db.BudgetUsers.Add(callingUsersBudget);
+        Category category = TestData.CreateTestCategory(callingUsersBudget.Budget!);
+        Db.Categories.Add(category);
+
+        await Db.SaveChangesAsync();
+
+        // Act
+        HttpResponseMessage response = await GetAuthClient(callingUser).PostAsync($"{prefix}/delete/{category.CategoryId}", null);
+        await response.Content.ReadFromJsonAsync<ItemResult>();
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+    #endregion
 }

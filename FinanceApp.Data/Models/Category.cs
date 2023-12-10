@@ -28,12 +28,4 @@ public class Category : SecuredByBudgetBase
             return base.GetQuery(parameters);
         }
     }
-
-    //public class Behaviors(CrudContext<AppDbContext> context) : SecureByBudgetDataSource<Category>(context)
-    //{
-    //    public override async Task<ItemResult> BeforeSaveAsync(int budgetId, SaveKind kind, Category? oldItem, Category item)
-    //    {
-    //        return await base.BeforeSaveAsync(budgetId, kind, oldItem, item);
-    //    }
-    //}
 }

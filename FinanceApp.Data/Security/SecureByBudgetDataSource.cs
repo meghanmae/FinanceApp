@@ -1,4 +1,6 @@
-﻿namespace FinanceApp.Data.Security;
+﻿using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+
+namespace FinanceApp.Data.Security;
 public class SecureByBudgetDataSource<T, TDbContext>(CrudContext<TDbContext> context) : StandardDataSource<T, TDbContext>(context) 
     where T : class
     where TDbContext : AppDbContext
@@ -8,7 +10,6 @@ public class SecureByBudgetDataSource<T, TDbContext>(CrudContext<TDbContext> con
 
     public override IQueryable<T> GetQuery(IDataSourceParameters parameters)
     {
-        // TODO: Could be another way to do this
         if (typeof(T).GetInterface(nameof(ISecuredByBudget)) is not null)
         {
             // If there is no provided BudgetId, return all resources for all of the user's budgets

@@ -1,5 +1,6 @@
 ﻿using FinanceApp.Data.Models;
 using FinanceApp.Tests.Integration.Helpers;
+using FinanceApp.Web.Models;
 using FluentAssertions;
 using IntelliTect.Coalesce.Models;
 using System.Net;
@@ -77,6 +78,112 @@ public class SubCategoryTests : IntegrationTestsBase
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         categories.Count().Should().Be(0);
+    }
+    #endregion
+
+    #region BeforeSave Secured By BudgetId
+    [Fact]
+    public async Task SubCategoriesBeforeSave_SecuredByDefaultDatasource_UserCanNotEditDataForBudgetsTheyAreNotAPartOf()
+    {
+        // Arrange
+        BudgetUser callingUsersBudget = TestData.CreateTestBudgetUser();
+        ApplicationUser callingUser = callingUsersBudget.ApplicationUser!;
+        Db.BudgetUsers.Add(callingUsersBudget);
+
+        Budget otherUsersBudget = TestData.CreateTestBudget();
+        Db.BudgetUsers.Add(TestData.CreateTestBudgetUser(otherUsersBudget));
+        SubCategory otherBudgetsSubCategory = TestData.CreateTestSubCategory(otherUsersBudget);
+        Db.SubCategories.Add(otherBudgetsSubCategory);
+
+        await Db.SaveChangesAsync();
+
+        SubCategoryDtoGen dto = new()
+        {
+            SubCategoryId = otherBudgetsSubCategory.SubCategoryId,
+            Name = "New test name"
+        };
+
+        // Act
+        HttpResponseMessage response = await GetAuthClient(callingUser).PostAsFormDataAsync($"{prefix}/save", dto);
+        var result = await response.Content.ReadFromJsonAsync<ItemResult>();
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        result!.Message.Should().Be($"Sub Category item with ID {otherBudgetsSubCategory.SubCategoryId} was not found.");
+    }
+
+    [Fact]
+    public async Task SubCategoriesBeforeSave_SecuredByDefaultDatasource_UserCanEditDataForBudgetsTheyAreAPartOf()
+    {
+        // Arrange
+        BudgetUser callingUsersBudget = TestData.CreateTestBudgetUser();
+        ApplicationUser callingUser = callingUsersBudget.ApplicationUser!;
+        Db.BudgetUsers.Add(callingUsersBudget);
+        
+        SubCategory subCategory = TestData.CreateTestSubCategory(callingUsersBudget.Budget);
+        Db.SubCategories.Add(subCategory);
+
+        await Db.SaveChangesAsync();
+
+        SubCategoryDtoGen dto = new()
+        {
+            SubCategoryId = subCategory.SubCategoryId,
+            Name = "New test name"
+        };
+
+        // Act
+        HttpResponseMessage response = await GetAuthClient(callingUser).PostAsFormDataAsync($"{prefix}/save", dto);
+        await response.Content.ReadFromJsonAsync<ItemResult>();
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+    #endregion
+
+    #region BeforeDelete Secured By BudgetId
+    [Fact]
+    public async Task SubCategoriesBeforeDelete_SecuredByDefaultDatasource_UserCanNotDeleteDataForBudgetsTheyAreNotAPartOf()
+    {
+        // Arrange
+        BudgetUser callingUsersBudget = TestData.CreateTestBudgetUser();
+        ApplicationUser callingUser = callingUsersBudget.ApplicationUser!;
+        Db.BudgetUsers.Add(callingUsersBudget);
+
+        Budget otherUsersBudget = TestData.CreateTestBudget();
+        Db.BudgetUsers.Add(TestData.CreateTestBudgetUser(otherUsersBudget));
+        SubCategory otherBudgetsSubCategory = TestData.CreateTestSubCategory(otherUsersBudget);
+        Db.SubCategories.Add(otherBudgetsSubCategory);
+
+        await Db.SaveChangesAsync();
+
+        // Act
+        HttpResponseMessage response = await GetAuthClient(callingUser).PostAsync($"{prefix}/delete/{otherBudgetsSubCategory.SubCategoryId}", null);
+        var result = await response.Content.ReadFromJsonAsync<ItemResult>();
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        result!.Message.Should().Be($"Sub Category item with ID {otherBudgetsSubCategory.SubCategoryId} was not found.");
+    }
+
+    [Fact]
+    public async Task SubCategoriesBeforeDelete_SecuredByDefaultDatasource_UserCanNotDeleteDataForBudgetsTheyAreAPartOf()
+    {
+        // Arrange
+        BudgetUser callingUsersBudget = TestData.CreateTestBudgetUser();
+        ApplicationUser callingUser = callingUsersBudget.ApplicationUser!;
+        Db.BudgetUsers.Add(callingUsersBudget);
+
+        SubCategory subCategory = TestData.CreateTestSubCategory(callingUsersBudget.Budget);
+        Db.SubCategories.Add(subCategory);
+
+        await Db.SaveChangesAsync();
+
+        // Act
+        HttpResponseMessage response = await GetAuthClient(callingUser).PostAsync($"{prefix}/delete/{subCategory.SubCategoryId}", null);
+        await response.Content.ReadFromJsonAsync<ItemResult>();
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
     #endregion
 }
