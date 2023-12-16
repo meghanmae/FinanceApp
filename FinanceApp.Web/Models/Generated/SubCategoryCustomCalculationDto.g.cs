@@ -17,6 +17,7 @@ namespace FinanceApp.Web.Models
         private FinanceApp.Web.Models.SubCategoryDtoGen _SubCategory;
         private int? _CustomCalculationId;
         private FinanceApp.Web.Models.CustomCalculationDtoGen _CustomCalculation;
+        private int? _BudgetId;
 
         public int? SubCategoryCustomCalculationId
         {
@@ -43,6 +44,11 @@ namespace FinanceApp.Web.Models
             get => _CustomCalculation;
             set { _CustomCalculation = value; Changed(nameof(CustomCalculation)); }
         }
+        public int? BudgetId
+        {
+            get => _BudgetId;
+            set { _BudgetId = value; Changed(nameof(BudgetId)); }
+        }
 
         /// <summary>
         /// Map from the domain object to the properties of the current DTO instance.
@@ -55,6 +61,7 @@ namespace FinanceApp.Web.Models
             this.SubCategoryCustomCalculationId = obj.SubCategoryCustomCalculationId;
             this.SubCategoryId = obj.SubCategoryId;
             this.CustomCalculationId = obj.CustomCalculationId;
+            this.BudgetId = obj.BudgetId;
             if (tree == null || tree[nameof(this.SubCategory)] != null)
                 this.SubCategory = obj.SubCategory.MapToDto<FinanceApp.Data.Models.SubCategory, SubCategoryDtoGen>(context, tree?[nameof(this.SubCategory)]);
 
@@ -75,6 +82,7 @@ namespace FinanceApp.Web.Models
             if (ShouldMapTo(nameof(SubCategoryCustomCalculationId))) entity.SubCategoryCustomCalculationId = (SubCategoryCustomCalculationId ?? entity.SubCategoryCustomCalculationId);
             if (ShouldMapTo(nameof(SubCategoryId))) entity.SubCategoryId = (SubCategoryId ?? entity.SubCategoryId);
             if (ShouldMapTo(nameof(CustomCalculationId))) entity.CustomCalculationId = (CustomCalculationId ?? entity.CustomCalculationId);
+            if (ShouldMapTo(nameof(BudgetId))) entity.BudgetId = (BudgetId ?? entity.BudgetId);
         }
 
         /// <summary>

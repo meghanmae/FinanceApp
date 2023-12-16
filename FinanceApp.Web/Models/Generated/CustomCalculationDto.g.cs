@@ -16,6 +16,7 @@ namespace FinanceApp.Web.Models
         private string _Name;
         private string _Description;
         private System.Collections.Generic.ICollection<FinanceApp.Web.Models.SubCategoryCustomCalculationDtoGen> _SubCategoryCustomCalculations;
+        private int? _BudgetId;
 
         public int? CustomCalculationId
         {
@@ -37,6 +38,11 @@ namespace FinanceApp.Web.Models
             get => _SubCategoryCustomCalculations;
             set { _SubCategoryCustomCalculations = value; Changed(nameof(SubCategoryCustomCalculations)); }
         }
+        public int? BudgetId
+        {
+            get => _BudgetId;
+            set { _BudgetId = value; Changed(nameof(BudgetId)); }
+        }
 
         /// <summary>
         /// Map from the domain object to the properties of the current DTO instance.
@@ -49,6 +55,7 @@ namespace FinanceApp.Web.Models
             this.CustomCalculationId = obj.CustomCalculationId;
             this.Name = obj.Name;
             this.Description = obj.Description;
+            this.BudgetId = obj.BudgetId;
             var propValSubCategoryCustomCalculations = obj.SubCategoryCustomCalculations;
             if (propValSubCategoryCustomCalculations != null && (tree == null || tree[nameof(this.SubCategoryCustomCalculations)] != null))
             {
@@ -75,6 +82,7 @@ namespace FinanceApp.Web.Models
             if (ShouldMapTo(nameof(CustomCalculationId))) entity.CustomCalculationId = (CustomCalculationId ?? entity.CustomCalculationId);
             if (ShouldMapTo(nameof(Name))) entity.Name = Name;
             if (ShouldMapTo(nameof(Description))) entity.Description = Description;
+            if (ShouldMapTo(nameof(BudgetId))) entity.BudgetId = (BudgetId ?? entity.BudgetId);
         }
 
         /// <summary>
@@ -92,6 +100,7 @@ namespace FinanceApp.Web.Models
             if (OnUpdate(entity, context)) return entity;
             if (ShouldMapTo(nameof(CustomCalculationId))) entity.CustomCalculationId = (CustomCalculationId ?? entity.CustomCalculationId);
             if (ShouldMapTo(nameof(Description))) entity.Description = Description;
+            if (ShouldMapTo(nameof(BudgetId))) entity.BudgetId = (BudgetId ?? entity.BudgetId);
 
             return entity;
         }

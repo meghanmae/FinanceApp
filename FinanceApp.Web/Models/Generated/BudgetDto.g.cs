@@ -14,6 +14,7 @@ namespace FinanceApp.Web.Models
 
         private int? _BudgetId;
         private string _Name;
+        private string _color;
         private string _Description;
         private System.Collections.Generic.ICollection<FinanceApp.Web.Models.BudgetUserDtoGen> _BudgetUsers;
         private System.Collections.Generic.ICollection<FinanceApp.Web.Models.CategoryDtoGen> _Categories;
@@ -27,6 +28,11 @@ namespace FinanceApp.Web.Models
         {
             get => _Name;
             set { _Name = value; Changed(nameof(Name)); }
+        }
+        public string color
+        {
+            get => _color;
+            set { _color = value; Changed(nameof(color)); }
         }
         public string Description
         {
@@ -54,6 +60,7 @@ namespace FinanceApp.Web.Models
 
             this.BudgetId = obj.BudgetId;
             this.Name = obj.Name;
+            this.color = obj.color;
             this.Description = obj.Description;
             var propValBudgetUsers = obj.BudgetUsers;
             if (propValBudgetUsers != null && (tree == null || tree[nameof(this.BudgetUsers)] != null))
@@ -92,6 +99,7 @@ namespace FinanceApp.Web.Models
 
             if (ShouldMapTo(nameof(BudgetId))) entity.BudgetId = (BudgetId ?? entity.BudgetId);
             if (ShouldMapTo(nameof(Name))) entity.Name = Name;
+            if (ShouldMapTo(nameof(color))) entity.color = color;
             if (ShouldMapTo(nameof(Description))) entity.Description = Description;
         }
 
@@ -105,6 +113,7 @@ namespace FinanceApp.Web.Models
             var entity = new FinanceApp.Data.Models.Budget()
             {
                 Name = Name,
+                color = color,
             };
 
             if (OnUpdate(entity, context)) return entity;

@@ -1,42 +1,42 @@
 <template>
-    <c-loader-status :loaders="{ 'no-initial-content': [budget.$load] }">
-        Budget {{ budget.name }}
+    <v-container>
+        <c-loader-status :loaders="{ 'no-initial-content': [budget.$load] }">
+            <BudgetRow :budget="budget" @deleted="routeHome" />
 
-        <br />
+            <c-loader-status :loaders="{ '': [newCategory.$save] }" />
 
-        <c-loader-status :loaders="{ '': [newCategory.$save] }" />
-        Categories:
-        <c-input :model="newCategory" for="name" variant="plain" class="text-white" single-line hide-details />
-        <v-btn @click="addCategory">
-            Add Category
-            <UpdateCategoryDialog v-model="showNewCategoryDialog" :category="newCategory" />
-        </v-btn>
+            <v-divider class="my-2" />
+            <h3>
+                Categories
+            </h3>
+            <CategoryRow v-for="category in categories.$items" :key="category.categoryId!" :category="category" />
 
-        <v-card v-for="category in categories.$items" :key="category.categoryId!">
-            <v-card-title>
-                {{ category.name }}
-            </v-card-title>
-            <v-card-subtitle>
-                {{ category.description }}
-            </v-card-subtitle>
-        </v-card>
-    </c-loader-status>
+            <v-btn @click="addCategory" color="primary" class="mt-2">
+                Add Category
+                <UpdateCategoryDialog v-model="showNewCategoryDialog" :category="newCategory" />
+            </v-btn>
+        </c-loader-status>
+    </v-container>
 </template>
 
 <script setup lang="ts">
 import BudgetService from '@/services/BudgetService';
 import { BudgetViewModel, CategoryListViewModel, CategoryViewModel } from '@/viewmodels.g';
 import { BUDGET_SERVICE } from "@/lib/symbols";
+import { useRouter } from 'vue-router';
 
 const props = defineProps<{
     budgetId: number;
 }>();
+
+const router = useRouter();
 
 const showNewCategoryDialog = ref(false);
 const newCategory = ref(new CategoryViewModel());
 
 const budget = new BudgetViewModel();
 budget.$load(props.budgetId);
+
 
 provide(BUDGET_SERVICE, new BudgetService(budget))
 
@@ -45,5 +45,9 @@ categories.$load();
 
 function addCategory() {
     showNewCategoryDialog.value = true;
+}
+
+function routeHome() {
+    router.push('/');
 }
 </script>

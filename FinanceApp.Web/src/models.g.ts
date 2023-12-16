@@ -30,6 +30,7 @@ export class ApplicationUser {
 export interface Budget extends Model<typeof metadata.Budget> {
   budgetId: number | null
   name: string | null
+  color: string | null
   description: string | null
   budgetUsers: BudgetUser[] | null
   categories: Category[] | null
@@ -66,7 +67,6 @@ export interface BudgetUser extends Model<typeof metadata.BudgetUser> {
   applicationUserId: string | null
   applicationUser: ApplicationUser | null
   budgetId: number | null
-  budget: Budget | null
 }
 export class BudgetUser {
   
@@ -94,6 +94,7 @@ export interface Category extends Model<typeof metadata.Category> {
   color: string | null
   icon: string | null
   subCategories: SubCategory[] | null
+  budgetId: number | null
 }
 export class Category {
   
@@ -117,6 +118,11 @@ export namespace Category {
     
     export class CategoriesByBudget implements DataSource<typeof metadata.Category.dataSources.categoriesByBudget> {
       readonly $metadata = metadata.Category.dataSources.categoriesByBudget
+      budgetId: number | null = null
+      
+      constructor(params?: Omit<Partial<CategoriesByBudget>, '$metadata'>) {
+        if (params) Object.assign(this, params);
+      }
     }
   }
 }
@@ -127,6 +133,7 @@ export interface CustomCalculation extends Model<typeof metadata.CustomCalculati
   name: string | null
   description: string | null
   subCategoryCustomCalculations: SubCategoryCustomCalculation[] | null
+  budgetId: number | null
 }
 export class CustomCalculation {
   
@@ -145,6 +152,19 @@ export class CustomCalculation {
     Object.assign(this, CustomCalculation.map(data || {}));
   }
 }
+export namespace CustomCalculation {
+  export namespace DataSources {
+    
+    export class CustomCalculationsByBudget implements DataSource<typeof metadata.CustomCalculation.dataSources.customCalculationsByBudget> {
+      readonly $metadata = metadata.CustomCalculation.dataSources.customCalculationsByBudget
+      budgetId: number | null = null
+      
+      constructor(params?: Omit<Partial<CustomCalculationsByBudget>, '$metadata'>) {
+        if (params) Object.assign(this, params);
+      }
+    }
+  }
+}
 
 
 export interface SubCategory extends Model<typeof metadata.SubCategory> {
@@ -155,6 +175,7 @@ export interface SubCategory extends Model<typeof metadata.SubCategory> {
   categoryId: number | null
   category: Category | null
   subCategoryCustomCalculations: SubCategoryCustomCalculation[] | null
+  budgetId: number | null
 }
 export class SubCategory {
   
@@ -173,6 +194,19 @@ export class SubCategory {
     Object.assign(this, SubCategory.map(data || {}));
   }
 }
+export namespace SubCategory {
+  export namespace DataSources {
+    
+    export class SubCategoriesByBudget implements DataSource<typeof metadata.SubCategory.dataSources.subCategoriesByBudget> {
+      readonly $metadata = metadata.SubCategory.dataSources.subCategoriesByBudget
+      budgetId: number | null = null
+      
+      constructor(params?: Omit<Partial<SubCategoriesByBudget>, '$metadata'>) {
+        if (params) Object.assign(this, params);
+      }
+    }
+  }
+}
 
 
 export interface SubCategoryCustomCalculation extends Model<typeof metadata.SubCategoryCustomCalculation> {
@@ -181,6 +215,7 @@ export interface SubCategoryCustomCalculation extends Model<typeof metadata.SubC
   subCategory: SubCategory | null
   customCalculationId: number | null
   customCalculation: CustomCalculation | null
+  budgetId: number | null
 }
 export class SubCategoryCustomCalculation {
   
@@ -199,6 +234,19 @@ export class SubCategoryCustomCalculation {
     Object.assign(this, SubCategoryCustomCalculation.map(data || {}));
   }
 }
+export namespace SubCategoryCustomCalculation {
+  export namespace DataSources {
+    
+    export class SubCategoriesByBudget implements DataSource<typeof metadata.SubCategoryCustomCalculation.dataSources.subCategoriesByBudget> {
+      readonly $metadata = metadata.SubCategoryCustomCalculation.dataSources.subCategoriesByBudget
+      budgetId: number | null = null
+      
+      constructor(params?: Omit<Partial<SubCategoriesByBudget>, '$metadata'>) {
+        if (params) Object.assign(this, params);
+      }
+    }
+  }
+}
 
 
 export interface Transaction extends Model<typeof metadata.Transaction> {
@@ -207,6 +255,7 @@ export interface Transaction extends Model<typeof metadata.Transaction> {
   amount: number | null
   subCategoryId: number | null
   subCategory: SubCategory | null
+  budgetId: number | null
 }
 export class Transaction {
   
@@ -223,6 +272,19 @@ export class Transaction {
   /** Instantiate a new Transaction, optionally basing it on the given data. */
   constructor(data?: Partial<Transaction> | {[k: string]: any}) {
     Object.assign(this, Transaction.map(data || {}));
+  }
+}
+export namespace Transaction {
+  export namespace DataSources {
+    
+    export class TransactionsByBudget implements DataSource<typeof metadata.Transaction.dataSources.transactionsByBudget> {
+      readonly $metadata = metadata.Transaction.dataSources.transactionsByBudget
+      budgetId: number | null = null
+      
+      constructor(params?: Omit<Partial<TransactionsByBudget>, '$metadata'>) {
+        if (params) Object.assign(this, params);
+      }
+    }
   }
 }
 

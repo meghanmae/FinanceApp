@@ -3,15 +3,14 @@
         <v-card>
             <v-card-item class="bg-primary pb-2">
                 <v-card-title>
-                    {{ newCategory ? 'Create a New Category' : 'Edit Category' }}
+                    {{ newTransaction ? 'Create a New Transaction' : 'Edit Transaction' }}
                 </v-card-title>
             </v-card-item>
-            <c-loader-status :loaders="{ '': [category.$save] }" />
+            <c-loader-status :loaders="{ '': [transaction.$save] }" />
             <v-card-text>
-                <c-input :model="category" for="name" variant="plain" class="text-white" single-line hide-details />
-                <c-input :model="category" for="color" variant="plain" class="text-white" single-line hide-details />
-                <c-input :model="category" for="icon" variant="plain" class="text-white" single-line hide-details />
-                <c-input :model="category" for="description" variant="plain" class="text-white" single-line hide-details />
+                <c-input :model="transaction" for="amount" variant="plain" class="text-white" single-line hide-details />
+                <c-input :model="transaction" for="description" variant="plain" class="text-white" single-line
+                    hide-details />
             </v-card-text>
             <v-card-actions>
                 <v-spacer />
@@ -28,26 +27,29 @@
 
 <script setup lang="ts">
 import { BUDGET_SERVICE } from '@/lib/symbols';
-import { CategoryViewModel } from '@/viewmodels.g';
+import { TransactionViewModel } from '@/viewmodels.g';
 
 const props = defineProps<{
-    category: CategoryViewModel;
+    subCategoryId: number;
+    transaction: TransactionViewModel;
 }>();
 
 const modelValue = defineModel<boolean>({ default: false });
 
 const budgetService = inject(BUDGET_SERVICE)
 
-const newCategory = computed(() => !props.category.categoryId);
+const newTransaction = computed(() => !props.transaction.transactionId);
 
 const emit = defineEmits<{
     (e: "saved"): void
 }>();
 
 async function save() {
-    if (props.category.name) {
-        props.category.budgetId = budgetService?.budget.value.budgetId!;
-        await props.category.$save();
+    if (props.transaction.amount) {
+        props.transaction.budgetId = budgetService?.budget.value.budgetId!;
+        props.transaction.subCategoryId = props.subCategoryId;
+
+        await props.transaction.$save();
         modelValue.value = false;
         emit("saved");
     }

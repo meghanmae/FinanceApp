@@ -71,13 +71,5 @@ namespace FinanceApp.Web.Api
             [FromServices] IDataSourceFactory dataSourceFactory,
             [FromServices] IBehaviorsFactory behaviorsFactory)
             => BulkSaveImplementation(dto, parameters, dataSourceFactory, behaviorsFactory);
-
-        [HttpPost("delete/{id}")]
-        [Authorize]
-        public virtual Task<ItemResult<SubCategoryDtoGen>> Delete(
-            int id,
-            IBehaviors<FinanceApp.Data.Models.SubCategory> behaviors,
-            IDataSource<FinanceApp.Data.Models.SubCategory> dataSource)
-            => DeleteImplementation(id, new DataSourceParameters(), dataSource, behaviors);
     }
 }

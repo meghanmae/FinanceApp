@@ -10,6 +10,7 @@
             <v-card-text>
                 <c-input :model="budget" for="name" autofocus @keyup.enter="save" />
                 <c-input :model="budget" for="description" @keyup.enter="save" />
+                <c-input :model="budget" for="color" @keyup.enter="save" />
             </v-card-text>
             <v-card-actions>
                 <v-spacer />
@@ -39,10 +40,10 @@ const emit = defineEmits<{
     (e: "saved"): void
 }>();
 
-function save() {
+async function save() {
     if (props.budget.name) {
-        props.budget.$save();
         modelValue.value = false;
+        await props.budget.$save();
         emit("saved");
     }
 }

@@ -34,16 +34,12 @@ export class ApplicationUserListViewModel extends ListViewModel<$models.Applicat
 export interface BudgetViewModel extends $models.Budget {
   budgetId: number | null;
   name: string | null;
+  color: string | null;
   description: string | null;
   budgetUsers: BudgetUserViewModel[] | null;
   categories: CategoryViewModel[] | null;
 }
 export class BudgetViewModel extends ViewModel<$models.Budget, $apiClients.BudgetApiClient, number> implements $models.Budget  {
-  
-  
-  public addToBudgetUsers(initialData?: DeepPartial<$models.BudgetUser> | null) {
-    return this.$addChild('budgetUsers', initialData) as BudgetUserViewModel
-  }
   
   constructor(initialData?: DeepPartial<$models.Budget> | null) {
     super($metadata.Budget, new $apiClients.BudgetApiClient(), initialData)
@@ -64,7 +60,6 @@ export interface BudgetUserViewModel extends $models.BudgetUser {
   applicationUserId: string | null;
   applicationUser: ApplicationUserViewModel | null;
   budgetId: number | null;
-  budget: BudgetViewModel | null;
 }
 export class BudgetUserViewModel extends ViewModel<$models.BudgetUser, $apiClients.BudgetUserApiClient, number> implements $models.BudgetUser  {
   
@@ -89,6 +84,7 @@ export interface CategoryViewModel extends $models.Category {
   color: string | null;
   icon: string | null;
   subCategories: SubCategoryViewModel[] | null;
+  budgetId: number | null;
 }
 export class CategoryViewModel extends ViewModel<$models.Category, $apiClients.CategoryApiClient, number> implements $models.Category  {
   
@@ -116,6 +112,7 @@ export interface CustomCalculationViewModel extends $models.CustomCalculation {
   name: string | null;
   description: string | null;
   subCategoryCustomCalculations: SubCategoryCustomCalculationViewModel[] | null;
+  budgetId: number | null;
 }
 export class CustomCalculationViewModel extends ViewModel<$models.CustomCalculation, $apiClients.CustomCalculationApiClient, number> implements $models.CustomCalculation  {
   
@@ -146,6 +143,7 @@ export interface SubCategoryViewModel extends $models.SubCategory {
   categoryId: number | null;
   category: CategoryViewModel | null;
   subCategoryCustomCalculations: SubCategoryCustomCalculationViewModel[] | null;
+  budgetId: number | null;
 }
 export class SubCategoryViewModel extends ViewModel<$models.SubCategory, $apiClients.SubCategoryApiClient, number> implements $models.SubCategory  {
   
@@ -174,6 +172,7 @@ export interface SubCategoryCustomCalculationViewModel extends $models.SubCatego
   subCategory: SubCategoryViewModel | null;
   customCalculationId: number | null;
   customCalculation: CustomCalculationViewModel | null;
+  budgetId: number | null;
 }
 export class SubCategoryCustomCalculationViewModel extends ViewModel<$models.SubCategoryCustomCalculation, $apiClients.SubCategoryCustomCalculationApiClient, number> implements $models.SubCategoryCustomCalculation  {
   
@@ -197,6 +196,7 @@ export interface TransactionViewModel extends $models.Transaction {
   amount: number | null;
   subCategoryId: number | null;
   subCategory: SubCategoryViewModel | null;
+  budgetId: number | null;
 }
 export class TransactionViewModel extends ViewModel<$models.Transaction, $apiClients.TransactionApiClient, number> implements $models.Transaction  {
   
