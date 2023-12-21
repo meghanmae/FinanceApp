@@ -199,6 +199,7 @@ export namespace SubCategory {
     
     export class SubCategoriesByBudget implements DataSource<typeof metadata.SubCategory.dataSources.subCategoriesByBudget> {
       readonly $metadata = metadata.SubCategory.dataSources.subCategoriesByBudget
+      categoryId: number | null = null
       budgetId: number | null = null
       
       constructor(params?: Omit<Partial<SubCategoriesByBudget>, '$metadata'>) {
@@ -279,6 +280,7 @@ export namespace Transaction {
     
     export class TransactionsByBudget implements DataSource<typeof metadata.Transaction.dataSources.transactionsByBudget> {
       readonly $metadata = metadata.Transaction.dataSources.transactionsByBudget
+      subCategoryId: number | null = null
       budgetId: number | null = null
       
       constructor(params?: Omit<Partial<TransactionsByBudget>, '$metadata'>) {

@@ -2,7 +2,6 @@
 
 namespace FinanceApp.Data.Models;
 
-[Delete(SecurityPermissionLevels.DenyAll)]
 public class SubCategory : SecuredByBudgetBase
 {
     public int SubCategoryId { get; set; }
@@ -25,9 +24,24 @@ public class SubCategory : SecuredByBudgetBase
     [DefaultDataSource]
     public class SubCategoriesByBudget(CrudContext<AppDbContext> context) : SecureByBudgetDataSource<SubCategory, AppDbContext>(context)
     {
+        [Coalesce]
+        public int? CategoryId { get; set; } = null;
+
         public override IQueryable<SubCategory> GetQuery(IDataSourceParameters parameters)
         {
-            return base.GetQuery(parameters);
+            return base.GetQuery(parameters).Where(x => x.CategoryId == CategoryId);
+        }
+    }
+
+    public class SubCategoryBehaviors(CrudContext<AppDbContext> context) : StandardBehaviors<SubCategory, AppDbContext>(context)
+    {
+        public override ItemResult BeforeDelete(SubCategory item)
+        {
+            // Remove assoicated things, like transactions
+            Db.Transactions.RemoveRange(Db.Transactions.Where(x => x.SubCategoryId == item.SubCategoryId));
+            Db.SubCategoryCustomCalculations.RemoveRange(Db.SubCategoryCustomCalculations.Where(x => x.SubCategoryId == item.SubCategoryId));
+
+            return base.BeforeDelete(item);
         }
     }
 }

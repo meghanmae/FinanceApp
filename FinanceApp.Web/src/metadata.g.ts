@@ -221,7 +221,7 @@ export const Category = domain.types.Category = {
   type: "model",
   controllerRoute: "Category",
   get keyProp() { return this.props.categoryId }, 
-  behaviorFlags: 3 as BehaviorFlags,
+  behaviorFlags: 7 as BehaviorFlags,
   props: {
     categoryId: {
       name: "categoryId",
@@ -399,7 +399,7 @@ export const SubCategory = domain.types.SubCategory = {
   type: "model",
   controllerRoute: "SubCategory",
   get keyProp() { return this.props.subCategoryId }, 
-  behaviorFlags: 3 as BehaviorFlags,
+  behaviorFlags: 7 as BehaviorFlags,
   props: {
     subCategoryId: {
       name: "subCategoryId",
@@ -495,6 +495,12 @@ export const SubCategory = domain.types.SubCategory = {
       displayName: "Sub Categories By Budget",
       isDefault: true,
       props: {
+        categoryId: {
+          name: "categoryId",
+          displayName: "Category Id",
+          type: "number",
+          role: "value",
+        },
         budgetId: {
           name: "budgetId",
           displayName: "Budget Id",
@@ -609,7 +615,7 @@ export const Transaction = domain.types.Transaction = {
   type: "model",
   controllerRoute: "Transaction",
   get keyProp() { return this.props.transactionId }, 
-  behaviorFlags: 3 as BehaviorFlags,
+  behaviorFlags: 7 as BehaviorFlags,
   props: {
     transactionId: {
       name: "transactionId",
@@ -682,6 +688,12 @@ export const Transaction = domain.types.Transaction = {
       displayName: "Transactions By Budget",
       isDefault: true,
       props: {
+        subCategoryId: {
+          name: "subCategoryId",
+          displayName: "Sub Category Id",
+          type: "number",
+          role: "value",
+        },
         budgetId: {
           name: "budgetId",
           displayName: "Budget Id",

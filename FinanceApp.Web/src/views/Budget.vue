@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <c-loader-status :loaders="{ 'no-initial-content': [budget.$load] }">
+        <c-loader-status :loaders="{ 'no-initial-content': [budget.$load, categories.$load] }">
             <BudgetRow :budget="budget" @deleted="routeHome" />
 
             <c-loader-status :loaders="{ '': [newCategory.$save] }" />
@@ -13,7 +13,7 @@
 
             <v-btn @click="addCategory" color="primary" class="mt-2">
                 Add Category
-                <UpdateCategoryDialog v-model="showNewCategoryDialog" :category="newCategory" />
+                <UpdateCategoryDialog v-model="showNewCategoryDialog" :category="newCategory" @saved="loadCategories" />
             </v-btn>
         </c-loader-status>
     </v-container>
@@ -24,6 +24,7 @@ import BudgetService from '@/services/BudgetService';
 import { BudgetViewModel, CategoryListViewModel, CategoryViewModel } from '@/viewmodels.g';
 import { BUDGET_SERVICE } from "@/lib/symbols";
 import { useRouter } from 'vue-router';
+import { Category } from '@/models.g';
 
 const props = defineProps<{
     budgetId: number;
@@ -32,7 +33,7 @@ const props = defineProps<{
 const router = useRouter();
 
 const showNewCategoryDialog = ref(false);
-const newCategory = ref(new CategoryViewModel());
+const newCategory = new CategoryViewModel();
 
 const budget = new BudgetViewModel();
 budget.$load(props.budgetId);
@@ -41,7 +42,13 @@ budget.$load(props.budgetId);
 provide(BUDGET_SERVICE, new BudgetService(budget))
 
 const categories = new CategoryListViewModel();
-categories.$load();
+const datasource = new Category.DataSources.CategoriesByBudget();
+datasource.budgetId = props.budgetId;
+categories.$dataSource = datasource;
+function loadCategories() {
+    categories.$load();
+}
+loadCategories();
 
 function addCategory() {
     showNewCategoryDialog.value = true;

@@ -1,5 +1,5 @@
 <template>
-    <c-loader-status :loaders="{ '': [category.$delete] }" />
+    <c-loader-status :loaders="{ '': [category.$delete, subCategories.$load] }" />
     <v-card :color="category.color!" variant="tonal">
         <v-card :color="category.color!" variant="tonal">
             <v-row align="center">
@@ -33,13 +33,14 @@
             <v-btn @click="showNewSubCategoryDialog = true" class="mt-2">
                 Add SubCategory
                 <UpdateSubCategoryDialog v-model="showNewSubCategoryDialog" :subCategory="newSubCategory"
-                    :categoryId="category.categoryId!" />
+                    :categoryId="category.categoryId!" @saved="loadSubCategories" />
             </v-btn>
         </v-card-text>
     </v-card>
 </template>
 
 <script setup lang="ts">
+import { SubCategory } from '@/models.g';
 import { CategoryViewModel, SubCategoryListViewModel, SubCategoryViewModel } from '@/viewmodels.g';
 
 const proxy = getCurrentInstance()?.proxy;
@@ -51,10 +52,18 @@ const props = defineProps<{
 const editCategoryDialog = ref(false);
 
 const showNewSubCategoryDialog = ref(false);
-const newSubCategory = ref(new SubCategoryViewModel());
+let newSubCategory: SubCategoryViewModel;
 
 const subCategories = new SubCategoryListViewModel();
-subCategories.$load();
+const datasource = new SubCategory.DataSources.SubCategoriesByBudget();
+datasource.categoryId = props.category.categoryId;
+subCategories.$dataSource = datasource;
+
+function loadSubCategories() {
+    subCategories.$load();
+    newSubCategory = new SubCategoryViewModel();
+}
+loadSubCategories();
 
 function deleteCategory() {
     if (confirm()) {

@@ -25,12 +25,12 @@
 
         <v-card-text>
             <TransactionRow v-for="transaction in transactions.$items" :key="transaction.transactionId!"
-                :transaction="transaction" :subCategoryId="transaction.subCategoryId!" />
+                :transaction="transaction" />
 
             <v-btn @click="showNewTransactionDialog = true" class="mt-2">
                 Add Transaction
                 <UpdateTransactionDialog v-model="showNewTransactionDialog" :transaction="newTransaction"
-                    :subCategoryId="subCategory.subCategoryId!" />
+                    :subCategoryId="subCategory.subCategoryId!" @saved="loadTransactions" />
             </v-btn>
         </v-card-text>
 
@@ -38,6 +38,7 @@
 </template>
 
 <script setup lang="ts">
+import { Transaction } from '@/models.g';
 import { SubCategoryViewModel, TransactionListViewModel, TransactionViewModel } from '@/viewmodels.g';
 
 const proxy = getCurrentInstance()?.proxy;
@@ -49,10 +50,18 @@ const props = defineProps<{
 const editSubCategoryDialog = ref(false);
 
 const showNewTransactionDialog = ref(false);
-const newTransaction = ref(new TransactionViewModel());
+let newTransaction: TransactionViewModel;
 
 const transactions = new TransactionListViewModel();
-transactions.$load();
+const datasource = new Transaction.DataSources.TransactionsByBudget();
+datasource.subCategoryId = props.subCategory.subCategoryId;
+transactions.$dataSource = datasource;
+
+function loadTransactions() {
+    transactions.$load();
+    newTransaction = new TransactionViewModel();
+}
+loadTransactions();
 
 function deleteSubCategory() {
     if (confirm()) {
