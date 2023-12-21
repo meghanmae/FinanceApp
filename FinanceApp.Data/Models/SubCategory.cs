@@ -29,7 +29,12 @@ public class SubCategory : SecuredByBudgetBase
 
         public override IQueryable<SubCategory> GetQuery(IDataSourceParameters parameters)
         {
-            return base.GetQuery(parameters).Where(x => x.CategoryId == CategoryId);
+            var query = base.GetQuery(parameters);
+            if (CategoryId is not null)
+            {
+                query = query.Where(x => x.CategoryId == CategoryId);
+            }
+            return query;
         }
     }
 

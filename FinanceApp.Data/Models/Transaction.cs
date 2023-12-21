@@ -26,7 +26,12 @@ public class Transaction : SecuredByBudgetBase
 
         public override IQueryable<Transaction> GetQuery(IDataSourceParameters parameters)
         {
-            return base.GetQuery(parameters).Where(x => x.SubCategoryId == SubCategoryId);
+            var query = base.GetQuery(parameters);
+            if (SubCategoryId is not null)
+            {
+                query = query.Where(x => x.SubCategoryId == SubCategoryId);
+            }
+            return query;
         }
     }
 }
