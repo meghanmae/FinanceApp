@@ -1,18 +1,24 @@
 <template>
     <v-dialog max-width="800" v-model="modelValue">
         <v-card>
-            <v-card-item class="bg-primary pb-2">
+            <v-card-item :class="`bg-${color} pb-2`">
                 <v-card-title>
                     {{ newSubCategory ? 'Create a New Sub-Category' : 'Edit Sub-Category' }}
                 </v-card-title>
             </v-card-item>
             <c-loader-status :loaders="{ '': [subCategory.$save] }" />
             <v-card-text>
-                <c-input :model="subCategory" for="name" variant="plain" class="text-white" single-line hide-details />
-                <c-input :model="subCategory" for="allocation" variant="plain" class="text-white" single-line
-                    hide-details />
-                <c-input :model="subCategory" for="description" variant="plain" class="text-white" single-line
-                    hide-details />
+                <v-row dense>
+                    <v-col cols="6">
+                        <c-input :model="subCategory" for="name" class="text-white" single-line />
+                    </v-col>
+                    <v-col cols="6">
+                        <c-input :model="subCategory" for="allocation" class="text-white" single-line />
+                    </v-col>
+                    <v-col>
+                        <c-input :model="subCategory" for="description" class="text-white" single-line />
+                    </v-col>
+                </v-row>
             </v-card-text>
             <v-card-actions>
                 <v-spacer />
@@ -33,6 +39,7 @@ import { SubCategoryViewModel } from '@/viewmodels.g';
 
 const props = defineProps<{
     categoryId: number;
+    color: string;
     subCategory: SubCategoryViewModel;
 }>();
 

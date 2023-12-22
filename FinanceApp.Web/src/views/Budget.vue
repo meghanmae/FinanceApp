@@ -8,13 +8,10 @@
             <v-divider class="my-2" />
             <h3>
                 Categories
+                <v-btn @click="addCategory" icon="fa-solid fa-plus" size="x-small" color="primary" class="ml-1" />
+                <UpdateCategoryDialog v-model="showNewCategoryDialog" :category="newCategory" @saved="loadCategories" />
             </h3>
             <CategoryRow v-for="category in categories.$items" :key="category.categoryId!" :category="category" />
-
-            <v-btn @click="addCategory" color="primary" class="mt-2">
-                Add Category
-                <UpdateCategoryDialog v-model="showNewCategoryDialog" :category="newCategory" @saved="loadCategories" />
-            </v-btn>
         </c-loader-status>
     </v-container>
 </template>
@@ -33,7 +30,7 @@ const props = defineProps<{
 const router = useRouter();
 
 const showNewCategoryDialog = ref(false);
-const newCategory = new CategoryViewModel();
+let newCategory: CategoryViewModel;
 
 const budget = new BudgetViewModel();
 budget.$load(props.budgetId);
@@ -47,6 +44,7 @@ datasource.budgetId = props.budgetId;
 categories.$dataSource = datasource;
 function loadCategories() {
     categories.$load();
+    newCategory = new CategoryViewModel();
 }
 loadCategories();
 

@@ -1,6 +1,6 @@
 <template>
     <c-loader-status :loaders="{ '': [transaction.$delete] }" />
-    <v-card variant="tonal">
+    <v-sheet>
         <v-row align="center">
             <v-col>
                 <v-card-title>
@@ -20,7 +20,7 @@
             </v-col>
         </v-row>
 
-    </v-card>
+    </v-sheet>
 </template>
 
 <script setup lang="ts">

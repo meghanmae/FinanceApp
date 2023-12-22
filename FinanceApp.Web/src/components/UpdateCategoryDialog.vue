@@ -1,18 +1,28 @@
 <template>
     <v-dialog max-width="800" v-model="modelValue">
         <v-card>
-            <v-card-item class="bg-primary pb-2">
+            <v-card-item :class="`bg-${category.color} pb-2`">
                 <v-card-title>
                     {{ newCategory ? 'Create a New Category' : 'Edit Category' }}
                 </v-card-title>
             </v-card-item>
             <c-loader-status :loaders="{ '': [category.$save] }" />
-            <v-card-text>
-                <c-input :model="category" for="name" variant="plain" class="text-white" single-line hide-details />
-                <c-input :model="category" for="color" variant="plain" class="text-white" single-line hide-details />
-                <c-input :model="category" for="icon" variant="plain" class="text-white" single-line hide-details />
-                <c-input :model="category" for="description" variant="plain" class="text-white" single-line hide-details />
-            </v-card-text>
+            <v-card-title>
+                <v-row dense>
+                    <v-col cols="2">
+                        <IconPicker v-model="category.icon" :color="category.color ?? 'primary'" />
+                    </v-col>
+                    <v-col>
+                        <c-input :model="category" for="name" class="text-white" single-line hide-details />
+                    </v-col>
+                    <v-col cols="3">
+                        <ColorPicker v-model="category.color" />
+                    </v-col>
+                    <v-col cols="12">
+                        <c-input :model="category" for="description" class="text-white" single-line hide-details />
+                    </v-col>
+                </v-row>
+            </v-card-title>
             <v-card-actions>
                 <v-spacer />
                 <v-btn color="primary" variant="text" @click="modelValue = false">
@@ -33,7 +43,6 @@ import { CategoryViewModel } from '@/viewmodels.g';
 const props = defineProps<{
     category: CategoryViewModel;
 }>();
-
 const modelValue = defineModel<boolean>({ default: false });
 
 const budgetService = inject(BUDGET_SERVICE)
