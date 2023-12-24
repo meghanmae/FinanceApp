@@ -43,3 +43,17 @@ a {
   // Vuetify3 lost the padding for ul/ol that Vuetify2 had. Restore it.
   padding-left: 24px;
 }
+
+.input-heading .v-field {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.input-sub-heading .v-field {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.hidden-element {
+  visibility: hidden;
+}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { createCoalesceVuetify } from "coalesce-vue-vuetify3";
 import { enableAutoUnmount, mount } from "@vue/test-utils";
 import { ArgumentsType } from "vitest";

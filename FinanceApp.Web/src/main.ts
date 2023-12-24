@@ -47,13 +47,13 @@ const vuetify = createVuetify({
       light: {
         colors: {
           primary: "#3F51B5",
-          error: "#F44336"
+          error: "#F44336",
         },
       },
       dark: {
         colors: {
           primary: "#3F51B5",
-          error: "#F44336"
+          error: "#F44336",
         },
       },
     },
@@ -73,7 +73,7 @@ const app = createApp(App);
 Object.defineProperties(
   app.config.globalProperties,
   Object.getOwnPropertyDescriptors(userServiceProps)
-)
+);
 
 app.use(router);
 router.beforeEach(async (to: any, from: any, next: any) => {
@@ -81,7 +81,7 @@ router.beforeEach(async (to: any, from: any, next: any) => {
     await userService.getLoggedInUser();
   }
   next();
-})
+});
 
 app.use(vuetify);
 app.use(coalesceVuetify);

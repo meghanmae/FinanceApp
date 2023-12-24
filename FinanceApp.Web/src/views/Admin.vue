@@ -2,7 +2,7 @@
   <v-container style="max-width: 600px">
     <v-card>
       <v-card-title> Coalesce Admin Pages </v-card-title>
-      <v-card-text class="black--text">
+      <v-card-text class="text-black">
         <ul>
           <li v-for="typeMeta in adminTypes" :key="typeMeta.name">
             <router-link
