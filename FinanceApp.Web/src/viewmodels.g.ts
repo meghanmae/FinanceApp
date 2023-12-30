@@ -142,6 +142,9 @@ export interface SubCategoryViewModel extends $models.SubCategory {
   allocation: number | null;
   categoryId: number | null;
   category: CategoryViewModel | null;
+  
+  /** A category that would not have transactions assoicated with it */
+  isStatic: boolean | null;
   subCategoryCustomCalculations: SubCategoryCustomCalculationViewModel[] | null;
   budgetId: number | null;
 }

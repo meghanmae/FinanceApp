@@ -19,6 +19,11 @@ public class SubCategory : SecuredByBudgetBase
     public int CategoryId { get; set; }
     public Category? Category { get; set; }
 
+    /// <summary>
+    /// A category that would not have transactions assoicated with it
+    /// </summary>
+    public bool IsStatic { get; set; }
+
     public ICollection<SubCategoryCustomCalculation> SubCategoryCustomCalculations { get; set; } = new List<SubCategoryCustomCalculation>();
 
     [DefaultDataSource]

@@ -174,6 +174,9 @@ export interface SubCategory extends Model<typeof metadata.SubCategory> {
   allocation: number | null
   categoryId: number | null
   category: Category | null
+  
+  /** A category that would not have transactions assoicated with it */
+  isStatic: boolean | null
   subCategoryCustomCalculations: SubCategoryCustomCalculation[] | null
   budgetId: number | null
 }

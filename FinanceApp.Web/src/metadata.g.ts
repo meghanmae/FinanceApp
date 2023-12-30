@@ -456,6 +456,12 @@ export const SubCategory = domain.types.SubCategory = {
       get inverseNavigation() { return (domain.types.Category as ModelType).props.subCategories as ModelCollectionNavigationProperty },
       dontSerialize: true,
     },
+    isStatic: {
+      name: "isStatic",
+      displayName: "Is Static",
+      type: "boolean",
+      role: "value",
+    },
     subCategoryCustomCalculations: {
       name: "subCategoryCustomCalculations",
       displayName: "Sub Category Custom Calculations",
