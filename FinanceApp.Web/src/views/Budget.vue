@@ -23,11 +23,14 @@
           @saved="loadCategories"
         />
       </h3>
-      <CategoryRow
-        v-for="category in categories.$items"
-        :key="category.categoryId!"
-        :category="category"
-      />
+      <v-expansion-panels multiple>
+        <v-expansion-panel
+          v-for="category in categories.$items"
+          :key="category.categoryId!"
+        >
+          <CategoryRow :category="category" />
+        </v-expansion-panel>
+      </v-expansion-panels>
     </c-loader-status>
   </v-container>
 </template>

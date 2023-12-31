@@ -20,6 +20,7 @@ namespace FinanceApp.Web.Models
         private FinanceApp.Web.Models.CategoryDtoGen _Category;
         private bool? _IsStatic;
         private System.Collections.Generic.ICollection<FinanceApp.Web.Models.SubCategoryCustomCalculationDtoGen> _SubCategoryCustomCalculations;
+        private System.Collections.Generic.ICollection<FinanceApp.Web.Models.TransactionDtoGen> _Transactions;
         private int? _BudgetId;
 
         public int? SubCategoryId
@@ -62,6 +63,11 @@ namespace FinanceApp.Web.Models
             get => _SubCategoryCustomCalculations;
             set { _SubCategoryCustomCalculations = value; Changed(nameof(SubCategoryCustomCalculations)); }
         }
+        public System.Collections.Generic.ICollection<FinanceApp.Web.Models.TransactionDtoGen> Transactions
+        {
+            get => _Transactions;
+            set { _Transactions = value; Changed(nameof(Transactions)); }
+        }
         public int? BudgetId
         {
             get => _BudgetId;
@@ -96,6 +102,18 @@ namespace FinanceApp.Web.Models
             else if (propValSubCategoryCustomCalculations == null && tree?[nameof(this.SubCategoryCustomCalculations)] != null)
             {
                 this.SubCategoryCustomCalculations = new SubCategoryCustomCalculationDtoGen[0];
+            }
+
+            var propValTransactions = obj.Transactions;
+            if (propValTransactions != null && (tree == null || tree[nameof(this.Transactions)] != null))
+            {
+                this.Transactions = propValTransactions
+                    .OrderBy(f => f.TransactionId)
+                    .Select(f => f.MapToDto<FinanceApp.Data.Models.Transaction, TransactionDtoGen>(context, tree?[nameof(this.Transactions)])).ToList();
+            }
+            else if (propValTransactions == null && tree?[nameof(this.Transactions)] != null)
+            {
+                this.Transactions = new TransactionDtoGen[0];
             }
 
         }

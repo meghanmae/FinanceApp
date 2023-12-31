@@ -178,6 +178,7 @@ export interface SubCategory extends Model<typeof metadata.SubCategory> {
   /** A category that would not have transactions assoicated with it */
   isStatic: boolean | null
   subCategoryCustomCalculations: SubCategoryCustomCalculation[] | null
+  transactions: Transaction[] | null
   budgetId: number | null
 }
 export class SubCategory {

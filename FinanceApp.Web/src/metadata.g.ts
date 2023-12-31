@@ -478,6 +478,22 @@ export const SubCategory = domain.types.SubCategory = {
       get inverseNavigation() { return (domain.types.SubCategoryCustomCalculation as ModelType).props.subCategory as ModelReferenceNavigationProperty },
       dontSerialize: true,
     },
+    transactions: {
+      name: "transactions",
+      displayName: "Transactions",
+      type: "collection",
+      itemType: {
+        name: "$collectionItem",
+        displayName: "",
+        role: "value",
+        type: "model",
+        get typeDef() { return (domain.types.Transaction as ModelType) },
+      },
+      role: "collectionNavigation",
+      get foreignKey() { return (domain.types.Transaction as ModelType).props.subCategoryId as ForeignKeyProperty },
+      get inverseNavigation() { return (domain.types.Transaction as ModelType).props.subCategory as ModelReferenceNavigationProperty },
+      dontSerialize: true,
+    },
     budgetId: {
       name: "budgetId",
       displayName: "Budget Id",
@@ -669,6 +685,7 @@ export const Transaction = domain.types.Transaction = {
       role: "referenceNavigation",
       get foreignKey() { return (domain.types.Transaction as ModelType).props.subCategoryId as ForeignKeyProperty },
       get principalKey() { return (domain.types.SubCategory as ModelType).props.subCategoryId as PrimaryKeyProperty },
+      get inverseNavigation() { return (domain.types.SubCategory as ModelType).props.transactions as ModelCollectionNavigationProperty },
       dontSerialize: true,
     },
     budgetId: {

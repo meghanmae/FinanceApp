@@ -146,6 +146,7 @@ export interface SubCategoryViewModel extends $models.SubCategory {
   /** A category that would not have transactions assoicated with it */
   isStatic: boolean | null;
   subCategoryCustomCalculations: SubCategoryCustomCalculationViewModel[] | null;
+  transactions: TransactionViewModel[] | null;
   budgetId: number | null;
 }
 export class SubCategoryViewModel extends ViewModel<$models.SubCategory, $apiClients.SubCategoryApiClient, number> implements $models.SubCategory  {
@@ -153,6 +154,11 @@ export class SubCategoryViewModel extends ViewModel<$models.SubCategory, $apiCli
   
   public addToSubCategoryCustomCalculations(initialData?: DeepPartial<$models.SubCategoryCustomCalculation> | null) {
     return this.$addChild('subCategoryCustomCalculations', initialData) as SubCategoryCustomCalculationViewModel
+  }
+  
+  
+  public addToTransactions(initialData?: DeepPartial<$models.Transaction> | null) {
+    return this.$addChild('transactions', initialData) as TransactionViewModel
   }
   
   constructor(initialData?: DeepPartial<$models.SubCategory> | null) {

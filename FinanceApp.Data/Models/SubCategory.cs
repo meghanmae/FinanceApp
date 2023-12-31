@@ -26,6 +26,8 @@ public class SubCategory : SecuredByBudgetBase
 
     public ICollection<SubCategoryCustomCalculation> SubCategoryCustomCalculations { get; set; } = new List<SubCategoryCustomCalculation>();
 
+    public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+
     [DefaultDataSource]
     public class SubCategoriesByBudget(CrudContext<AppDbContext> context) : SecureByBudgetDataSource<SubCategory, AppDbContext>(context)
     {
@@ -37,7 +39,9 @@ public class SubCategory : SecuredByBudgetBase
             var query = base.GetQuery(parameters);
             if (CategoryId is not null)
             {
-                query = query.Where(x => x.CategoryId == CategoryId);
+                query = query
+                    .Where(x => x.CategoryId == CategoryId)
+                    .Include(x => x.Transactions);
             }
             return query;
         }

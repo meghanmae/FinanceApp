@@ -45,90 +45,43 @@
 
   <v-card-text v-if="!subCategory.isStatic">
     <TransactionRow
-      v-for="transaction in transactions.$items"
+      v-for="transaction in subCategory.transactions"
       :key="transaction.transactionId!"
       :transaction="transaction"
       :subCategoryId="subCategory.subCategoryId!"
     />
+
     <TransactionRow
       :id="`new-transaction-${subCategory.subCategoryId}`"
       :transaction="newTransaction"
       :subCategoryId="subCategory.subCategoryId!"
-      @addedNew="loadTransactions"
+      @addedNew="refreshSubcategory"
     />
 
-    <div align="right" class="mr-12 text-subtitle-1">
-      <strong>Total Spent:</strong>
-      {{ BudgetService.formatCurrency(totalSpent) }}
-      <br />
-      <span :style="`color: ${color}`">
-        <strong>{{ BudgetService.formatCurrency(totalLeft) }}</strong>
-      </span>
-      Left this month
-    </div>
+    <TotalDisplay :subCategories="subCategories" />
   </v-card-text>
 </template>
 
 <script setup lang="ts">
-import { Transaction } from "@/models.g";
-import {
-  SubCategoryViewModel,
-  TransactionListViewModel,
-  TransactionViewModel,
-} from "@/viewmodels.g";
-import BudgetService from "@/services/BudgetService";
+import { SubCategoryViewModel, TransactionViewModel } from "@/viewmodels.g";
 
 const props = defineProps<{
   subCategory: SubCategoryViewModel;
   color: string;
 }>();
 
-const { subCategory } = toRefs(props);
-
 const showDelete = ref(false);
 
 props.subCategory.$useAutoSave();
 
-let newTransaction: TransactionViewModel;
+const subCategories: SubCategoryViewModel[] = [props.subCategory];
 
-const transactions = new TransactionListViewModel();
-const datasource = new Transaction.DataSources.TransactionsByBudget();
-datasource.subCategoryId = subCategory.value.subCategoryId;
-transactions.$dataSource = datasource;
+let newTransaction: TransactionViewModel = new TransactionViewModel();
 
-const totalSpent = computed(() => {
-  let total = 0;
-  if (transactions.$items.length > 0) {
-    total =
-      transactions.$items
-        .map((x) => x.amount)
-        .reduce((accumulator, currentValue) => {
-          return (accumulator ?? 0) + (currentValue ?? 0);
-        }) ?? 0;
-  }
-
-  return total;
-});
-
-const totalLeft = computed(() => {
-  return (subCategory.value.allocation ?? 0) - totalSpent.value;
-});
-
-const color = computed(() => {
-  if (totalLeft.value <= 0) {
-    return "#F44336";
-  } else if (totalLeft.value <= (subCategory.value.allocation ?? 0) * 0.2) {
-    return "#FFEB3B";
-  } else {
-    return "#4CAF50";
-  }
-});
-
-function loadTransactions() {
-  transactions.$load();
-  newTransaction = new TransactionViewModel();
+function refreshSubcategory() {
+  props.subCategory.$load(props.subCategory.subCategoryId!);
+  nextTick(() => (newTransaction = new TransactionViewModel()));
 }
-loadTransactions();
 
 function deleteSubCategory() {
   if (confirm()) {
