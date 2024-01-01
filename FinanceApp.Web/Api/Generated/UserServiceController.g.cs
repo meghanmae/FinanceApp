@@ -45,7 +45,7 @@ namespace FinanceApp.Web.Api
             [FromServices] FinanceApp.Data.AppDbContext db)
         {
             IncludeTree includeTree = null;
-            var _mappingContext = new MappingContext(User);
+            var _mappingContext = new MappingContext(Context);
             var _methodResult = Service.GetLoggedInUser(
                 User,
                 db

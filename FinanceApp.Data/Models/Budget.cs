@@ -1,4 +1,5 @@
 ﻿using FinanceApp.Data.Security;
+using System.ComponentModel;
 
 namespace FinanceApp.Data.Models;
 
@@ -12,6 +13,13 @@ public class Budget
 
     [Required]
     public required string Name { get; set; }
+
+    [Required]
+    public required string Color { get; set; }
+
+    [Required]
+    [Column(TypeName = "decimal(18, 2)")]
+    public required decimal Allocation { get; set; }
 
     public string? Description { get; set; }
 
@@ -70,6 +78,13 @@ public class Budget
 
             // Remove associated budget users
             Db.BudgetUsers.RemoveRange(Db.BudgetUsers.Where(x => x.BudgetId == item.BudgetId));
+
+            // Remove assoicated things, like categories
+            Db.Categories.RemoveRange(Db.Categories.Where(x => x.BudgetId == item.BudgetId));
+            Db.CustomCalculations.RemoveRange(Db.CustomCalculations.Where(x => x.BudgetId == item.BudgetId));
+            Db.SubCategories.RemoveRange(Db.SubCategories.Where(x => x.BudgetId == item.BudgetId));
+            Db.SubCategoryCustomCalculations.RemoveRange(Db.SubCategoryCustomCalculations.Where(x => x.BudgetId == item.BudgetId));
+            Db.Transactions.RemoveRange(Db.Transactions.Where(x => x.BudgetId == item.BudgetId));
 
             return base.BeforeDelete(item);
         }

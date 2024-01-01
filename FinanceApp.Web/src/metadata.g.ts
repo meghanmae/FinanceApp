@@ -97,6 +97,24 @@ export const Budget = domain.types.Budget = {
         required: val => (val != null && val !== '') || "Name is required.",
       }
     },
+    color: {
+      name: "color",
+      displayName: "Color",
+      type: "string",
+      role: "value",
+      rules: {
+        required: val => (val != null && val !== '') || "Color is required.",
+      }
+    },
+    allocation: {
+      name: "allocation",
+      displayName: "Allocation",
+      type: "number",
+      role: "value",
+      rules: {
+        required: val => val != null || "Allocation is required.",
+      }
+    },
     description: {
       name: "description",
       displayName: "Description",
@@ -114,9 +132,7 @@ export const Budget = domain.types.Budget = {
         type: "model",
         get typeDef() { return (domain.types.BudgetUser as ModelType) },
       },
-      role: "collectionNavigation",
-      get foreignKey() { return (domain.types.BudgetUser as ModelType).props.budgetId as ForeignKeyProperty },
-      get inverseNavigation() { return (domain.types.BudgetUser as ModelType).props.budget as ModelReferenceNavigationProperty },
+      role: "value",
       dontSerialize: true,
     },
     categories: {
@@ -200,17 +216,6 @@ export const BudgetUser = domain.types.BudgetUser = {
         required: val => val != null || "Budget is required.",
       }
     },
-    budget: {
-      name: "budget",
-      displayName: "Budget",
-      type: "model",
-      get typeDef() { return (domain.types.Budget as ModelType) },
-      role: "referenceNavigation",
-      get foreignKey() { return (domain.types.BudgetUser as ModelType).props.budgetId as ForeignKeyProperty },
-      get principalKey() { return (domain.types.Budget as ModelType).props.budgetId as PrimaryKeyProperty },
-      get inverseNavigation() { return (domain.types.Budget as ModelType).props.budgetUsers as ModelCollectionNavigationProperty },
-      dontSerialize: true,
-    },
   },
   methods: {
   },
@@ -282,6 +287,19 @@ export const Category = domain.types.Category = {
       get inverseNavigation() { return (domain.types.SubCategory as ModelType).props.category as ModelReferenceNavigationProperty },
       dontSerialize: true,
     },
+    budgetId: {
+      name: "budgetId",
+      displayName: "Budget Id",
+      type: "number",
+      role: "foreignKey",
+      get principalKey() { return (domain.types.Budget as ModelType).props.budgetId as PrimaryKeyProperty },
+      get principalType() { return (domain.types.Budget as ModelType) },
+      get navigationProp() { return (domain.types.Category as ModelType).props.budget as ModelReferenceNavigationProperty },
+      hidden: 3 as HiddenAreas,
+      rules: {
+        required: val => val != null || "Budget is required.",
+      }
+    },
   },
   methods: {
   },
@@ -292,6 +310,12 @@ export const Category = domain.types.Category = {
       displayName: "Categories By Budget",
       isDefault: true,
       props: {
+        budgetId: {
+          name: "budgetId",
+          displayName: "Budget Id",
+          type: "number",
+          role: "value",
+        },
       },
     },
   },
@@ -303,7 +327,7 @@ export const CustomCalculation = domain.types.CustomCalculation = {
   type: "model",
   controllerRoute: "CustomCalculation",
   get keyProp() { return this.props.customCalculationId }, 
-  behaviorFlags: 7 as BehaviorFlags,
+  behaviorFlags: 3 as BehaviorFlags,
   props: {
     customCalculationId: {
       name: "customCalculationId",
@@ -343,10 +367,37 @@ export const CustomCalculation = domain.types.CustomCalculation = {
       get inverseNavigation() { return (domain.types.SubCategoryCustomCalculation as ModelType).props.customCalculation as ModelReferenceNavigationProperty },
       dontSerialize: true,
     },
+    budgetId: {
+      name: "budgetId",
+      displayName: "Budget Id",
+      type: "number",
+      role: "foreignKey",
+      get principalKey() { return (domain.types.Budget as ModelType).props.budgetId as PrimaryKeyProperty },
+      get principalType() { return (domain.types.Budget as ModelType) },
+      get navigationProp() { return (domain.types.CustomCalculation as ModelType).props.budget as ModelReferenceNavigationProperty },
+      hidden: 3 as HiddenAreas,
+      rules: {
+        required: val => val != null || "Budget is required.",
+      }
+    },
   },
   methods: {
   },
   dataSources: {
+    customCalculationsByBudget: {
+      type: "dataSource",
+      name: "CustomCalculationsByBudget",
+      displayName: "Custom Calculations By Budget",
+      isDefault: true,
+      props: {
+        budgetId: {
+          name: "budgetId",
+          displayName: "Budget Id",
+          type: "number",
+          role: "value",
+        },
+      },
+    },
   },
 }
 export const SubCategory = domain.types.SubCategory = {
@@ -413,6 +464,12 @@ export const SubCategory = domain.types.SubCategory = {
       get inverseNavigation() { return (domain.types.Category as ModelType).props.subCategories as ModelCollectionNavigationProperty },
       dontSerialize: true,
     },
+    isStatic: {
+      name: "isStatic",
+      displayName: "Is Static",
+      type: "boolean",
+      role: "value",
+    },
     subCategoryCustomCalculations: {
       name: "subCategoryCustomCalculations",
       displayName: "Sub Category Custom Calculations",
@@ -429,10 +486,59 @@ export const SubCategory = domain.types.SubCategory = {
       get inverseNavigation() { return (domain.types.SubCategoryCustomCalculation as ModelType).props.subCategory as ModelReferenceNavigationProperty },
       dontSerialize: true,
     },
+    transactions: {
+      name: "transactions",
+      displayName: "Transactions",
+      type: "collection",
+      itemType: {
+        name: "$collectionItem",
+        displayName: "",
+        role: "value",
+        type: "model",
+        get typeDef() { return (domain.types.Transaction as ModelType) },
+      },
+      role: "collectionNavigation",
+      get foreignKey() { return (domain.types.Transaction as ModelType).props.subCategoryId as ForeignKeyProperty },
+      get inverseNavigation() { return (domain.types.Transaction as ModelType).props.subCategory as ModelReferenceNavigationProperty },
+      dontSerialize: true,
+    },
+    budgetId: {
+      name: "budgetId",
+      displayName: "Budget Id",
+      type: "number",
+      role: "foreignKey",
+      get principalKey() { return (domain.types.Budget as ModelType).props.budgetId as PrimaryKeyProperty },
+      get principalType() { return (domain.types.Budget as ModelType) },
+      get navigationProp() { return (domain.types.SubCategory as ModelType).props.budget as ModelReferenceNavigationProperty },
+      hidden: 3 as HiddenAreas,
+      rules: {
+        required: val => val != null || "Budget is required.",
+      }
+    },
   },
   methods: {
   },
   dataSources: {
+    subCategoriesByBudget: {
+      type: "dataSource",
+      name: "SubCategoriesByBudget",
+      displayName: "Sub Categories By Budget",
+      isDefault: true,
+      props: {
+        categoryId: {
+          name: "categoryId",
+          displayName: "Category Id",
+          type: "number",
+          role: "value",
+        },
+        budgetId: {
+          name: "budgetId",
+          displayName: "Budget Id",
+          type: "number",
+          role: "value",
+        },
+      },
+    },
   },
 }
 export const SubCategoryCustomCalculation = domain.types.SubCategoryCustomCalculation = {
@@ -442,7 +548,7 @@ export const SubCategoryCustomCalculation = domain.types.SubCategoryCustomCalcul
   type: "model",
   controllerRoute: "SubCategoryCustomCalculation",
   get keyProp() { return this.props.subCategoryCustomCalculationId }, 
-  behaviorFlags: 7 as BehaviorFlags,
+  behaviorFlags: 0 as BehaviorFlags,
   props: {
     subCategoryCustomCalculationId: {
       name: "subCategoryCustomCalculationId",
@@ -499,10 +605,37 @@ export const SubCategoryCustomCalculation = domain.types.SubCategoryCustomCalcul
       get inverseNavigation() { return (domain.types.CustomCalculation as ModelType).props.subCategoryCustomCalculations as ModelCollectionNavigationProperty },
       dontSerialize: true,
     },
+    budgetId: {
+      name: "budgetId",
+      displayName: "Budget Id",
+      type: "number",
+      role: "foreignKey",
+      get principalKey() { return (domain.types.Budget as ModelType).props.budgetId as PrimaryKeyProperty },
+      get principalType() { return (domain.types.Budget as ModelType) },
+      get navigationProp() { return (domain.types.SubCategoryCustomCalculation as ModelType).props.budget as ModelReferenceNavigationProperty },
+      hidden: 3 as HiddenAreas,
+      rules: {
+        required: val => val != null || "Budget is required.",
+      }
+    },
   },
   methods: {
   },
   dataSources: {
+    subCategoriesByBudget: {
+      type: "dataSource",
+      name: "SubCategoriesByBudget",
+      displayName: "Sub Categories By Budget",
+      isDefault: true,
+      props: {
+        budgetId: {
+          name: "budgetId",
+          displayName: "Budget Id",
+          type: "number",
+          role: "value",
+        },
+      },
+    },
   },
 }
 export const Transaction = domain.types.Transaction = {
@@ -560,12 +693,46 @@ export const Transaction = domain.types.Transaction = {
       role: "referenceNavigation",
       get foreignKey() { return (domain.types.Transaction as ModelType).props.subCategoryId as ForeignKeyProperty },
       get principalKey() { return (domain.types.SubCategory as ModelType).props.subCategoryId as PrimaryKeyProperty },
+      get inverseNavigation() { return (domain.types.SubCategory as ModelType).props.transactions as ModelCollectionNavigationProperty },
       dontSerialize: true,
+    },
+    budgetId: {
+      name: "budgetId",
+      displayName: "Budget Id",
+      type: "number",
+      role: "foreignKey",
+      get principalKey() { return (domain.types.Budget as ModelType).props.budgetId as PrimaryKeyProperty },
+      get principalType() { return (domain.types.Budget as ModelType) },
+      get navigationProp() { return (domain.types.Transaction as ModelType).props.budget as ModelReferenceNavigationProperty },
+      hidden: 3 as HiddenAreas,
+      rules: {
+        required: val => val != null || "Budget is required.",
+      }
     },
   },
   methods: {
   },
   dataSources: {
+    transactionsByBudget: {
+      type: "dataSource",
+      name: "TransactionsByBudget",
+      displayName: "Transactions By Budget",
+      isDefault: true,
+      props: {
+        subCategoryId: {
+          name: "subCategoryId",
+          displayName: "Sub Category Id",
+          type: "number",
+          role: "value",
+        },
+        budgetId: {
+          name: "budgetId",
+          displayName: "Budget Id",
+          type: "number",
+          role: "value",
+        },
+      },
+    },
   },
 }
 export const UserService = domain.services.UserService = {

@@ -13,9 +13,11 @@ declare module "@vue/runtime-core" {
   }
 }
 
-document.addEventListener("visibilitychange", () => {
-  if (!document.hidden) userService.getLoggedInUser();
-},
+document.addEventListener(
+  "visibilitychange",
+  () => {
+    if (!document.hidden) userService.getLoggedInUser();
+  },
   false
 );
 
@@ -28,7 +30,7 @@ export const globalProperties = {
   },
   get $userEmail(): string {
     return userService.getLoggedInUser.result?.email ?? "";
-  }
-}
+  },
+};
 
-export default userService
+export default userService;

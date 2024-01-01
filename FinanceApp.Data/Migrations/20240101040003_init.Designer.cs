@@ -11,15 +11,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinanceApp.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231111184529_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20240101040003_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0-rc.2.23480.1")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -54,6 +54,13 @@ namespace FinanceApp.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BudgetId"));
+
+                    b.Property<decimal>("Allocation")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -169,6 +176,9 @@ namespace FinanceApp.Data.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsStatic")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -337,7 +347,7 @@ namespace FinanceApp.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("FinanceApp.Data.Models.SubCategory", "SubCategory")
-                        .WithMany()
+                        .WithMany("Transactions")
                         .HasForeignKey("SubCategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -372,6 +382,8 @@ namespace FinanceApp.Data.Migrations
             modelBuilder.Entity("FinanceApp.Data.Models.SubCategory", b =>
                 {
                     b.Navigation("SubCategoryCustomCalculations");
+
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

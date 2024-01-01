@@ -2,7 +2,6 @@
 
 namespace FinanceApp.Data.Models;
 
-[Delete(SecurityPermissionLevels.DenyAll)]
 public class SubCategory : SecuredByBudgetBase
 {
     public int SubCategoryId { get; set; }
@@ -20,14 +19,43 @@ public class SubCategory : SecuredByBudgetBase
     public int CategoryId { get; set; }
     public Category? Category { get; set; }
 
+    /// <summary>
+    /// A category that would not have transactions assoicated with it
+    /// </summary>
+    public bool IsStatic { get; set; }
+
     public ICollection<SubCategoryCustomCalculation> SubCategoryCustomCalculations { get; set; } = new List<SubCategoryCustomCalculation>();
+
+    public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 
     [DefaultDataSource]
     public class SubCategoriesByBudget(CrudContext<AppDbContext> context) : SecureByBudgetDataSource<SubCategory, AppDbContext>(context)
     {
+        [Coalesce]
+        public int? CategoryId { get; set; } = null;
+
         public override IQueryable<SubCategory> GetQuery(IDataSourceParameters parameters)
         {
-            return base.GetQuery(parameters);
+            var query = base.GetQuery(parameters);
+            if (CategoryId is not null)
+            {
+                query = query
+                    .Where(x => x.CategoryId == CategoryId)
+                    .Include(x => x.Transactions);
+            }
+            return query;
+        }
+    }
+
+    public class SubCategoryBehaviors(CrudContext<AppDbContext> context) : StandardBehaviors<SubCategory, AppDbContext>(context)
+    {
+        public override ItemResult BeforeDelete(SubCategory item)
+        {
+            // Remove assoicated things, like transactions
+            Db.Transactions.RemoveRange(Db.Transactions.Where(x => x.SubCategoryId == item.SubCategoryId));
+            Db.SubCategoryCustomCalculations.RemoveRange(Db.SubCategoryCustomCalculations.Where(x => x.SubCategoryId == item.SubCategoryId));
+
+            return base.BeforeDelete(item);
         }
     }
 }

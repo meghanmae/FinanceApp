@@ -14,6 +14,8 @@ namespace FinanceApp.Web.Models
 
         private int? _BudgetId;
         private string _Name;
+        private string _Color;
+        private decimal? _Allocation;
         private string _Description;
         private System.Collections.Generic.ICollection<FinanceApp.Web.Models.BudgetUserDtoGen> _BudgetUsers;
         private System.Collections.Generic.ICollection<FinanceApp.Web.Models.CategoryDtoGen> _Categories;
@@ -27,6 +29,16 @@ namespace FinanceApp.Web.Models
         {
             get => _Name;
             set { _Name = value; Changed(nameof(Name)); }
+        }
+        public string Color
+        {
+            get => _Color;
+            set { _Color = value; Changed(nameof(Color)); }
+        }
+        public decimal? Allocation
+        {
+            get => _Allocation;
+            set { _Allocation = value; Changed(nameof(Allocation)); }
         }
         public string Description
         {
@@ -54,6 +66,8 @@ namespace FinanceApp.Web.Models
 
             this.BudgetId = obj.BudgetId;
             this.Name = obj.Name;
+            this.Color = obj.Color;
+            this.Allocation = obj.Allocation;
             this.Description = obj.Description;
             var propValBudgetUsers = obj.BudgetUsers;
             if (propValBudgetUsers != null && (tree == null || tree[nameof(this.BudgetUsers)] != null))
@@ -92,6 +106,8 @@ namespace FinanceApp.Web.Models
 
             if (ShouldMapTo(nameof(BudgetId))) entity.BudgetId = (BudgetId ?? entity.BudgetId);
             if (ShouldMapTo(nameof(Name))) entity.Name = Name;
+            if (ShouldMapTo(nameof(Color))) entity.Color = Color;
+            if (ShouldMapTo(nameof(Allocation))) entity.Allocation = (Allocation ?? entity.Allocation);
             if (ShouldMapTo(nameof(Description))) entity.Description = Description;
         }
 
@@ -105,6 +121,8 @@ namespace FinanceApp.Web.Models
             var entity = new FinanceApp.Data.Models.Budget()
             {
                 Name = Name,
+                Color = Color,
+                Allocation = (Allocation ?? default),
             };
 
             if (OnUpdate(entity, context)) return entity;

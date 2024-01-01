@@ -2,6 +2,7 @@
   &.theme--light {
     background: rgb(250, 250, 250) !important;
   }
+
   &.theme--dark {
     background: #111 !important;
   }
@@ -31,12 +32,34 @@ a {
 .v-input--checkbox.v-input--dense {
   margin-top: 0;
   padding-top: 6px;
+
   td & {
     padding-top: 0;
   }
 }
 
-.v-application ul, .v-application ol {
+.v-application ul,
+.v-application ol {
   // Vuetify3 lost the padding for ul/ol that Vuetify2 had. Restore it.
   padding-left: 24px;
+}
+
+.input-heading .v-field {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.input-sub-heading .v-field {
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.hidden-element {
+  visibility: hidden;
+}
+
+.sticky-banner {
+  position: sticky;
+  top: 75px;
+  z-index: 3;
 }

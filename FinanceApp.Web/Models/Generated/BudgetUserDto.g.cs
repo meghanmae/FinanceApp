@@ -16,7 +16,6 @@ namespace FinanceApp.Web.Models
         private string _ApplicationUserId;
         private FinanceApp.Web.Models.ApplicationUserDtoGen _ApplicationUser;
         private int? _BudgetId;
-        private FinanceApp.Web.Models.BudgetDtoGen _Budget;
 
         public int? BudgetUserId
         {
@@ -38,11 +37,6 @@ namespace FinanceApp.Web.Models
             get => _BudgetId;
             set { _BudgetId = value; Changed(nameof(BudgetId)); }
         }
-        public FinanceApp.Web.Models.BudgetDtoGen Budget
-        {
-            get => _Budget;
-            set { _Budget = value; Changed(nameof(Budget)); }
-        }
 
         /// <summary>
         /// Map from the domain object to the properties of the current DTO instance.
@@ -57,9 +51,6 @@ namespace FinanceApp.Web.Models
             this.BudgetId = obj.BudgetId;
             if (tree == null || tree[nameof(this.ApplicationUser)] != null)
                 this.ApplicationUser = obj.ApplicationUser.MapToDto<FinanceApp.Data.Models.ApplicationUser, ApplicationUserDtoGen>(context, tree?[nameof(this.ApplicationUser)]);
-
-            if (tree == null || tree[nameof(this.Budget)] != null)
-                this.Budget = obj.Budget.MapToDto<FinanceApp.Data.Models.Budget, BudgetDtoGen>(context, tree?[nameof(this.Budget)]);
 
         }
 

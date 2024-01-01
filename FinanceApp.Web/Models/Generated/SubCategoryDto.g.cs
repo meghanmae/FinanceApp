@@ -18,7 +18,10 @@ namespace FinanceApp.Web.Models
         private decimal? _Allocation;
         private int? _CategoryId;
         private FinanceApp.Web.Models.CategoryDtoGen _Category;
+        private bool? _IsStatic;
         private System.Collections.Generic.ICollection<FinanceApp.Web.Models.SubCategoryCustomCalculationDtoGen> _SubCategoryCustomCalculations;
+        private System.Collections.Generic.ICollection<FinanceApp.Web.Models.TransactionDtoGen> _Transactions;
+        private int? _BudgetId;
 
         public int? SubCategoryId
         {
@@ -50,10 +53,25 @@ namespace FinanceApp.Web.Models
             get => _Category;
             set { _Category = value; Changed(nameof(Category)); }
         }
+        public bool? IsStatic
+        {
+            get => _IsStatic;
+            set { _IsStatic = value; Changed(nameof(IsStatic)); }
+        }
         public System.Collections.Generic.ICollection<FinanceApp.Web.Models.SubCategoryCustomCalculationDtoGen> SubCategoryCustomCalculations
         {
             get => _SubCategoryCustomCalculations;
             set { _SubCategoryCustomCalculations = value; Changed(nameof(SubCategoryCustomCalculations)); }
+        }
+        public System.Collections.Generic.ICollection<FinanceApp.Web.Models.TransactionDtoGen> Transactions
+        {
+            get => _Transactions;
+            set { _Transactions = value; Changed(nameof(Transactions)); }
+        }
+        public int? BudgetId
+        {
+            get => _BudgetId;
+            set { _BudgetId = value; Changed(nameof(BudgetId)); }
         }
 
         /// <summary>
@@ -69,6 +87,8 @@ namespace FinanceApp.Web.Models
             this.Description = obj.Description;
             this.Allocation = obj.Allocation;
             this.CategoryId = obj.CategoryId;
+            this.IsStatic = obj.IsStatic;
+            this.BudgetId = obj.BudgetId;
             if (tree == null || tree[nameof(this.Category)] != null)
                 this.Category = obj.Category.MapToDto<FinanceApp.Data.Models.Category, CategoryDtoGen>(context, tree?[nameof(this.Category)]);
 
@@ -82,6 +102,18 @@ namespace FinanceApp.Web.Models
             else if (propValSubCategoryCustomCalculations == null && tree?[nameof(this.SubCategoryCustomCalculations)] != null)
             {
                 this.SubCategoryCustomCalculations = new SubCategoryCustomCalculationDtoGen[0];
+            }
+
+            var propValTransactions = obj.Transactions;
+            if (propValTransactions != null && (tree == null || tree[nameof(this.Transactions)] != null))
+            {
+                this.Transactions = propValTransactions
+                    .OrderBy(f => f.TransactionId)
+                    .Select(f => f.MapToDto<FinanceApp.Data.Models.Transaction, TransactionDtoGen>(context, tree?[nameof(this.Transactions)])).ToList();
+            }
+            else if (propValTransactions == null && tree?[nameof(this.Transactions)] != null)
+            {
+                this.Transactions = new TransactionDtoGen[0];
             }
 
         }
@@ -100,6 +132,8 @@ namespace FinanceApp.Web.Models
             if (ShouldMapTo(nameof(Description))) entity.Description = Description;
             if (ShouldMapTo(nameof(Allocation))) entity.Allocation = (Allocation ?? entity.Allocation);
             if (ShouldMapTo(nameof(CategoryId))) entity.CategoryId = (CategoryId ?? entity.CategoryId);
+            if (ShouldMapTo(nameof(IsStatic))) entity.IsStatic = (IsStatic ?? entity.IsStatic);
+            if (ShouldMapTo(nameof(BudgetId))) entity.BudgetId = (BudgetId ?? entity.BudgetId);
         }
 
         /// <summary>
@@ -119,6 +153,8 @@ namespace FinanceApp.Web.Models
             if (ShouldMapTo(nameof(SubCategoryId))) entity.SubCategoryId = (SubCategoryId ?? entity.SubCategoryId);
             if (ShouldMapTo(nameof(Description))) entity.Description = Description;
             if (ShouldMapTo(nameof(CategoryId))) entity.CategoryId = (CategoryId ?? entity.CategoryId);
+            if (ShouldMapTo(nameof(IsStatic))) entity.IsStatic = (IsStatic ?? entity.IsStatic);
+            if (ShouldMapTo(nameof(BudgetId))) entity.BudgetId = (BudgetId ?? entity.BudgetId);
 
             return entity;
         }

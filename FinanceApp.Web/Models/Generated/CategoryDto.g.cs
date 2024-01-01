@@ -18,6 +18,7 @@ namespace FinanceApp.Web.Models
         private string _Color;
         private string _Icon;
         private System.Collections.Generic.ICollection<FinanceApp.Web.Models.SubCategoryDtoGen> _SubCategories;
+        private int? _BudgetId;
 
         public int? CategoryId
         {
@@ -49,6 +50,11 @@ namespace FinanceApp.Web.Models
             get => _SubCategories;
             set { _SubCategories = value; Changed(nameof(SubCategories)); }
         }
+        public int? BudgetId
+        {
+            get => _BudgetId;
+            set { _BudgetId = value; Changed(nameof(BudgetId)); }
+        }
 
         /// <summary>
         /// Map from the domain object to the properties of the current DTO instance.
@@ -63,6 +69,7 @@ namespace FinanceApp.Web.Models
             this.Description = obj.Description;
             this.Color = obj.Color;
             this.Icon = obj.Icon;
+            this.BudgetId = obj.BudgetId;
             var propValSubCategories = obj.SubCategories;
             if (propValSubCategories != null && (tree == null || tree[nameof(this.SubCategories)] != null))
             {
@@ -91,6 +98,7 @@ namespace FinanceApp.Web.Models
             if (ShouldMapTo(nameof(Description))) entity.Description = Description;
             if (ShouldMapTo(nameof(Color))) entity.Color = Color;
             if (ShouldMapTo(nameof(Icon))) entity.Icon = Icon;
+            if (ShouldMapTo(nameof(BudgetId))) entity.BudgetId = (BudgetId ?? entity.BudgetId);
         }
 
         /// <summary>
@@ -110,6 +118,7 @@ namespace FinanceApp.Web.Models
             if (OnUpdate(entity, context)) return entity;
             if (ShouldMapTo(nameof(CategoryId))) entity.CategoryId = (CategoryId ?? entity.CategoryId);
             if (ShouldMapTo(nameof(Description))) entity.Description = Description;
+            if (ShouldMapTo(nameof(BudgetId))) entity.BudgetId = (BudgetId ?? entity.BudgetId);
 
             return entity;
         }
