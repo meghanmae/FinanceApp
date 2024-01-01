@@ -127,6 +127,7 @@
 </template>
 
 <script setup lang="ts">
+import { BUDGET_SERVICE } from "@/lib/symbols";
 import { SubCategory } from "@/models.g";
 import {
   CategoryViewModel,
@@ -142,6 +143,10 @@ const props = defineProps<{
 
 const { category } = toRefs(props);
 const showDelete = ref(false);
+
+props.category.$useAutoSave();
+
+const budgetService = inject(BUDGET_SERVICE);
 
 const showNewSubCategoryDialog = ref(false);
 let newSubCategory: SubCategoryViewModel;
@@ -164,7 +169,11 @@ const color = computed(() => {
 });
 
 function loadSubCategories() {
-  subCategories.$load();
+  subCategories
+    .$load()
+    .then((x) =>
+      budgetService!.updateSubCategories(x.data.list as SubCategoryViewModel[])
+    );
   newSubCategory = new SubCategoryViewModel();
 }
 loadSubCategories();

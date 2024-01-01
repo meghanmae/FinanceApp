@@ -5,25 +5,24 @@
 namespace FinanceApp.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class @static : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "IsStatic",
-                table: "SubCategories",
-                type: "bit",
-                nullable: false,
-                defaultValue: false);
+            migrationBuilder.RenameColumn(
+                name: "color",
+                table: "Budgets",
+                newName: "Color");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "IsStatic",
-                table: "SubCategories");
+            migrationBuilder.RenameColumn(
+                name: "Color",
+                table: "Budgets",
+                newName: "color");
         }
     }
 }

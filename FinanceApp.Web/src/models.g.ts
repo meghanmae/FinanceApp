@@ -31,6 +31,7 @@ export interface Budget extends Model<typeof metadata.Budget> {
   budgetId: number | null
   name: string | null
   color: string | null
+  allocation: number | null
   description: string | null
   budgetUsers: BudgetUser[] | null
   categories: Category[] | null

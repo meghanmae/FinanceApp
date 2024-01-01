@@ -102,9 +102,17 @@ export const Budget = domain.types.Budget = {
       displayName: "Color",
       type: "string",
       role: "value",
-      defaultValue: "grey",
       rules: {
         required: val => (val != null && val !== '') || "Color is required.",
+      }
+    },
+    allocation: {
+      name: "allocation",
+      displayName: "Allocation",
+      type: "number",
+      role: "value",
+      rules: {
+        required: val => val != null || "Allocation is required.",
       }
     },
     description: {

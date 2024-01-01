@@ -1,4 +1,4 @@
-import { BudgetViewModel } from "@/viewmodels.g";
+import { BudgetViewModel, SubCategoryViewModel } from "@/viewmodels.g";
 
 export default class BudgetService {
   constructor(budget: BudgetViewModel) {
@@ -6,6 +6,19 @@ export default class BudgetService {
   }
 
   public budget = ref(new BudgetViewModel());
+  public allSubCategories = ref([] as SubCategoryViewModel[]);
+
+  public updateSubCategories(subCategories: SubCategoryViewModel[]) {
+    const ids = subCategories.map((x) => x.subCategoryId);
+
+    // Filter out all the old subcategories that match
+    this.allSubCategories.value = this.allSubCategories.value.filter(
+      (x) => !ids.includes(x.subCategoryId)
+    );
+
+    this.allSubCategories.value =
+      this.allSubCategories.value.concat(subCategories);
+  }
 
   public static formatCurrency(
     amount: number,

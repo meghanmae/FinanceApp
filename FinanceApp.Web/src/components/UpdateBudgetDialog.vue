@@ -10,6 +10,7 @@
       <v-card-text>
         <c-input :model="budget" for="name" autofocus @keyup.enter="save" />
         <c-input :model="budget" for="description" @keyup.enter="save" />
+        <c-input :model="budget" for="allocation" @keyup.enter="save" />
         <c-input :model="budget" for="color" @keyup.enter="save" />
       </v-card-text>
       <v-card-actions>

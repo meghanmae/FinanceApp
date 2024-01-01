@@ -1,12 +1,17 @@
 <template>
-  <div align="right" class="mr-12 text-caption mt-2">
-    <strong>Total Spent:</strong>
-    {{ BudgetService.formatCurrency(totalSpent) }}
+  <div align="right" :class="[fontClass, 'mr-12 mt-2']">
+    <strong>
+      {{ BudgetService.formatCurrency(totalSpent) }}
+    </strong>
+    <span class="text-grey">
+      of {{ BudgetService.formatCurrency(totalAllocated) }}
+      {{ allocatedText }}
+    </span>
     <br />
     <span :style="`color: ${color}`">
       <strong>{{ BudgetService.formatCurrency(totalLeft) }}</strong>
     </span>
-    Left this month
+    Left {{ totalLeftText }}
   </div>
 </template>
 
@@ -14,14 +19,30 @@
 import { SubCategoryViewModel } from "@/viewmodels.g";
 import BudgetService from "@/services/BudgetService";
 
-const props = defineProps<{
-  subCategories: SubCategoryViewModel[];
-}>();
+const props = withDefaults(
+  defineProps<{
+    subCategories: SubCategoryViewModel[];
+    fontClass?: string;
+    totalLeftText?: string;
+    allocatedText?: string;
+    allocation?: number | null;
+    addAllocationsOnly?: boolean;
+  }>(),
+  {
+    fontClass: "text-caption",
+    totalLeftText: "this month",
+    allocatedText: "spent",
+    allocation: null,
+    addAllocationsOnly: false,
+  }
+);
 
 const totalSpent = computed(() => {
   let total = 0;
   for (const subCategory of props.subCategories) {
-    if (!subCategory.isStatic) {
+    if (subCategory.isStatic || props.addAllocationsOnly) {
+      total += subCategory.allocation ?? 0;
+    } else {
       if (subCategory.transactions!.length > 0) {
         total +=
           subCategory
@@ -30,8 +51,6 @@ const totalSpent = computed(() => {
               return (accumulator ?? 0) + (currentValue ?? 0);
             }) ?? 0;
       }
-    } else {
-      total += subCategory.allocation ?? 0;
     }
   }
 
@@ -39,6 +58,8 @@ const totalSpent = computed(() => {
 });
 
 const totalAllocated = computed(() => {
+  if (props.allocation !== null) return props.allocation;
+
   return props.subCategories.length > 0
     ? props.subCategories
         .map((x) => x.allocation)

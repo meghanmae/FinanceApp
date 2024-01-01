@@ -15,8 +15,11 @@ public class Budget
     public required string Name { get; set; }
 
     [Required]
-    [DefaultValue("grey")]
-    public required string color { get; set; }
+    public required string Color { get; set; }
+
+    [Required]
+    [Column(TypeName = "decimal(18, 2)")]
+    public required decimal Allocation { get; set; }
 
     public string? Description { get; set; }
 

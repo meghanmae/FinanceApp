@@ -3,7 +3,7 @@
     v-model="formattedValue"
     :variant="variant"
     ref="inputRef"
-    class="input-sub-heading right-align-input"
+    :class="[textClass, 'right-align-input']"
     hide-details
   />
 </template>
@@ -16,9 +16,11 @@ const modelValue = defineModel<number | null>();
 withDefaults(
   defineProps<{
     variant?: string;
+    textClass?: string;
   }>(),
   {
     variant: "plain",
+    textClass: "input-sub-heading",
   }
 );
 

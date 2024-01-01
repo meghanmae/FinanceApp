@@ -3,7 +3,55 @@
     <c-loader-status
       :loaders="{ 'no-initial-content': [budget.$load, categories.$load] }"
     >
-      <BudgetRow :budget="budget" @deleted="routeHome" />
+      <v-card>
+        <v-sheet height="10px" :color="budget.color!" />
+        <v-row align="center">
+          <v-col>
+            <v-card-text>
+              <c-input
+                :model="budget"
+                for="name"
+                label=""
+                variant="plain"
+                hide-details
+                class="input-heading"
+              />
+              <c-input
+                :model="budget"
+                for="description"
+                label=""
+                variant="plain"
+                hide-details
+                class="input-sub-heading"
+              />
+            </v-card-text>
+          </v-col>
+          <v-col cols="auto">
+            <v-menu :close-on-content-click="false">
+              <template v-slot:activator="{ props }">
+                <TotalDisplay
+                  v-bind="props"
+                  :subCategories="budgetService.allSubCategories.value"
+                  fontClass="text-subtitle-1"
+                  :allocation="budget.allocation"
+                  totalLeftText="to allocate"
+                  allocatedText="allocated"
+                  :addAllocationsOnly="true"
+                />
+              </template>
+              <v-card>
+                <v-card-text>
+                  Budget Amount
+                  <MoneyInput
+                    v-model="budget.allocation"
+                    textClass="text-subcategory-1"
+                  />
+                </v-card-text>
+              </v-card>
+            </v-menu>
+          </v-col>
+        </v-row>
+      </v-card>
 
       <c-loader-status :loaders="{ '': [newCategory.$save] }" />
 
@@ -43,7 +91,6 @@ import {
   CategoryViewModel,
 } from "@/viewmodels.g";
 import { BUDGET_SERVICE } from "@/lib/symbols";
-import { useRouter } from "vue-router";
 import { Category } from "@/models.g";
 
 const props = defineProps<{
@@ -51,15 +98,16 @@ const props = defineProps<{
 }>();
 
 const { budgetId } = toRefs(props);
-const router = useRouter();
 
 const showNewCategoryDialog = ref(false);
 let newCategory: CategoryViewModel;
 
 const budget = new BudgetViewModel();
 budget.$load(props.budgetId);
+budget.$useAutoSave();
 
-provide(BUDGET_SERVICE, new BudgetService(budget));
+const budgetService = new BudgetService(budget);
+provide(BUDGET_SERVICE, budgetService);
 
 const categories = new CategoryListViewModel();
 const datasource = new Category.DataSources.CategoriesByBudget();
@@ -73,9 +121,5 @@ loadCategories();
 
 function addCategory() {
   showNewCategoryDialog.value = true;
-}
-
-function routeHome() {
-  router.push("/");
 }
 </script>

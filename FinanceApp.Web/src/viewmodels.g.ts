@@ -35,6 +35,7 @@ export interface BudgetViewModel extends $models.Budget {
   budgetId: number | null;
   name: string | null;
   color: string | null;
+  allocation: number | null;
   description: string | null;
   budgetUsers: BudgetUserViewModel[] | null;
   categories: CategoryViewModel[] | null;

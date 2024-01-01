@@ -63,7 +63,9 @@
 </template>
 
 <script setup lang="ts">
+import { BUDGET_SERVICE } from "@/lib/symbols";
 import { SubCategoryViewModel, TransactionViewModel } from "@/viewmodels.g";
+import { RefSymbol } from "@vue/reactivity";
 
 const props = defineProps<{
   subCategory: SubCategoryViewModel;
@@ -71,6 +73,8 @@ const props = defineProps<{
 }>();
 
 const showDelete = ref(false);
+
+const budgetService = inject(BUDGET_SERVICE);
 
 props.subCategory.$useAutoSave();
 
@@ -86,6 +90,17 @@ function refreshSubcategory() {
 function deleteSubCategory() {
   if (confirm()) {
     props.subCategory.$delete();
+    budgetService!.allSubCategories.value =
+      budgetService!.allSubCategories.value.filter(
+        (x) => x.subCategoryId !== props.subCategory.subCategoryId
+      );
   }
 }
+
+watch(
+  () => props.subCategory.allocation,
+  () => {
+    budgetService?.updateSubCategories([props.subCategory]);
+  }
+);
 </script>
