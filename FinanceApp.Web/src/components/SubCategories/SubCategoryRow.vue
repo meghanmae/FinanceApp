@@ -82,8 +82,10 @@ const subCategories: SubCategoryViewModel[] = [props.subCategory];
 let newTransaction: TransactionViewModel = new TransactionViewModel();
 
 function refreshSubcategory() {
-  props.subCategory.$load(props.subCategory.subCategoryId!);
-  nextTick(() => (newTransaction = new TransactionViewModel()));
+  props.subCategory.$load(props.subCategory.subCategoryId!).then((x) => {
+    newTransaction = new TransactionViewModel();
+    budgetService?.updateSubCategories([props.subCategory]);
+  });
 }
 
 function deleteSubCategory() {

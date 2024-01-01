@@ -205,6 +205,8 @@ export namespace SubCategory {
     export class SubCategoriesByBudget implements DataSource<typeof metadata.SubCategory.dataSources.subCategoriesByBudget> {
       readonly $metadata = metadata.SubCategory.dataSources.subCategoriesByBudget
       categoryId: number | null = null
+      startDate: Date | null = null
+      endDate: Date | null = null
       budgetId: number | null = null
       
       constructor(params?: Omit<Partial<SubCategoriesByBudget>, '$metadata'>) {

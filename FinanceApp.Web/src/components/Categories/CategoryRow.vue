@@ -154,6 +154,8 @@ let newSubCategory: SubCategoryViewModel;
 const subCategories = new SubCategoryListViewModel();
 const datasource = new SubCategory.DataSources.SubCategoriesByBudget();
 datasource.categoryId = category.value.categoryId;
+datasource.startDate = budgetService!.startDate.value;
+datasource.endDate = budgetService!.endDate.value;
 subCategories.$dataSource = datasource;
 
 const isDarkMode = computed(() => {
@@ -183,4 +185,10 @@ function deleteCategory() {
     props.category.$delete();
   }
 }
+
+watch(budgetService!.startDate, () => {
+  datasource.startDate = budgetService!.startDate.value;
+  datasource.endDate = budgetService!.endDate.value;
+  loadSubCategories();
+});
 </script>

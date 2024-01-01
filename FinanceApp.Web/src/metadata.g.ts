@@ -531,6 +531,22 @@ export const SubCategory = domain.types.SubCategory = {
           type: "number",
           role: "value",
         },
+        startDate: {
+          name: "startDate",
+          displayName: "Start Date",
+          type: "date",
+          dateKind: "date",
+          noOffset: true,
+          role: "value",
+        },
+        endDate: {
+          name: "endDate",
+          displayName: "End Date",
+          type: "date",
+          dateKind: "date",
+          noOffset: true,
+          role: "value",
+        },
         budgetId: {
           name: "budgetId",
           displayName: "Budget Id",

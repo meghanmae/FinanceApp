@@ -1,9 +1,13 @@
 import { BudgetViewModel, SubCategoryViewModel } from "@/viewmodels.g";
+import { startOfToday, endOfMonth } from "date-fns";
 
 export default class BudgetService {
   constructor(budget: BudgetViewModel) {
     this.budget.value = budget;
   }
+
+  public startDate = ref(startOfToday());
+  public endDate = ref(endOfMonth(startOfToday()));
 
   public budget = ref(new BudgetViewModel());
   public allSubCategories = ref([] as SubCategoryViewModel[]);

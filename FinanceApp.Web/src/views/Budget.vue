@@ -53,6 +53,8 @@
         </v-row>
       </v-card>
 
+      <DateNavigator class="mt-4" />
+
       <v-row class="mt-1">
         <v-col xs="12" sm="6" md="4">
           <v-card class="sticky-banner">
