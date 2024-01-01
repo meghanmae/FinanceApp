@@ -261,6 +261,7 @@ export interface Transaction extends Model<typeof metadata.Transaction> {
   amount: number | null
   subCategoryId: number | null
   subCategory: SubCategory | null
+  transactionDate: Date | null
   budgetId: number | null
 }
 export class Transaction {

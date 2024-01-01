@@ -17,6 +17,17 @@
         class="input-sub-heading"
       />
     </v-col>
+    <v-col cols="3" lg="2">
+      <c-input
+        :model="transaction"
+        for="transactionDate"
+        label=""
+        @keyup.enter="saveItem"
+        variant="underlined"
+        hide-details
+        class="input-sub-heading"
+      />
+    </v-col>
     <v-col cols="2" align="right">
       <MoneyInput
         v-model="transaction.amount"

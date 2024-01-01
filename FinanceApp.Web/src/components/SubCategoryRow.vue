@@ -43,7 +43,7 @@
     </v-col>
   </v-row>
 
-  <v-card-text v-if="!subCategory.isStatic">
+  <div v-if="!subCategory.isStatic">
     <TransactionRow
       v-for="transaction in subCategory.transactions"
       :key="transaction.transactionId!"
@@ -59,7 +59,7 @@
     />
 
     <TotalDisplay :subCategories="subCategories" />
-  </v-card-text>
+  </div>
 </template>
 
 <script setup lang="ts">

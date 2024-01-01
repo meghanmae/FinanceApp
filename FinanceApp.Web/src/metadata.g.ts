@@ -696,6 +696,17 @@ export const Transaction = domain.types.Transaction = {
       get inverseNavigation() { return (domain.types.SubCategory as ModelType).props.transactions as ModelCollectionNavigationProperty },
       dontSerialize: true,
     },
+    transactionDate: {
+      name: "transactionDate",
+      displayName: "Transaction Date",
+      type: "date",
+      dateKind: "date",
+      noOffset: true,
+      role: "value",
+      rules: {
+        required: val => val != null || "Transaction Date is required.",
+      }
+    },
     budgetId: {
       name: "budgetId",
       displayName: "Budget Id",

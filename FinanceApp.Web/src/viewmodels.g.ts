@@ -206,6 +206,7 @@ export interface TransactionViewModel extends $models.Transaction {
   amount: number | null;
   subCategoryId: number | null;
   subCategory: SubCategoryViewModel | null;
+  transactionDate: Date | null;
   budgetId: number | null;
 }
 export class TransactionViewModel extends ViewModel<$models.Transaction, $apiClients.TransactionApiClient, number> implements $models.Transaction  {

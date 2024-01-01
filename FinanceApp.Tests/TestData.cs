@@ -17,7 +17,9 @@ public static class TestData
     {
         return new Budget()
         {
-            Name = "Test Budget"
+            Name = "Test Budget",
+            Color = "blue",
+            Allocation = 100.00M
         };
     }
 
@@ -89,12 +91,15 @@ public static class TestData
     {
         SubCategory subCategory = CreateTestSubCategory(budget);
 
+        var today = new DateTime();
+
         return new Transaction()
         {
             Description = "Test",
             Amount = new decimal(10.75),
             SubCategory = subCategory,
-            Budget = budget
+            Budget = budget,
+            TransactionDate = new DateOnly(today.Year, today.Month, today.Day)
         };
     }
 }
