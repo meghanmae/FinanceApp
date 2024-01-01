@@ -65,7 +65,6 @@
 <script setup lang="ts">
 import { BUDGET_SERVICE } from "@/lib/symbols";
 import { SubCategoryViewModel, TransactionViewModel } from "@/viewmodels.g";
-import { RefSymbol } from "@vue/reactivity";
 
 const props = defineProps<{
   subCategory: SubCategoryViewModel;

@@ -3,6 +3,7 @@ import { createVuetify } from "vuetify";
 import { createCoalesceVuetify } from "coalesce-vue-vuetify3";
 import { aliases, fa } from "vuetify/iconsets/fa";
 import { AxiosClient as CoalesceAxiosClient } from "coalesce-vue";
+import VueApexCharts from "vue3-apexcharts";
 
 import userService, {
   globalProperties as userServiceProps,
@@ -85,4 +86,5 @@ router.beforeEach(async (to: any, from: any, next: any) => {
 
 app.use(vuetify);
 app.use(coalesceVuetify);
+app.use(VueApexCharts);
 app.mount("#app");

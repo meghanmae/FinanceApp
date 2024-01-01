@@ -29,5 +29,5 @@ export default class BudgetService {
       style: "currency",
       currency: currency,
     }).format(amount);
-}
+  }
 }

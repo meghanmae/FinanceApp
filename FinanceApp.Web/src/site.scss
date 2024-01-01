@@ -57,3 +57,9 @@ a {
 .hidden-element {
   visibility: hidden;
 }
+
+.sticky-banner {
+  position: sticky;
+  top: 75px;
+  z-index: 3;
+}

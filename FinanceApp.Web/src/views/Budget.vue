@@ -53,32 +53,40 @@
         </v-row>
       </v-card>
 
-      <c-loader-status :loaders="{ '': [newCategory.$save] }" />
+      <v-row class="mt-1">
+        <v-col xs="12" sm="6" md="4">
+          <v-card class="sticky-banner">
+            <CategoriesPieChart :categories="categories.$items" />
+          </v-card>
+        </v-col>
 
-      <v-divider class="my-2" />
-      <h3>
-        Categories
-        <v-btn
-          @click="addCategory"
-          icon="fa-solid fa-plus"
-          size="x-small"
-          color="primary"
-          class="ml-1"
-        />
-        <UpdateCategoryDialog
-          v-model="showNewCategoryDialog"
-          :category="newCategory"
-          @saved="loadCategories"
-        />
-      </h3>
-      <v-expansion-panels multiple>
-        <v-expansion-panel
-          v-for="category in categories.$items"
-          :key="category.categoryId!"
-        >
-          <CategoryRow :category="category" />
-        </v-expansion-panel>
-      </v-expansion-panels>
+        <v-col cols="12" md="8">
+          <c-loader-status :loaders="{ '': [newCategory.$save] }" />
+          <h3 class="mb-2">
+            Categories
+            <v-btn
+              @click="addCategory"
+              icon="fa-solid fa-plus"
+              size="x-small"
+              color="primary"
+              class="ml-1"
+            />
+            <UpdateCategoryDialog
+              v-model="showNewCategoryDialog"
+              :category="newCategory"
+              @saved="loadCategories"
+            />
+          </h3>
+          <v-expansion-panels multiple>
+            <v-expansion-panel
+              v-for="category in categories.$items"
+              :key="category.categoryId!"
+            >
+              <CategoryRow :category="category" />
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </v-col>
+      </v-row>
     </c-loader-status>
   </v-container>
 </template>

@@ -14,12 +14,14 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.3.0",
+    "apexcharts": "^3.45.1",
     "coalesce-vue": "4.0.0-alpha.20231130.4",
     "coalesce-vue-vuetify3": "4.0.0-alpha.20231130.4",
     "typeface-roboto": "1.1.13",
     "vue": "^3.3.4",
     "vue-currency-input": "^3.0.5",
     "vue-router": "^4.2.2",
+    "vue3-apexcharts": "^1.4.4",
     "vuetify": "^3.3.6"
   },
   "devDependencies": {
