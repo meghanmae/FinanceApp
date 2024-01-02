@@ -17,6 +17,9 @@ public class Transaction : SecuredByBudgetBase
     public int SubCategoryId { get; set; }
     public SubCategory? SubCategory { get; set; }
 
+    [Required]
+    public required DateOnly TransactionDate { get; set; }
+
     [DefaultDataSource]
     public class TransactionsByBudget(CrudContext<AppDbContext> context) : SecureByBudgetDataSource<Transaction, AppDbContext>(context)
     {

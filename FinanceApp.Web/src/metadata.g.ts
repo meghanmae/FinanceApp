@@ -531,6 +531,22 @@ export const SubCategory = domain.types.SubCategory = {
           type: "number",
           role: "value",
         },
+        startDate: {
+          name: "startDate",
+          displayName: "Start Date",
+          type: "date",
+          dateKind: "date",
+          noOffset: true,
+          role: "value",
+        },
+        endDate: {
+          name: "endDate",
+          displayName: "End Date",
+          type: "date",
+          dateKind: "date",
+          noOffset: true,
+          role: "value",
+        },
         budgetId: {
           name: "budgetId",
           displayName: "Budget Id",
@@ -696,6 +712,17 @@ export const Transaction = domain.types.Transaction = {
       get inverseNavigation() { return (domain.types.SubCategory as ModelType).props.transactions as ModelCollectionNavigationProperty },
       dontSerialize: true,
     },
+    transactionDate: {
+      name: "transactionDate",
+      displayName: "Transaction Date",
+      type: "date",
+      dateKind: "date",
+      noOffset: true,
+      role: "value",
+      rules: {
+        required: val => val != null || "Transaction Date is required.",
+      }
+    },
     budgetId: {
       name: "budgetId",
       displayName: "Budget Id",
@@ -735,6 +762,98 @@ export const Transaction = domain.types.Transaction = {
     },
   },
 }
+export const MonthlyTransactionsDto = domain.types.MonthlyTransactionsDto = {
+  name: "MonthlyTransactionsDto",
+  displayName: "Monthly Transactions Dto",
+  type: "object",
+  props: {
+    startOfMonth: {
+      name: "startOfMonth",
+      displayName: "Start Of Month",
+      type: "collection",
+      itemType: {
+        name: "$collectionItem",
+        displayName: "",
+        role: "value",
+        type: "date",
+        dateKind: "datetime",
+        noOffset: true,
+      },
+      role: "value",
+    },
+    amount: {
+      name: "amount",
+      displayName: "Amount",
+      type: "collection",
+      itemType: {
+        name: "$collectionItem",
+        displayName: "",
+        role: "value",
+        type: "number",
+      },
+      role: "value",
+    },
+    subCategoryName: {
+      name: "subCategoryName",
+      displayName: "Sub Category Name",
+      type: "string",
+      role: "value",
+      rules: {
+        required: val => (val != null && val !== '') || "Sub Category Name is required.",
+      }
+    },
+    categoryColor: {
+      name: "categoryColor",
+      displayName: "Category Color",
+      type: "string",
+      role: "value",
+      rules: {
+        required: val => (val != null && val !== '') || "Category Color is required.",
+      }
+    },
+  },
+}
+export const TransactionsService = domain.services.TransactionsService = {
+  name: "TransactionsService",
+  displayName: "Transactions Service",
+  type: "service",
+  controllerRoute: "TransactionsService",
+  methods: {
+    historicalTransactions: {
+      name: "historicalTransactions",
+      displayName: "Historical Transactions",
+      transportType: "item",
+      httpMethod: "POST",
+      params: {
+        budgetId: {
+          name: "budgetId",
+          displayName: "Budget Id",
+          type: "number",
+          role: "value",
+        },
+        years: {
+          name: "years",
+          displayName: "Years",
+          type: "number",
+          role: "value",
+        },
+      },
+      return: {
+        name: "$return",
+        displayName: "Result",
+        type: "collection",
+        itemType: {
+          name: "$collectionItem",
+          displayName: "",
+          role: "value",
+          type: "object",
+          get typeDef() { return (domain.types.MonthlyTransactionsDto as ObjectType) },
+        },
+        role: "value",
+      },
+    },
+  },
+}
 export const UserService = domain.services.UserService = {
   name: "UserService",
   displayName: "User Service",
@@ -768,11 +887,13 @@ interface AppDomain extends Domain {
     BudgetUser: typeof BudgetUser
     Category: typeof Category
     CustomCalculation: typeof CustomCalculation
+    MonthlyTransactionsDto: typeof MonthlyTransactionsDto
     SubCategory: typeof SubCategory
     SubCategoryCustomCalculation: typeof SubCategoryCustomCalculation
     Transaction: typeof Transaction
   }
   services: {
+    TransactionsService: typeof TransactionsService
     UserService: typeof UserService
   }
 }

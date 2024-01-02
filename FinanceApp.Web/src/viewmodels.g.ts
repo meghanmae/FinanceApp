@@ -206,6 +206,7 @@ export interface TransactionViewModel extends $models.Transaction {
   amount: number | null;
   subCategoryId: number | null;
   subCategory: SubCategoryViewModel | null;
+  transactionDate: Date | null;
   budgetId: number | null;
 }
 export class TransactionViewModel extends ViewModel<$models.Transaction, $apiClients.TransactionApiClient, number> implements $models.Transaction  {
@@ -220,6 +221,25 @@ export class TransactionListViewModel extends ListViewModel<$models.Transaction,
   
   constructor() {
     super($metadata.Transaction, new $apiClients.TransactionApiClient())
+  }
+}
+
+
+export class TransactionsServiceViewModel extends ServiceViewModel<typeof $metadata.TransactionsService, $apiClients.TransactionsServiceApiClient> {
+  
+  public get historicalTransactions() {
+    const historicalTransactions = this.$apiClient.$makeCaller(
+      this.$metadata.methods.historicalTransactions,
+      (c, budgetId: number | null, years: number | null) => c.historicalTransactions(budgetId, years),
+      () => ({budgetId: null as number | null, years: null as number | null, }),
+      (c, args) => c.historicalTransactions(args.budgetId, args.years))
+    
+    Object.defineProperty(this, 'historicalTransactions', {value: historicalTransactions});
+    return historicalTransactions
+  }
+  
+  constructor() {
+    super($metadata.TransactionsService, new $apiClients.TransactionsServiceApiClient())
   }
 }
 
@@ -264,6 +284,7 @@ const listViewModelTypeLookup = ListViewModel.typeLookup = {
   Transaction: TransactionListViewModel,
 }
 const serviceViewModelTypeLookup = ServiceViewModel.typeLookup = {
+  TransactionsService: TransactionsServiceViewModel,
   UserService: UserServiceViewModel,
 }
 

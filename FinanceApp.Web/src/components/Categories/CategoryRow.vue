@@ -12,6 +12,7 @@
         width="100%"
       >
         <v-row
+          class="my-1"
           dense
           align="center"
           @mouseover="showDelete = true"
@@ -58,6 +59,7 @@
                 for="description"
                 label=""
                 placeholder="no description"
+                persistent-placeholder
                 variant="underlined"
                 hide-details
                 class="input-sub-heading mb-2"
@@ -73,11 +75,14 @@
               </strong>
             </div>
           </v-col>
-          <v-col align="right">
+          <v-col align="right" cols="12" sm="">
             <div class="d-inline-flex">
               <TotalDisplay :subCategories="subCategories.$items" />
               <v-btn
-                :class="[showDelete ? '' : 'hidden-element', 'ml-n10 mt-2']"
+                :class="[
+                  showDelete || display.smAndDown.value ? '' : 'hidden-element',
+                  'ml-n10 mt-2',
+                ]"
                 color="error"
                 icon="fa-solid fa-trash"
                 variant="tonal"
@@ -136,6 +141,7 @@ import {
 } from "@/viewmodels.g";
 import { useTheme } from "vuetify/lib/framework.mjs";
 import colors from "vuetify/lib/util/colors";
+import { useDisplay } from "vuetify";
 
 const props = defineProps<{
   category: CategoryViewModel;
@@ -148,12 +154,16 @@ props.category.$useAutoSave();
 
 const budgetService = inject(BUDGET_SERVICE);
 
+const display = useDisplay();
+
 const showNewSubCategoryDialog = ref(false);
 let newSubCategory: SubCategoryViewModel;
 
 const subCategories = new SubCategoryListViewModel();
 const datasource = new SubCategory.DataSources.SubCategoriesByBudget();
 datasource.categoryId = category.value.categoryId;
+datasource.startDate = budgetService!.startDate.value;
+datasource.endDate = budgetService!.endDate.value;
 subCategories.$dataSource = datasource;
 
 const isDarkMode = computed(() => {
@@ -183,4 +193,10 @@ function deleteCategory() {
     props.category.$delete();
   }
 }
+
+watch(budgetService!.startDate, () => {
+  datasource.startDate = budgetService!.startDate.value;
+  datasource.endDate = budgetService!.endDate.value;
+  loadSubCategories();
+});
 </script>

@@ -43,6 +43,20 @@ export class TransactionApiClient extends ModelApiClient<$models.Transaction> {
 }
 
 
+export class TransactionsServiceApiClient extends ServiceApiClient<typeof $metadata.TransactionsService> {
+  constructor() { super($metadata.TransactionsService) }
+  public historicalTransactions(budgetId: number | null, years: number | null, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<$models.MonthlyTransactionsDto[]>> {
+    const $method = this.$metadata.methods.historicalTransactions
+    const $params =  {
+      budgetId,
+      years,
+    }
+    return this.$invoke($method, $params, $config)
+  }
+  
+}
+
+
 export class UserServiceApiClient extends ServiceApiClient<typeof $metadata.UserService> {
   constructor() { super($metadata.UserService) }
   public getLoggedInUser($config?: AxiosRequestConfig): AxiosPromise<ItemResult<$models.ApplicationUser>> {

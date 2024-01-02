@@ -1,15 +1,15 @@
 <template>
   <div align="right" :class="[fontClass, 'mr-12 mt-2']">
     <strong>
-      {{ BudgetService.formatCurrency(totalSpent) }}
+      {{ Helpers.formatCurrency(totalSpent) }}
     </strong>
     <span class="text-grey">
-      of {{ BudgetService.formatCurrency(totalAllocated) }}
+      of {{ Helpers.formatCurrency(totalAllocated) }}
       {{ allocatedText }}
     </span>
     <br />
     <span :style="`color: ${color}`">
-      <strong>{{ BudgetService.formatCurrency(totalLeft) }}</strong>
+      <strong>{{ Helpers.formatCurrency(totalLeft) }}</strong>
     </span>
     Left {{ totalLeftText }}
   </div>
@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import { SubCategoryViewModel } from "@/viewmodels.g";
-import BudgetService from "@/services/BudgetService";
+import Helpers from "@/services/Helpers";
 
 const props = withDefaults(
   defineProps<{

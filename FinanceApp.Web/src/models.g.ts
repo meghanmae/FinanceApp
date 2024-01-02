@@ -205,6 +205,8 @@ export namespace SubCategory {
     export class SubCategoriesByBudget implements DataSource<typeof metadata.SubCategory.dataSources.subCategoriesByBudget> {
       readonly $metadata = metadata.SubCategory.dataSources.subCategoriesByBudget
       categoryId: number | null = null
+      startDate: Date | null = null
+      endDate: Date | null = null
       budgetId: number | null = null
       
       constructor(params?: Omit<Partial<SubCategoriesByBudget>, '$metadata'>) {
@@ -261,6 +263,7 @@ export interface Transaction extends Model<typeof metadata.Transaction> {
   amount: number | null
   subCategoryId: number | null
   subCategory: SubCategory | null
+  transactionDate: Date | null
   budgetId: number | null
 }
 export class Transaction {
@@ -292,6 +295,31 @@ export namespace Transaction {
         if (params) Object.assign(this, params);
       }
     }
+  }
+}
+
+
+export interface MonthlyTransactionsDto extends Model<typeof metadata.MonthlyTransactionsDto> {
+  startOfMonth: Date[] | null
+  amount: number[] | null
+  subCategoryName: string | null
+  categoryColor: string | null
+}
+export class MonthlyTransactionsDto {
+  
+  /** Mutates the input object and its descendents into a valid MonthlyTransactionsDto implementation. */
+  static convert(data?: Partial<MonthlyTransactionsDto>): MonthlyTransactionsDto {
+    return convertToModel(data || {}, metadata.MonthlyTransactionsDto) 
+  }
+  
+  /** Maps the input object and its descendents to a new, valid MonthlyTransactionsDto implementation. */
+  static map(data?: Partial<MonthlyTransactionsDto>): MonthlyTransactionsDto {
+    return mapToModel(data || {}, metadata.MonthlyTransactionsDto) 
+  }
+  
+  /** Instantiate a new MonthlyTransactionsDto, optionally basing it on the given data. */
+  constructor(data?: Partial<MonthlyTransactionsDto> | {[k: string]: any}) {
+    Object.assign(this, MonthlyTransactionsDto.map(data || {}));
   }
 }
 

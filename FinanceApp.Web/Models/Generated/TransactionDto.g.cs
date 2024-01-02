@@ -17,6 +17,7 @@ namespace FinanceApp.Web.Models
         private decimal? _Amount;
         private int? _SubCategoryId;
         private FinanceApp.Web.Models.SubCategoryDtoGen _SubCategory;
+        private System.DateOnly? _TransactionDate;
         private int? _BudgetId;
 
         public long? TransactionId
@@ -44,6 +45,11 @@ namespace FinanceApp.Web.Models
             get => _SubCategory;
             set { _SubCategory = value; Changed(nameof(SubCategory)); }
         }
+        public System.DateOnly? TransactionDate
+        {
+            get => _TransactionDate;
+            set { _TransactionDate = value; Changed(nameof(TransactionDate)); }
+        }
         public int? BudgetId
         {
             get => _BudgetId;
@@ -62,6 +68,7 @@ namespace FinanceApp.Web.Models
             this.Description = obj.Description;
             this.Amount = obj.Amount;
             this.SubCategoryId = obj.SubCategoryId;
+            this.TransactionDate = obj.TransactionDate;
             this.BudgetId = obj.BudgetId;
             if (tree == null || tree[nameof(this.SubCategory)] != null)
                 this.SubCategory = obj.SubCategory.MapToDto<FinanceApp.Data.Models.SubCategory, SubCategoryDtoGen>(context, tree?[nameof(this.SubCategory)]);
@@ -81,6 +88,7 @@ namespace FinanceApp.Web.Models
             if (ShouldMapTo(nameof(Description))) entity.Description = Description;
             if (ShouldMapTo(nameof(Amount))) entity.Amount = (Amount ?? entity.Amount);
             if (ShouldMapTo(nameof(SubCategoryId))) entity.SubCategoryId = (SubCategoryId ?? entity.SubCategoryId);
+            if (ShouldMapTo(nameof(TransactionDate))) entity.TransactionDate = (TransactionDate ?? entity.TransactionDate);
             if (ShouldMapTo(nameof(BudgetId))) entity.BudgetId = (BudgetId ?? entity.BudgetId);
         }
 
@@ -95,6 +103,7 @@ namespace FinanceApp.Web.Models
             {
                 Description = Description,
                 Amount = (Amount ?? default),
+                TransactionDate = (TransactionDate ?? default),
             };
 
             if (OnUpdate(entity, context)) return entity;

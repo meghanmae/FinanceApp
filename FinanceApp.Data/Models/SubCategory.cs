@@ -34,6 +34,12 @@ public class SubCategory : SecuredByBudgetBase
         [Coalesce]
         public int? CategoryId { get; set; } = null;
 
+        [Coalesce]
+        public DateOnly StartDate { get; set; }
+
+        [Coalesce]
+        public DateOnly EndDate { get; set; }
+
         public override IQueryable<SubCategory> GetQuery(IDataSourceParameters parameters)
         {
             var query = base.GetQuery(parameters);
@@ -41,7 +47,7 @@ public class SubCategory : SecuredByBudgetBase
             {
                 query = query
                     .Where(x => x.CategoryId == CategoryId)
-                    .Include(x => x.Transactions);
+                    .Include(x => x.Transactions.Where(x => x.TransactionDate >= StartDate && x.TransactionDate <= EndDate));
             }
             return query;
         }
