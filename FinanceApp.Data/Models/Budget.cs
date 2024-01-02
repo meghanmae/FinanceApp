@@ -1,5 +1,4 @@
 ﻿using FinanceApp.Data.Security;
-using System.ComponentModel;
 
 namespace FinanceApp.Data.Models;
 
