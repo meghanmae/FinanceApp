@@ -5,6 +5,7 @@
     align="center"
     @mouseover="showDelete = true"
     @mouseleave="showDelete = false"
+    class="mb-1 mt-n2"
   >
     <v-col>
       <c-input
@@ -19,6 +20,7 @@
         :model="subCategory"
         for="description"
         label=""
+        persistent-placeholder
         placeholder="no description"
         variant="plain"
         hide-details
@@ -33,7 +35,10 @@
     </v-col>
     <v-col cols="auto" align="right">
       <v-btn
-        :class="[showDelete ? '' : 'hidden-element', 'mt-5 ml-1']"
+        :class="[
+          showDelete || display.smAndDown.value ? '' : 'hidden-element',
+          'mt-5 ml-1',
+        ]"
         color="error"
         icon="fa-solid fa-trash"
         variant="tonal"
@@ -65,6 +70,7 @@
 <script setup lang="ts">
 import { BUDGET_SERVICE } from "@/lib/symbols";
 import { SubCategoryViewModel, TransactionViewModel } from "@/viewmodels.g";
+import { useDisplay } from "vuetify";
 
 const props = defineProps<{
   subCategory: SubCategoryViewModel;
@@ -72,6 +78,8 @@ const props = defineProps<{
 }>();
 
 const showDelete = ref(false);
+
+const display = useDisplay();
 
 const budgetService = inject(BUDGET_SERVICE);
 
@@ -82,10 +90,11 @@ const subCategories: SubCategoryViewModel[] = [props.subCategory];
 let newTransaction: TransactionViewModel = new TransactionViewModel();
 
 function refreshSubcategory() {
-  props.subCategory.$load(props.subCategory.subCategoryId!).then((x) => {
-    newTransaction = new TransactionViewModel();
+  props.subCategory.$load(props.subCategory.subCategoryId!).then(() => {
     budgetService?.updateSubCategories([props.subCategory]);
   });
+
+  nextTick(() => (newTransaction = new TransactionViewModel()));
 }
 
 function deleteSubCategory() {

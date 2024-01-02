@@ -113,6 +113,7 @@ services.AddDbContext<AppDbContext>(options => options
 services.AddCoalesce<AppDbContext>();
 
 services.AddScoped<UserService>();
+services.AddScoped<TransactionsService>();
 
 services
     .AddMvc()

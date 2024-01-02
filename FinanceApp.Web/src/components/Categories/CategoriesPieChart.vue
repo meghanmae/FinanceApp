@@ -3,6 +3,7 @@
 </template>
 
 <script setup lang="ts">
+import Helpers from "@/services/Helpers";
 import { CategoryViewModel, SubCategoryViewModel } from "@/viewmodels.g";
 import colors from "vuetify/lib/util/colors";
 
@@ -24,7 +25,7 @@ const series = sortedCategories.value.map((x) =>
 
 const labels = sortedCategories.value.map((x) => x.name);
 const chartColors = sortedCategories.value.map(
-  (x) => colors[toCamelCase(x.color!)].base
+  (x) => colors[Helpers.toCamelCase(x.color!)].base
 );
 
 const chartOptions = {
@@ -35,6 +36,9 @@ const chartOptions = {
   colors: chartColors,
   legend: {
     show: false,
+  },
+  theme: {
+    mode: "light",
   },
   responsive: [
     {
@@ -56,15 +60,5 @@ function totalAllocated(subCategories: SubCategoryViewModel[]) {
           return (accumulator ?? 0) + (currentValue ?? 0);
         }) ?? 0
     : 0;
-}
-
-function toCamelCase(value: string) {
-  if (!value) return "grey";
-  return value
-    .split("-")
-    .map((word: string, index: number) => {
-      return index === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1);
-    })
-    .join("");
 }
 </script>

@@ -23,15 +23,4 @@ export default class BudgetService {
     this.allSubCategories.value =
       this.allSubCategories.value.concat(subCategories);
   }
-
-  public static formatCurrency(
-    amount: number,
-    currency = "USD",
-    locale = "en-US"
-  ) {
-    return new Intl.NumberFormat(locale, {
-      style: "currency",
-      currency: currency,
-    }).format(amount);
-  }
 }

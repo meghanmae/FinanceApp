@@ -39,7 +39,10 @@
       <v-btn
         v-if="transaction.transactionId"
         :class="[
-          showActionButton && transaction.transactionId ? '' : 'hidden-element',
+          (showActionButton || display.smAndDown.value) &&
+          transaction.transactionId
+            ? ''
+            : 'hidden-element',
           'ml-1',
         ]"
         color="error"
@@ -63,6 +66,7 @@
 <script setup lang="ts">
 import { BUDGET_SERVICE } from "@/lib/symbols";
 import { TransactionViewModel } from "@/viewmodels.g";
+import { useDisplay } from "vuetify";
 
 const props = defineProps<{
   transaction: TransactionViewModel;
@@ -76,6 +80,8 @@ const emit = defineEmits<{
 
 const showActionButton = ref(false);
 const budgetService = inject(BUDGET_SERVICE);
+
+const display = useDisplay();
 
 if (props.transaction.transactionId) {
   props.transaction.$useAutoSave();

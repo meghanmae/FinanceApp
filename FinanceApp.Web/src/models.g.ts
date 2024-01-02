@@ -299,3 +299,28 @@ export namespace Transaction {
 }
 
 
+export interface MonthlyTransactionsDto extends Model<typeof metadata.MonthlyTransactionsDto> {
+  startOfMonth: Date[] | null
+  amount: number[] | null
+  subCategoryName: string | null
+  categoryColor: string | null
+}
+export class MonthlyTransactionsDto {
+  
+  /** Mutates the input object and its descendents into a valid MonthlyTransactionsDto implementation. */
+  static convert(data?: Partial<MonthlyTransactionsDto>): MonthlyTransactionsDto {
+    return convertToModel(data || {}, metadata.MonthlyTransactionsDto) 
+  }
+  
+  /** Maps the input object and its descendents to a new, valid MonthlyTransactionsDto implementation. */
+  static map(data?: Partial<MonthlyTransactionsDto>): MonthlyTransactionsDto {
+    return mapToModel(data || {}, metadata.MonthlyTransactionsDto) 
+  }
+  
+  /** Instantiate a new MonthlyTransactionsDto, optionally basing it on the given data. */
+  constructor(data?: Partial<MonthlyTransactionsDto> | {[k: string]: any}) {
+    Object.assign(this, MonthlyTransactionsDto.map(data || {}));
+  }
+}
+
+

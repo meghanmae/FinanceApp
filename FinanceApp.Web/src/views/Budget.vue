@@ -5,7 +5,7 @@
     >
       <v-card>
         <v-sheet height="10px" :color="budget.color!" />
-        <v-row align="center">
+        <v-row align="center" no-gutters>
           <v-col>
             <v-card-text>
               <c-input
@@ -20,13 +20,15 @@
                 :model="budget"
                 for="description"
                 label=""
+                persistent-placeholder
+                placeholder="no description"
                 variant="plain"
                 hide-details
                 class="input-sub-heading"
               />
             </v-card-text>
           </v-col>
-          <v-col cols="auto">
+          <v-col cols="12" sm="auto">
             <v-menu :close-on-content-click="false">
               <template v-slot:activator="{ props }">
                 <TotalDisplay
@@ -56,10 +58,11 @@
       <DateNavigator class="mt-4" />
 
       <v-row class="mt-1">
-        <v-col xs="12" sm="6" md="4">
-          <v-card class="sticky-banner">
+        <v-col xs="12" md="4" align="center">
+          <div class="sticky-banner">
             <CategoriesPieChart :categories="categories.$items" />
-          </v-card>
+            <v-card-title>Category Allocations</v-card-title>
+          </div>
         </v-col>
 
         <v-col cols="12" md="8">
@@ -89,6 +92,11 @@
           </v-expansion-panels>
         </v-col>
       </v-row>
+
+      <v-card variant="tonal" class="mt-5" :color="budget.color!">
+        <v-card-title>Non-Static Spending Over Past 3 Years</v-card-title>
+        <HistoricalTransactionsGraph />
+      </v-card>
     </c-loader-status>
   </v-container>
 </template>

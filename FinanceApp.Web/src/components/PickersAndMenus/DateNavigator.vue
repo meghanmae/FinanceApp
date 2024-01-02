@@ -37,10 +37,10 @@
       :variant="isCurrentCalc ? 'tonal' : 'text'"
       color="primary"
     >
-      <v-icon class="mr-2 mb-1">
+      <v-icon :class="[display.xs.value ? '' : 'mr-2', 'mb-1']">
         {{ isCurrentCalc ? "fas fa-calendar-check" : "fas fa-calendar" }}
       </v-icon>
-      Current Month
+      {{ display.xs.value ? "" : "Current Month" }}
     </v-chip>
   </div>
 </template>
@@ -54,13 +54,30 @@ import {
   endOfMonth,
   format,
   addMonths,
+  parse,
 } from "date-fns";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import { BUDGET_SERVICE } from "@/lib/symbols";
+import { useBindToQueryString } from "coalesce-vue";
+import { useDisplay } from "vuetify";
 
 const formatString = "MM/dd/yyyy";
 
+const display = useDisplay();
+
 const budgetService = inject(BUDGET_SERVICE);
+
+const startDateString = computed({
+  get() {
+    return format(budgetService!.startDate.value, formatString);
+  },
+  set(value) {
+    const parsedDate = parse(value, formatString, new Date());
+    budgetService!.startDate.value = parsedDate;
+  },
+});
+
+useBindToQueryString(startDateString, "value", "startDate");
 
 const darkMode = computed(() => useTheme().global.name.value === "dark");
 

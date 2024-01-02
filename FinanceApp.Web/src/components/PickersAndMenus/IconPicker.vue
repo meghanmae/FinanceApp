@@ -33,6 +33,7 @@ const validIconsList = [
   "fa-solid fa-envelope-open-text",
   "fa-solid fa-screwdriver-wrench",
   "fa-solid fa-wallet",
+  "fa-solid fa-money-bill-trend-up",
   "fa-solid fa-baby-carriage",
   "fa-solid fa-champagne-glasses",
   "fa-regular fa-gem",

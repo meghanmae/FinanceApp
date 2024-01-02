@@ -10,8 +10,19 @@
       <v-card-text>
         <c-input :model="budget" for="name" autofocus @keyup.enter="save" />
         <c-input :model="budget" for="description" @keyup.enter="save" />
-        <c-input :model="budget" for="allocation" @keyup.enter="save" />
-        <c-input :model="budget" for="color" @keyup.enter="save" />
+        <v-row>
+          <v-col cols="12" sm="6">
+            <ColorPicker hide-details v-model="budget.color" />
+          </v-col>
+          <v-col cols="12" sm="6">
+            <MoneyInput
+              v-model="budget.allocation"
+              variant="outlined"
+              textClass=""
+              label="Allocation"
+            />
+          </v-col>
+        </v-row>
       </v-card-text>
       <v-card-actions>
         <v-spacer />
